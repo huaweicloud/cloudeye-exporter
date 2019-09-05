@@ -10,7 +10,7 @@ $ sudo tar -C /usr/local -xzf go1.12.5.linux-amd64.tar.gz
 $ export PATH=$PATH:/usr/local/go/bin # You should put in your .profile or .bashrc
 $ go version # to verify it runs and version #
 
-$ go get https://github.com/huaweicloud/cloudeye-exporter
+$ go get github.com/huaweicloud/cloudeye-exporter
 $ cd ~/go/src/github.com/huaweicloud/cloudeye-exporter
 $ go build
 ```
