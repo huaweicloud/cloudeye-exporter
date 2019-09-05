@@ -28,7 +28,8 @@ Usage of ./cloudeye-exporter:
   -debug
         If debug the code.
  
- 
+```
+
 ## Example of config file(clouds.yml)
 ```
 global:
