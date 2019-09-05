@@ -1,0 +1,55 @@
+# github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+github.com/alecthomas/template
+github.com/alecthomas/template/parse
+# github.com/alecthomas/units v0.0.0-20190717042225-c3de453c63f4
+github.com/alecthomas/units
+# github.com/beorn7/perks v1.0.1
+github.com/beorn7/perks/quantile
+# github.com/golang/protobuf v1.3.2
+github.com/golang/protobuf/proto
+# github.com/huaweicloud/golangsdk v0.0.0-20190905034801-15fcb92502bc
+github.com/huaweicloud/golangsdk
+github.com/huaweicloud/golangsdk/openstack
+github.com/huaweicloud/golangsdk/openstack/ces/v1/metricdata
+github.com/huaweicloud/golangsdk/openstack/ces/v1/metrics
+github.com/huaweicloud/golangsdk/openstack/identity/v2/tokens
+github.com/huaweicloud/golangsdk/openstack/identity/v3/domains
+github.com/huaweicloud/golangsdk/openstack/identity/v3/endpoints
+github.com/huaweicloud/golangsdk/openstack/identity/v3/projects
+github.com/huaweicloud/golangsdk/openstack/identity/v3/services
+github.com/huaweicloud/golangsdk/openstack/identity/v3/tokens
+github.com/huaweicloud/golangsdk/openstack/utils
+github.com/huaweicloud/golangsdk/pagination
+github.com/huaweicloud/golangsdk/openstack/identity/v2/tenants
+github.com/huaweicloud/golangsdk/internal
+# github.com/konsorten/go-windows-terminal-sequences v1.0.1
+github.com/konsorten/go-windows-terminal-sequences
+# github.com/matttproud/golang_protobuf_extensions v1.0.1
+github.com/matttproud/golang_protobuf_extensions/pbutil
+# github.com/prometheus/client_golang v1.1.0
+github.com/prometheus/client_golang/prometheus
+github.com/prometheus/client_golang/prometheus/promhttp
+github.com/prometheus/client_golang/prometheus/internal
+# github.com/prometheus/client_model v0.0.0-20190129233127-fd36f4220a90
+github.com/prometheus/client_model/go
+# github.com/prometheus/common v0.6.0
+github.com/prometheus/common/log
+github.com/prometheus/common/expfmt
+github.com/prometheus/common/model
+github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
+# github.com/prometheus/procfs v0.0.3
+github.com/prometheus/procfs
+github.com/prometheus/procfs/internal/fs
+# github.com/sirupsen/logrus v1.2.0
+github.com/sirupsen/logrus
+# golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
+golang.org/x/crypto/ssh/terminal
+# golang.org/x/sys v0.0.0-20190801041406-cbf593c0f2f3
+golang.org/x/sys/windows
+golang.org/x/sys/windows/svc/eventlog
+golang.org/x/sys/windows/registry
+golang.org/x/sys/unix
+# gopkg.in/alecthomas/kingpin.v2 v2.2.6
+gopkg.in/alecthomas/kingpin.v2
+# gopkg.in/yaml.v2 v2.2.2
+gopkg.in/yaml.v2
