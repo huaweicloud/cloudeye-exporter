@@ -2,19 +2,6 @@
 
 Prometheus cloudeye exporter for [Huaweicloud](https://www.huaweicloud.com/).
 
-## Install
-
-Download the binary from the [Releases](https://github.com/huaweicloud/cloudeye-exporter) page.
-
-```
-wget https://github.com/huaweicloud/huaweicloud-prometheus-discovery/releases/download/1.0.0/huaweicloud-prometheus-discovery-1.0.0.linux-amd64.tar.gz
-tar -zxvf huaweicloud-prometheus-discovery-1.0.0.linux-amd64.tar.gz
-```
-
-## Usage
-```
- ./cloudeye-exporter  -config=clouds.yml
-```
 
 ## Building The Discovery with Exact steps on clean Ubuntu 16.04
 ```
@@ -26,6 +13,11 @@ $ go version # to verify it runs and version #
 $ go get https://github.com/huaweicloud/cloudeye-exporter
 $ cd ~/go/src/github.com/huaweicloud/cloudeye-exporter
 $ go build
+```
+
+## Usage
+```
+ ./cloudeye-exporter  -config=clouds.yml
 ```
 
 ## Help
