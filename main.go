@@ -27,7 +27,7 @@ import (
 
 
 var (
-	clientConfig = flag.String("clientConfig", "./clouds.yml", "Path to the cloud configuration file")
+	clientConfig = flag.String("config", "./clouds.yml", "Path to the cloud configuration file")
 	debug = flag.Bool("debug", false, "If debug the code.")
 )
 
