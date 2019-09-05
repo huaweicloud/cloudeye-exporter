@@ -1,0 +1,13 @@
+global:
+  prefix: "huaweicloud"
+
+auth:
+  auth_url: "https://iam.cn-north-1.myhwclouds.com/v3"
+  project_name: "cn-north-1"
+  access_key: "xdfsdfsdfsdfsdfsdf"
+  secret_key: "xsdfsddfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfdsfsd"
+  region: "cn-north-1"
+
+info_metrics:
+  - SYS.ELB
+  - SYS.VPC
