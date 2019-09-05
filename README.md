@@ -48,3 +48,18 @@ info_metrics:
   - SYS.ELB
   - SYS.VPC
 ```
+or
+
+```
+auth:
+  auth_url: "https://iam.cn-north-1.myhwclouds.com/v3"
+  project_name: "cn-north-1"
+  user_name: "username"
+  password: "password"
+  region: "cn-north-1"
+  domain_name: "domain_name"
+
+
+info_metrics:
+  - SYS.RDS
+```
