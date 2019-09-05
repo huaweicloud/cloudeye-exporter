@@ -23,7 +23,7 @@ $ go build
 ## Help
 ```
 Usage of ./cloudeye-exporter:
-  -clientConfig string
+  -config string
         Path to the cloud configuration file (default "./clouds.yml")
   -debug
         If debug the code.
