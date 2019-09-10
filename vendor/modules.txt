@@ -12,6 +12,8 @@ github.com/huaweicloud/golangsdk
 github.com/huaweicloud/golangsdk/openstack
 github.com/huaweicloud/golangsdk/openstack/ces/v1/metricdata
 github.com/huaweicloud/golangsdk/openstack/ces/v1/metrics
+github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/listeners
+github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/loadbalancers
 github.com/huaweicloud/golangsdk/openstack/identity/v2/tokens
 github.com/huaweicloud/golangsdk/openstack/identity/v3/domains
 github.com/huaweicloud/golangsdk/openstack/identity/v3/endpoints
@@ -20,8 +22,11 @@ github.com/huaweicloud/golangsdk/openstack/identity/v3/services
 github.com/huaweicloud/golangsdk/openstack/identity/v3/tokens
 github.com/huaweicloud/golangsdk/openstack/utils
 github.com/huaweicloud/golangsdk/pagination
+github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/l7policies
+github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/pools
 github.com/huaweicloud/golangsdk/openstack/identity/v2/tenants
 github.com/huaweicloud/golangsdk/internal
+github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/monitors
 # github.com/konsorten/go-windows-terminal-sequences v1.0.1
 github.com/konsorten/go-windows-terminal-sequences
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
