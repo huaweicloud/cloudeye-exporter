@@ -45,9 +45,6 @@ auth:
   secret_key: "xsdfsddfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfdsfsd"
   region: "cn-north-1"
 
-info_metrics:
-  - SYS.ELB
-  - SYS.VPC
 ```
 or
 
@@ -60,7 +57,18 @@ auth:
   region: "cn-north-1"
   domain_name: "domain_name"
 
+```
 
-info_metrics:
-  - SYS.RDS
+## Prometheus Configuration
+The huaweicloud exporter needs to be passed the address as a parameter, this can be done with relabelling.
+
+Example config:
+
+```
+scrape_configs:
+  - job_name: 'huaweicloud'
+    static_configs:
+    - targets: ['10.0.0.10:2113']
+    params:
+      services: ['SYS.VPC,SYS.ELB']
 ```
