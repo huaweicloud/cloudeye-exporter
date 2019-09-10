@@ -8,6 +8,3 @@ auth:
   secret_key: "xsdfsddfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfdsfsd"
   region: "cn-north-1"
 
-info_metrics:
-  - SYS.ELB
-  - SYS.VPC

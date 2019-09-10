@@ -22,6 +22,8 @@ import (
 	"github.com/huaweicloud/golangsdk/openstack/ces/v1/metrics"
 	"github.com/huaweicloud/golangsdk/openstack/ces/v1/metricdata"
 	"github.com/huaweicloud/golangsdk/openstack"
+	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/loadbalancers"
+	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/listeners"
 )
 
 
@@ -87,6 +89,7 @@ func buildClientByPassword(c *Config) error {
 	return genClients(c, pao, dao)
 }
 
+
 func buildClientByAKSK(c *Config) error {
 	var pao, dao golangsdk.AKSKAuthOptions
 
@@ -145,7 +148,7 @@ func genClient(c *Config, ao golangsdk.AuthOptionsProvider) (*golangsdk.Provider
 }
 
 
-func InitClient(config *CloudConfig)(*golangsdk.ServiceClient, error)  {
+func InitConfig(config *CloudConfig)(*Config, error)  {
 	auth := config.Auth
 	configOptions := Config{
 		IdentityEndpoint: auth.AuthURL,
@@ -165,16 +168,33 @@ func InitClient(config *CloudConfig)(*golangsdk.ServiceClient, error)  {
 		return nil, err
 	}
 
-	//Init service client
-	client, clientErr := openstack.NewCESV1(configOptions.HwClient, golangsdk.EndpointOpts{
-		Region: auth.Region,
+	return &configOptions, err
+}
+
+
+func getCESClient(c *Config)(*golangsdk.ServiceClient, error)  {
+	client, clientErr := openstack.NewCESV1(c.HwClient, golangsdk.EndpointOpts{
+		Region: c.Region,
 	})
 	if clientErr != nil {
 		fmt.Println("Failed to get the NewCESV1 client: ", clientErr)
 		return nil, clientErr
 	}
 
-	return client, err
+	return client, nil
+}
+
+
+func getELBlient(c *Config)(*golangsdk.ServiceClient, error)  {
+	client, clientErr := openstack.NewNetworkV2(c.HwClient, golangsdk.EndpointOpts{
+		Region: c.Region,
+	})
+	if clientErr != nil {
+		fmt.Println("Failed to get the NewLoadBalancerV2 client: ", clientErr)
+		return nil, clientErr
+	}
+
+	return client, nil
 }
 
 
@@ -187,8 +207,9 @@ func getDimByDimension(num int, dimensions *[]metrics.Dimension) (string){
 	return dim
 }
 
+
 func getMetricData(
-	client *golangsdk.ServiceClient,
+	c *Config,
 	metric *metrics.Metric,
 	dimensions *[]metrics.Dimension,
 	from string,
@@ -207,6 +228,12 @@ func getMetricData(
 		Filter: "average",
 	}
 
+	client, err := getCESClient(c)
+	if err != nil {
+		fmt.Println("Failed to get client: ", err)
+		return nil, err
+	}
+
 	v, err := metricdata.Get(client, options).Extract()
 	if err != nil {
 		fmt.Println("Failed to get metricdata: ", err)
@@ -217,7 +244,7 @@ func getMetricData(
 }
 
 
-func getAllMetric(client *golangsdk.ServiceClient, namespace string) (*[]metrics.Metric, error){
+func getAllMetric(client *Config, namespace string) (*[]metrics.Metric, error){
 	limit := 100
 	mopts := metrics.ListOpts{
 		Limit: &limit,
@@ -225,17 +252,67 @@ func getAllMetric(client *golangsdk.ServiceClient, namespace string) (*[]metrics
 		Namespace: namespace,
 	}
 
-	allpage, err := metrics.List(client, mopts).AllPages()
+	c, err :=getCESClient(client)
 	if err != nil {
-		fmt.Println("get all pages error,%s", err)
+		fmt.Println("get all metric client,%s", err)
+		return nil, err
+	}
+
+	allpage, err := metrics.List(c, mopts).AllPages()
+	if err != nil {
+		fmt.Println("get all metric all pages error,%s", err)
 		return nil, err
 	}
 
 	v, err := metrics.ExtractAllPagesMetrics(allpage)
 	if err != nil {
-		fmt.Println("get pages error,%s", err)
+		fmt.Println("get all metric pages error,%s", err)
 		return nil, err
 	}
 
 	return &v.Metrics, nil
+}
+
+
+func getAllELB(client *Config) (*[]loadbalancers.LoadBalancer, error)  {
+	c, err :=getELBlient(client)
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := loadbalancers.List(c, loadbalancers.ListOpts{}).AllPages()
+	if err != nil {
+		fmt.Println("get loadbalancers all pages error,%s", err)
+		return nil, err
+	}
+
+	allLoadbalancers, err := loadbalancers.ExtractLoadBalancers(allPages)
+	if err != nil {
+		fmt.Println("get loadbalancers pages error,%s", err)
+		return nil, err
+	}
+
+	return &allLoadbalancers, nil
+}
+
+
+func getAllListener(client *Config) (*[]listeners.Listener, error)  {
+	c, err :=getELBlient(client)
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := listeners.List(c, listeners.ListOpts{}).AllPages()
+	if err != nil {
+		fmt.Println("get all listener all pages error,%s", err)
+		return nil, err
+	}
+
+	allListeners, err := listeners.ExtractListeners(allPages)
+	if err != nil {
+		fmt.Println("get all listener all pages error,%s", err)
+		return nil, err
+	}
+
+	return &allListeners, nil
 }
