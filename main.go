@@ -18,6 +18,7 @@ import (
 	"flag"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/huaweicloud/cloudeye-exporter/collector"
 	"github.com/prometheus/common/log"
@@ -31,6 +32,27 @@ var (
 	debug = flag.Bool("debug", false, "If debug the code.")
 )
 
+func handler(w http.ResponseWriter, r *http.Request) {
+	target := r.URL.Query().Get("services")
+	if target == "" {
+		http.Error(w, "'target' parameter must be specified", 400)
+		return
+	}
+
+	targets := strings.Split(target, ",")
+	registry := prometheus.NewRegistry()
+
+	log.Infof("Start to monitor services: %s", targets)
+	exporter, err := collector.GetMonitoringCollector(*clientConfig, targets, *debug)
+	registry.MustRegister(exporter)
+	if err != nil {
+		log.Errorf("Fail to start to morning services: %s, err: %s", targets, err)
+		return
+	}
+
+	h := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
+	h.ServeHTTP(w, r)
+}
 
 func main() {
 	flag.Parse()
@@ -40,33 +62,7 @@ func main() {
 		return
 	}
 
-	collector.SetDefaultConfigValues(config)
-	client, err := collector.InitClient(config)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	reg := prometheus.NewPedanticRegistry()
-	for _, service := range config.InfoMetrics {
-		exporter, err := collector.GetMonitoringCollector(client, config.Global.Prefix, service, *debug)
-		if err != nil {
-			log.Errorf("Fail to start to morning service: %s, err: %s", service, err)
-			continue
-		}
-		reg.MustRegister(exporter)
-	}
-
-	gatherers := prometheus.Gatherers{reg}
-
-	h := promhttp.HandlerFor(gatherers,
-		promhttp.HandlerOpts{
-			ErrorLog:      log.NewErrorLogger(),
-			ErrorHandling: promhttp.ContinueOnError,
-		})
-	http.HandleFunc(config.Global.MetricPath, func(w http.ResponseWriter, r *http.Request) {
-		h.ServeHTTP(w, r)
-	})
+	http.HandleFunc(config.Global.MetricPath, handler)
 
 	log.Infoln("Start server at ", config.Global.Port)
 	if err := http.ListenAndServe(config.Global.Port, nil); err != nil {

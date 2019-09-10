@@ -37,9 +37,9 @@ type Global struct {
 	MetricPath string `yaml:"metric_path"`
 }
 
+
 type CloudConfig struct {
 	Auth               CloudAuth `yaml:"auth"`
-	InfoMetrics        []string  `yaml:"info_metrics"`
 	Global			   Global    `yaml:"global"`
 }
 
@@ -56,6 +56,8 @@ func NewCloudConfigFromFile(file string) (*CloudConfig, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	SetDefaultConfigValues(&config)
 
 	return &config, err
 }
