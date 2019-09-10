@@ -78,23 +78,6 @@ func GetMetricPrefixName(prefix string, namespace string) string {
 }
 
 
-//func (exporter *BaseHuaweiCloudExporter) AddMetric(preMetricName string, name string, labels []string, constLabels prometheus.Labels) {
-//	if exporter.Metrics == nil {
-//		exporter.Metrics = map[string]*prometheus.Desc{}
-//	}
-//
-//	if constLabels == nil {
-//		constLabels = prometheus.Labels{}
-//	}
-//
-//	newMetricName := prometheus.BuildFQName(exporter.GetName(), preMetricName, name)
-//	if _, ok := exporter.Metrics[newMetricName]; !ok {
-//		log.Infof("Adding metric: %s to exporter: %s", newMetricName, exporter.Name)
-//		exporter.Metrics[newMetricName] = prometheus.NewDesc(newMetricName, name, labels, constLabels)
-//	}
-//}
-
-
 // Describe simply sends the two Descs in the struct to the channel.
 func (exporter *BaseHuaweiCloudExporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- prometheus.NewDesc("dummy", "dummy", nil, nil)
