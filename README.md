@@ -66,7 +66,7 @@ Example config:
 
 ```
 global:
-  scrape_interval: 1m # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  scrape_interval: 1m # Set the scrape interval to every 1 minute seconds. Default is every 1 minute.
   scrape_timeout: 1m
 scrape_configs:
   - job_name: 'huaweicloud'
