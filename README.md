@@ -65,6 +65,9 @@ The huaweicloud exporter needs to be passed the address as a parameter, this can
 Example config:
 
 ```
+global:
+  scrape_interval: 1m # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  scrape_timeout: 1m
 scrape_configs:
   - job_name: 'huaweicloud'
     static_configs:
