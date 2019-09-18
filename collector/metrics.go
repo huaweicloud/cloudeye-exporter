@@ -24,6 +24,11 @@ import (
 	"github.com/huaweicloud/golangsdk/openstack"
 	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/loadbalancers"
 	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/listeners"
+	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/natgateways"
+
+	dms "github.com/huaweicloud/golangsdk/openstack/dms/v1/instances"
+	dcs "github.com/huaweicloud/golangsdk/openstack/dcs/v1/instances"
+	rds "github.com/huaweicloud/golangsdk/openstack/rds/v3/instances"
 )
 
 
@@ -245,28 +250,22 @@ func getMetricData(
 
 
 func getAllMetric(client *Config, namespace string) (*[]metrics.Metric, error){
-	limit := 100
-	mopts := metrics.ListOpts{
-		Limit: &limit,
-		Start: "",
-		Namespace: namespace,
-	}
-
-	c, err :=getCESClient(client)
+	c, err := getCESClient(client)
 	if err != nil {
-		fmt.Println("get all metric client,%s", err)
+		fmt.Println("get all metric client: ", err)
 		return nil, err
 	}
 
-	allpage, err := metrics.List(c, mopts).AllPages()
+
+	allpage, err := metrics.List(c, metrics.ListOpts{Namespace: namespace,}).AllPages()
 	if err != nil {
-		fmt.Println("get all metric all pages error,%s", err)
+		fmt.Println("get all metric all pages error: ", err)
 		return nil, err
 	}
 
 	v, err := metrics.ExtractAllPagesMetrics(allpage)
 	if err != nil {
-		fmt.Println("get all metric pages error,%s", err)
+		fmt.Println("get all metric pages error: ", err)
 		return nil, err
 	}
 
@@ -275,20 +274,20 @@ func getAllMetric(client *Config, namespace string) (*[]metrics.Metric, error){
 
 
 func getAllELB(client *Config) (*[]loadbalancers.LoadBalancer, error)  {
-	c, err :=getELBlient(client)
+	c, err := getELBlient(client)
 	if err != nil {
 		return nil, err
 	}
 
 	allPages, err := loadbalancers.List(c, loadbalancers.ListOpts{}).AllPages()
 	if err != nil {
-		fmt.Println("get loadbalancers all pages error,%s", err)
+		fmt.Println("get loadbalancers all pages error: ", err)
 		return nil, err
 	}
 
 	allLoadbalancers, err := loadbalancers.ExtractLoadBalancers(allPages)
 	if err != nil {
-		fmt.Println("get loadbalancers pages error,%s", err)
+		fmt.Println("get loadbalancers pages error: ", err)
 		return nil, err
 	}
 
@@ -304,15 +303,115 @@ func getAllListener(client *Config) (*[]listeners.Listener, error)  {
 
 	allPages, err := listeners.List(c, listeners.ListOpts{}).AllPages()
 	if err != nil {
-		fmt.Println("get all listener all pages error,%s", err)
+		fmt.Println("get all listener all pages error: ", err)
 		return nil, err
 	}
 
 	allListeners, err := listeners.ExtractListeners(allPages)
 	if err != nil {
-		fmt.Println("get all listener all pages error,%s", err)
+		fmt.Println("get all listener all pages error: ", err)
 		return nil, err
 	}
 
 	return &allListeners, nil
+}
+
+
+func getAllNat(c *Config) (*[]natgateways.NatGateway, error)  {
+	client, err := openstack.NewNatV2(c.HwClient, golangsdk.EndpointOpts{
+		Region:       c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := natgateways.List(client, natgateways.ListOpts{}).AllPages()
+	if err != nil {
+		fmt.Println("get all natgateways all pages error: ", err)
+		return nil, err
+	}
+
+	allNatGateways, err := natgateways.ExtractNatGateways(allPages)
+	if err != nil {
+		fmt.Println("get all natgateways all pages error: ", err)
+		return nil, err
+	}
+
+	return &allNatGateways, nil
+}
+
+
+func getAllRds(c *Config) (*rds.ListRdsResponse, error)  {
+	client, err:= openstack.NewRDSV3(c.HwClient, golangsdk.EndpointOpts{
+		Region:       c.Region,
+	})
+	if err != nil {
+		fmt.Errorf("Unable to get NewRDSV3 client: %s", err)
+		return nil, err
+	}
+
+	allPages, err := rds.List(client, rds.ListRdsInstanceOpts{}).AllPages()
+	if err != nil {
+		fmt.Errorf("Unable to retrieve rds: %s", err)
+		return nil, err
+	}
+
+
+	allRds, err := rds.ExtractRdsInstances(allPages)
+	if err != nil {
+		fmt.Println("get all rds all pages error: ", err)
+		return nil, err
+	}
+
+	return &allRds, nil
+}
+
+
+func getAllDcs(c *Config) (*dcs.ListDcsResponse, error)  {
+	client, err:= openstack.NewDCSServiceV1(c.HwClient, golangsdk.EndpointOpts{
+		Region:       c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := dcs.List(client, dcs.ListDcsInstanceOpts{}).AllPages()
+	if err != nil {
+		fmt.Errorf("Unable to retrieve Dcs: %s", err)
+		return nil, err
+	}
+
+
+	allDcs, err := dcs.ExtractDcsInstances(allPages)
+	if err != nil {
+		fmt.Println("get all Dcs all pages error: ", err)
+		return nil, err
+	}
+
+	return &allDcs, nil
+}
+
+
+func getAllDms(c *Config) (*dms.ListDmsResponse, error)  {
+	client, err:= openstack.NewDMSServiceV1(c.HwClient, golangsdk.EndpointOpts{
+		Region:       c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := dms.List(client, dms.ListDmsInstanceOpts{}).AllPages()
+	if err != nil {
+		fmt.Errorf("Unable to retrieve Dms: %s", err)
+		return nil, err
+	}
+
+
+	allDms, err := dms.ExtractDmsInstances(allPages)
+	if err != nil {
+		fmt.Println("get all Dms all pages error: ", err)
+		return nil, err
+	}
+
+	return &allDms, nil
 }

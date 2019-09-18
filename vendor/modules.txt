@@ -7,13 +7,17 @@ github.com/alecthomas/units
 github.com/beorn7/perks/quantile
 # github.com/golang/protobuf v1.3.2
 github.com/golang/protobuf/proto
-# github.com/huaweicloud/golangsdk v0.0.0-20190905034801-15fcb92502bc
+# github.com/huaweicloud/golangsdk v0.0.0-20190918121908-2c29e1b484b8
 github.com/huaweicloud/golangsdk
 github.com/huaweicloud/golangsdk/openstack
 github.com/huaweicloud/golangsdk/openstack/ces/v1/metricdata
 github.com/huaweicloud/golangsdk/openstack/ces/v1/metrics
+github.com/huaweicloud/golangsdk/openstack/dcs/v1/instances
+github.com/huaweicloud/golangsdk/openstack/dms/v1/instances
 github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/listeners
 github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/loadbalancers
+github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/natgateways
+github.com/huaweicloud/golangsdk/openstack/rds/v3/instances
 github.com/huaweicloud/golangsdk/openstack/identity/v2/tokens
 github.com/huaweicloud/golangsdk/openstack/identity/v3/domains
 github.com/huaweicloud/golangsdk/openstack/identity/v3/endpoints
