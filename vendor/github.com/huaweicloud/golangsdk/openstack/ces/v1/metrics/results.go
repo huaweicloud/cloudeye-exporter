@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"bytes"
+	"strconv"
 
 	"github.com/huaweicloud/golangsdk"
 	"github.com/huaweicloud/golangsdk/pagination"
@@ -11,6 +12,7 @@ type Metrics struct {
 	Metrics  []Metric `json:"metrics"`
 	MetaData MetaData `json:"meta_data"`
 }
+
 type MetaData struct {
 	Count  int    `json:"count"`
 	Marker string `json:"marker"`
@@ -87,6 +89,12 @@ func (r MetricsPage) NextPageURL() (string, error) {
 	}
 
 	if len(metrics.Metrics) < 1 {
+		return "", nil
+	}
+
+	limit := r.URL.Query().Get("limit")
+	num, _ := strconv.Atoi(limit)
+	if num > len(metrics.Metrics) {
 		return "", nil
 	}
 

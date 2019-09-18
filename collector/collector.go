@@ -33,6 +33,16 @@ var defaultLabelsToResource = map[string]string{
   "direct_connect_id": "direct",
   "history_direct_connect_id": "history",
   "virtual_interface_id": "virtual",
+  "bandwidth_id": "bandwidth",
+  "publicip_id": "eip",
+}
+
+var privateResourceFlag = map[string]string {
+	"kafka_broker": "broker",
+	"kafka_topics": "topics",
+	"kafka_partitions": "partitions",
+	"kafka_groups": "groups",
+	"rabbitmq_node": "rabbitmq_node",
 }
 
 
@@ -101,15 +111,22 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 
 	allResoucesInfo := exporter.getAllResource(namespace)
 
+	var metricTimestamp int
 	for _, metric := range *allMetrics {
 		dimensionValues := []string{}
 		labels := []string{}
 		preResourceName := ""
+		privateFlag := ""
 
 		for _, dimension := range metric.Dimensions {
 			if val, ok := defaultLabelsToResource[dimension.Name]; ok {
 				preResourceName = val
 			}
+
+			if val, ok := privateResourceFlag[dimension.Name]; ok {
+				privateFlag = val
+			}
+
 			dimensionValues = append(dimensionValues, dimension.Value)
 			labels = append(labels, dimension.Name)
 		}
@@ -129,16 +146,17 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 		}
 
 		var datapoint float64
-		if len(*datapoints) == 1 {
-			datapoint = (*datapoints)[0].Average
-		} else if len(*datapoints) > 1 {
+		if len(*datapoints) > 0 {
 			datapoint = (*datapoints)[len(*datapoints) - 1].Average
+			metricTimestamp = (*datapoints)[len(*datapoints) - 1].Timestamp
 		} else {
 			fmt.Println("The data point of metric are not found, the metric is:", metric.MetricName)
+			metricJson, _ := json.MarshalIndent(metric, "", " ")
+			fmt.Println("The metric value is:", string(metricJson))
 			continue
 		}
 
-		labels = exporter.setExtensionLabels(labels, preResourceName, namespace)
+		labels = exporter.setExtensionLabels(labels, preResourceName, namespace, privateFlag)
 		dimensionValues = exporter.setExtensionLabelValues(dimensionValues, &allResoucesInfo, getOriginalID(&metric.Dimensions))
 
 		newMetricName := prometheus.BuildFQName(GetMetricPrefixName(exporter.Prefix, namespace), preResourceName, metric.MetricName)
@@ -146,6 +164,14 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 			prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
 			prometheus.GaugeValue, datapoint, dimensionValues...)
 	}
+
+	to64, _ := strconv.ParseFloat(exporter.To, 64)
+	stamp64 := float64(metricTimestamp)
+
+	sub_duration := (to64 - stamp64) / 1000
+	ch <- prometheus.MustNewConstMetric(
+		prometheus.NewDesc(GetMetricPrefixName(exporter.Prefix, namespace) + "_duration_seconds",
+			namespace, nil, nil), prometheus.GaugeValue, sub_duration)
 }
 
 
@@ -177,12 +203,17 @@ func getOriginalID(dimensions *[]metrics.Dimension) (string) {
 
 
 func (exporter *BaseHuaweiCloudExporter) setExtensionLabels(
-	lables []string, preResourceName string, namespace string) ([]string) {
+	lables []string, preResourceName string, namespace string, privateFlag string) ([]string) {
 
 	namespace = replaceName(namespace)
 	if preResourceName != "" {
 		namespace = namespace + "_" + preResourceName
 	}
+
+	if privateFlag != "" {
+		namespace = namespace + "_" + privateFlag
+	}
+
 	newlabels := append(lables, defaultExtensionLabels[namespace]...)
 
 	return newlabels

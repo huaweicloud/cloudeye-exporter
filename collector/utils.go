@@ -76,3 +76,10 @@ func SetDefaultConfigValues(config *CloudConfig)  {
 		config.Global.Prefix = "huaweicloud"
 	}
 }
+
+//
+//func getFieldString(e *Employee, field string) string {
+//	r := reflect.ValueOf(e)
+//	f := reflect.Indirect(r).FieldByName(field)
+//	return f.String()
+//}
