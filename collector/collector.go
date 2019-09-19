@@ -23,7 +23,7 @@ import (
 
 	"github.com/prometheus/common/log"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/huaweicloud/golangsdk/openstack/ces/v1/metrics"
+	"github.com/huaweicloud/golangsdk/openstack/ces/v1/metricdata"
 )
 
 
@@ -87,12 +87,10 @@ func GetMetricPrefixName(prefix string, namespace string) string {
 	return fmt.Sprintf("%s_%s", prefix, replaceName(namespace))
 }
 
-
 // Describe simply sends the two Descs in the struct to the channel.
 func (exporter *BaseHuaweiCloudExporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- prometheus.NewDesc("dummy", "dummy", nil, nil)
 }
-
 
 func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prometheus.Metric, namespace string)  {
 	allMetrics, err := getAllMetric(exporter.ClientConfig, namespace)
@@ -102,6 +100,7 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 
 	if len(*allMetrics) == 0 {
 		log.Warnf("The metric resources of service(%s) are not found.", namespace)
+		return
 	}
 
 	if exporter.Debug == true {
@@ -111,58 +110,45 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 
 	allResoucesInfo := exporter.getAllResource(namespace)
 
-	var metricTimestamp int
+	metricTimestamp := 0
+	count := 0
+	end := len(*allMetrics)
+	tmpMetrics := []metricdata.Metric{}
 	for _, metric := range *allMetrics {
-		dimensionValues := []string{}
-		labels := []string{}
-		preResourceName := ""
-		privateFlag := ""
+		count++
 
-		for _, dimension := range metric.Dimensions {
-			if val, ok := defaultLabelsToResource[dimension.Name]; ok {
-				preResourceName = val
+		tmpMetrics = append(tmpMetrics, getDataMetric(metric))
+		if (0 == count % 10) || (count == end) {
+			mds, err:= getBatchMetricData(exporter.ClientConfig, &tmpMetrics, exporter.From, exporter.To)
+			tmpMetrics = []metricdata.Metric{}
+			if err != nil {
+				continue
 			}
 
-			if val, ok := privateResourceFlag[dimension.Name]; ok {
-				privateFlag = val
+			for _, md := range *mds {
+				exporter.debugMetricInfo(md)
+				datapoint, err := getDatapoint(md.Datapoints)
+				if err != nil {
+					fmt.Printf("%s, the metric is:", err, md.MetricName)
+					continue
+				}
+
+				labels, values, preResourceName, privateFlag := getOriginalLabelInfo(&md.Dimensions)
+				labels = exporter.getExtensionLabels(labels, preResourceName, namespace, privateFlag)
+				dimensionValues := exporter.getExtensionLabelValues(values, &allResoucesInfo, getOriginalID(&md.Dimensions))
+
+				newMetricName := prometheus.BuildFQName(GetMetricPrefixName(exporter.Prefix, namespace), preResourceName, md.MetricName)
+				ch <- prometheus.MustNewConstMetric(
+					prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
+					prometheus.GaugeValue, datapoint, dimensionValues...)
 			}
 
-			dimensionValues = append(dimensionValues, dimension.Value)
-			labels = append(labels, dimension.Name)
+			metricTimestamp, _ = getMetricDataTimestamp((*mds)[len(*mds) - 1].Datapoints)
 		}
+	}
 
-		datapoints, err:= getMetricData(exporter.ClientConfig, &metric, &metric.Dimensions, exporter.From, exporter.To)
-		if err != nil {
-			continue
-		}
-
-		if exporter.Debug == true {
-			fmt.Println("Get datapoints of metric begin... (from):", exporter.From)
-			dataJson, _ := json.MarshalIndent(*datapoints, "", " ")
-			metricJson, _ := json.MarshalIndent(metric, "", " ")
-			fmt.Println("The datapoints of metric are:" + string(dataJson))
-			fmt.Println("The metric value is:", string(metricJson))
-			fmt.Println("Get datapoints of metric end. (to):", exporter.To)
-		}
-
-		var datapoint float64
-		if len(*datapoints) > 0 {
-			datapoint = (*datapoints)[len(*datapoints) - 1].Average
-			metricTimestamp = (*datapoints)[len(*datapoints) - 1].Timestamp
-		} else {
-			fmt.Println("The data point of metric are not found, the metric is:", metric.MetricName)
-			metricJson, _ := json.MarshalIndent(metric, "", " ")
-			fmt.Println("The metric value is:", string(metricJson))
-			continue
-		}
-
-		labels = exporter.setExtensionLabels(labels, preResourceName, namespace, privateFlag)
-		dimensionValues = exporter.setExtensionLabelValues(dimensionValues, &allResoucesInfo, getOriginalID(&metric.Dimensions))
-
-		newMetricName := prometheus.BuildFQName(GetMetricPrefixName(exporter.Prefix, namespace), preResourceName, metric.MetricName)
-		ch <- prometheus.MustNewConstMetric(
-			prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
-			prometheus.GaugeValue, datapoint, dimensionValues...)
+	if metricTimestamp ==0 {
+		return
 	}
 
 	to64, _ := strconv.ParseFloat(exporter.To, 64)
@@ -173,7 +159,6 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 		prometheus.NewDesc(GetMetricPrefixName(exporter.Prefix, namespace) + "_duration_seconds",
 			namespace, nil, nil), prometheus.GaugeValue, sub_duration)
 }
-
 
 func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	periodm, _ := time.ParseDuration("-5m")
@@ -189,7 +174,40 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	}
 }
 
-func getOriginalID(dimensions *[]metrics.Dimension) (string) {
+func (exporter *BaseHuaweiCloudExporter) debugMetricInfo(md metricdata.MetricData)  {
+	if exporter.Debug == true {
+		fmt.Println("Get datapoints of metric begin... (from):", exporter.From)
+		dataJson, _ := json.MarshalIndent(md.Datapoints, "", " ")
+		metricJson, _ := json.MarshalIndent(md.Dimensions, "", " ")
+		fmt.Println("The datapoints of metric are:" + string(dataJson))
+		fmt.Println("The metric value is:", string(metricJson))
+		fmt.Println("Get datapoints of metric end. (to):", exporter.To)
+	}
+}
+
+func getDatapoint(datapoints []metricdata.Data) (float64, error) {
+	var datapoint float64
+	if len(datapoints) > 0 {
+		datapoint = (datapoints)[len(datapoints) - 1].Average
+	} else {
+		return 0, fmt.Errorf("The data point of metric are not found")
+	}
+
+	return datapoint, nil
+}
+
+func getMetricDataTimestamp(datapoints []metricdata.Data) (int, error) {
+	var metricTimestamp int
+	if len(datapoints) > 0 {
+		metricTimestamp = (datapoints)[len(datapoints) - 1].Timestamp
+	} else {
+		return 0, fmt.Errorf("The data point of metric are not found")
+	}
+
+	return metricTimestamp, nil
+}
+
+func getOriginalID(dimensions *[]metricdata.Dimension) (string) {
 	id := ""
 
 	if len(*dimensions) == 1 {
@@ -201,8 +219,28 @@ func getOriginalID(dimensions *[]metrics.Dimension) (string) {
 	return id
 }
 
+func getOriginalLabelInfo(dims *[]metricdata.Dimension) ([]string, []string, string, string)  {
+	labels := []string{}
+	dimensionValues := []string{}
+	preResourceName := ""
+	privateFlag := ""
+	for _, dimension := range *dims {
+		if val, ok := defaultLabelsToResource[dimension.Name]; ok {
+			preResourceName = val
+		}
 
-func (exporter *BaseHuaweiCloudExporter) setExtensionLabels(
+		if val, ok := privateResourceFlag[dimension.Name]; ok {
+			privateFlag = val
+		}
+
+		dimensionValues = append(dimensionValues, dimension.Value)
+		labels = append(labels, dimension.Name)
+	}
+
+	return labels, dimensionValues, preResourceName, privateFlag
+}
+
+func (exporter *BaseHuaweiCloudExporter) getExtensionLabels(
 	lables []string, preResourceName string, namespace string, privateFlag string) ([]string) {
 
 	namespace = replaceName(namespace)
@@ -220,7 +258,7 @@ func (exporter *BaseHuaweiCloudExporter) setExtensionLabels(
 }
 
 
-func (exporter *BaseHuaweiCloudExporter) setExtensionLabelValues(
+func (exporter *BaseHuaweiCloudExporter) getExtensionLabelValues(
 	dimensionValues []string,
 	allResouceInfo *map[string][]string,
 	originalID string) ([]string) {

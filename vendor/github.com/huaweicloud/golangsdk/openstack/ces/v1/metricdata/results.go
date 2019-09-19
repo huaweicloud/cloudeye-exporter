@@ -14,13 +14,21 @@ type MetricData struct {
 	MetricName string `json:"metric_name"`
 
 	//Specifies the list of the metric dimensions.
-	Dimensions []map[string]interface{} `json:"dimensions"`
-
-	// Specifies the metric data list.
-	Datapoints []map[string]interface{} `json:"datapoints"`
+	Dimensions []Dimension `json:"dimensions"`
+	Datapoints []Data      `json:"datapoints"`
 
 	// Specifies the metric unit.
 	Unit string `json:"unit"`
+}
+
+type Dimension struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+type Data struct {
+	Average   float64 `json:"average"`
+	Timestamp int     `json:"timestamp"`
 }
 
 type MetricDatasResult struct {
