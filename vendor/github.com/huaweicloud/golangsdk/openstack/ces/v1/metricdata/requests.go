@@ -20,7 +20,7 @@ type Metric struct {
 	MetricName string `json:"metric_name" required:"true"`
 
 	// Specifies the list of the metric dimensions.
-	Dimensions []map[string]string `json:"dimensions" required:"true"`
+	Dimensions []Dimension `json:"dimensions" required:"true"`
 }
 
 // BatchQueryOpts represents options for batch query metric data.

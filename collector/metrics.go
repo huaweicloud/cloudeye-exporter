@@ -17,6 +17,7 @@ package collector
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/huaweicloud/golangsdk"
 	"github.com/huaweicloud/golangsdk/openstack/ces/v1/metrics"
@@ -51,7 +52,6 @@ type Config struct {
 	HwClient *golangsdk.ProviderClient
 }
 
-
 func buildClient(c *Config) error {
 	err := fmt.Errorf("Must config token or aksk or username password to be authorized")
 
@@ -67,7 +67,6 @@ func buildClient(c *Config) error {
 
 	return nil
 }
-
 
 func buildClientByPassword(c *Config) error {
 	var pao, dao golangsdk.AuthOptions
@@ -94,7 +93,6 @@ func buildClientByPassword(c *Config) error {
 	return genClients(c, pao, dao)
 }
 
-
 func buildClientByAKSK(c *Config) error {
 	var pao, dao golangsdk.AKSKAuthOptions
 
@@ -115,7 +113,6 @@ func buildClientByAKSK(c *Config) error {
 	}
 	return genClients(c, pao, dao)
 }
-
 
 func genClients(c *Config, pao, dao golangsdk.AuthOptionsProvider) error {
 	client, err := genClient(c, pao)
@@ -152,7 +149,6 @@ func genClient(c *Config, ao golangsdk.AuthOptionsProvider) (*golangsdk.Provider
 	return client, nil
 }
 
-
 func InitConfig(config *CloudConfig)(*Config, error)  {
 	auth := config.Auth
 	configOptions := Config{
@@ -176,7 +172,6 @@ func InitConfig(config *CloudConfig)(*Config, error)  {
 	return &configOptions, err
 }
 
-
 func getCESClient(c *Config)(*golangsdk.ServiceClient, error)  {
 	client, clientErr := openstack.NewCESV1(c.HwClient, golangsdk.EndpointOpts{
 		Region: c.Region,
@@ -188,7 +183,6 @@ func getCESClient(c *Config)(*golangsdk.ServiceClient, error)  {
 
 	return client, nil
 }
-
 
 func getELBlient(c *Config)(*golangsdk.ServiceClient, error)  {
 	client, clientErr := openstack.NewNetworkV2(c.HwClient, golangsdk.EndpointOpts{
@@ -202,7 +196,6 @@ func getELBlient(c *Config)(*golangsdk.ServiceClient, error)  {
 	return client, nil
 }
 
-
 func getDimByDimension(num int, dimensions *[]metrics.Dimension) (string){
 	dim := ""
 	if len(*dimensions) > num {
@@ -212,6 +205,48 @@ func getDimByDimension(num int, dimensions *[]metrics.Dimension) (string){
 	return dim
 }
 
+func getDataMetric(metric metrics.Metric) (metricdata.Metric)  {
+	var m metricdata.Metric
+	m.Namespace = metric.Namespace
+	m.MetricName = metric.MetricName
+	m.Dimensions = []metricdata.Dimension{}
+	for _, dim := range metric.Dimensions {
+		nd := metricdata.Dimension{}
+		nd.Name = dim.Name
+		nd.Value = dim.Value
+		m.Dimensions = append(m.Dimensions, nd)
+	}
+
+	return m
+}
+
+func getBatchMetricData(c *Config, metrics *[]metricdata.Metric,
+	from string, to string) (*[]metricdata.MetricData, error){
+
+	ifrom, _ := strconv.ParseInt(from, 10, 64)
+	ito, _ := strconv.ParseInt(to, 10, 64)
+	options := metricdata.BatchQueryOpts {
+		Metrics: *metrics,
+		From: ifrom,
+		To: ito,
+		Period: "1",
+		Filter: "average",
+	}
+
+	client, err := getCESClient(c)
+	if err != nil {
+		fmt.Println("Failed to get ces client: ", err)
+		return nil, err
+	}
+
+	v, err := metricdata.BatchQuery(client, options).ExtractMetricDatas()
+	if err != nil {
+		fmt.Println("Failed to get metricdata: ", err)
+		return nil, err
+	}
+
+	return &v, nil
+}
 
 func getMetricData(
 	c *Config,
@@ -248,14 +283,12 @@ func getMetricData(
 	return &v.Datapoints, nil
 }
 
-
 func getAllMetric(client *Config, namespace string) (*[]metrics.Metric, error){
 	c, err := getCESClient(client)
 	if err != nil {
 		fmt.Println("get all metric client: ", err)
 		return nil, err
 	}
-
 
 	allpage, err := metrics.List(c, metrics.ListOpts{Namespace: namespace,}).AllPages()
 	if err != nil {
@@ -271,7 +304,6 @@ func getAllMetric(client *Config, namespace string) (*[]metrics.Metric, error){
 
 	return &v.Metrics, nil
 }
-
 
 func getAllELB(client *Config) (*[]loadbalancers.LoadBalancer, error)  {
 	c, err := getELBlient(client)
@@ -294,7 +326,6 @@ func getAllELB(client *Config) (*[]loadbalancers.LoadBalancer, error)  {
 	return &allLoadbalancers, nil
 }
 
-
 func getAllListener(client *Config) (*[]listeners.Listener, error)  {
 	c, err :=getELBlient(client)
 	if err != nil {
@@ -315,7 +346,6 @@ func getAllListener(client *Config) (*[]listeners.Listener, error)  {
 
 	return &allListeners, nil
 }
-
 
 func getAllNat(c *Config) (*[]natgateways.NatGateway, error)  {
 	client, err := openstack.NewNatV2(c.HwClient, golangsdk.EndpointOpts{
@@ -339,7 +369,6 @@ func getAllNat(c *Config) (*[]natgateways.NatGateway, error)  {
 
 	return &allNatGateways, nil
 }
-
 
 func getAllRds(c *Config) (*rds.ListRdsResponse, error)  {
 	client, err:= openstack.NewRDSV3(c.HwClient, golangsdk.EndpointOpts{
@@ -366,7 +395,6 @@ func getAllRds(c *Config) (*rds.ListRdsResponse, error)  {
 	return &allRds, nil
 }
 
-
 func getAllDcs(c *Config) (*dcs.ListDcsResponse, error)  {
 	client, err:= openstack.NewDCSServiceV1(c.HwClient, golangsdk.EndpointOpts{
 		Region:       c.Region,
@@ -390,7 +418,6 @@ func getAllDcs(c *Config) (*dcs.ListDcsResponse, error)  {
 
 	return &allDcs, nil
 }
-
 
 func getAllDms(c *Config) (*dms.ListDmsResponse, error)  {
 	client, err:= openstack.NewDMSServiceV1(c.HwClient, golangsdk.EndpointOpts{
