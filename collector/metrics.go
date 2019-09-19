@@ -27,6 +27,7 @@ import (
 	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/listeners"
 	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/natgateways"
 
+	"github.com/huaweicloud/golangsdk/openstack/dms/v1/queues"
 	dms "github.com/huaweicloud/golangsdk/openstack/dms/v1/instances"
 	dcs "github.com/huaweicloud/golangsdk/openstack/dcs/v1/instances"
 	rds "github.com/huaweicloud/golangsdk/openstack/rds/v3/instances"
@@ -441,4 +442,28 @@ func getAllDms(c *Config) (*dms.ListDmsResponse, error)  {
 	}
 
 	return &allDms, nil
+}
+
+func getAllDmsQueue(c *Config) (*[]queues.Queue, error)  {
+	client, err:= openstack.NewDMSServiceV1(c.HwClient, golangsdk.EndpointOpts{
+		Region:       c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := queues.List(client, false).AllPages()
+	if err != nil {
+		fmt.Errorf("Unable to retrieve queues: %s", err)
+		return nil, err
+	}
+
+
+	allQueues, err := queues.ExtractQueues(allPages)
+	if err != nil {
+		fmt.Println("get all queues all pages error: ", err)
+		return nil, err
+	}
+
+	return &allQueues, nil
 }

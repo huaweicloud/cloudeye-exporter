@@ -78,6 +78,13 @@ func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) (map[s
 			values = append(values, dms.Name)
 			resourceInfos[dms.InstanceID] = values
 		}
+
+		allqueue, _ := getAllDmsQueue(exporter.ClientConfig)
+		for _, queue := range *allqueue {
+			values := []string{}
+			values = append(values, queue.Name)
+			resourceInfos[queue.ID] = values
+		}
 	case "SYS.DCS":
 		alldcs, _ := getAllDcs(exporter.ClientConfig)
 		for _, dcs := range alldcs.Instances {

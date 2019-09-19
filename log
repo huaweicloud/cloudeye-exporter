@@ -1,0 +1,113 @@
+The all metrics are: [
+ {
+  "namespace": "SYS.DMS",
+  "metric_name": "request_count",
+  "unit": "count",
+  "dimensions": [
+   {
+    "name": "queue_instance_id",
+    "value": "82a6f4d2-f9cd-447e-b49a-979d53471ff0"
+   }
+  ]
+ },
+ {
+  "namespace": "SYS.DMS",
+  "metric_name": "queued_messages",
+  "unit": "count",
+  "dimensions": [
+   {
+    "name": "queue_instance_id",
+    "value": "82a6f4d2-f9cd-447e-b49a-979d53471ff0"
+   }
+  ]
+ },
+ {
+  "namespace": "SYS.DMS",
+  "metric_name": "message_size",
+  "unit": "byte",
+  "dimensions": [
+   {
+    "name": "queue_instance_id",
+    "value": "82a6f4d2-f9cd-447e-b49a-979d53471ff0"
+   }
+  ]
+ }
+]
+Get datapoints of metric begin... (from): 1568896862924
+The datapoints of metric are:[
+ {
+  "average": 0,
+  "timestamp": 1568896920000
+ },
+ {
+  "average": 0,
+  "timestamp": 1568896980000
+ },
+ {
+  "average": 0,
+  "timestamp": 1568897040000
+ },
+ {
+  "average": 0,
+  "timestamp": 1568897100000
+ }
+]
+The metric value is: [
+ {
+  "name": "queue_instance_id",
+  "value": "82a6f4d2-f9cd-447e-b49a-979d53471ff0"
+ }
+]
+Get datapoints of metric end. (to): 1568897162924
+Get datapoints of metric begin... (from): 1568896862924
+The datapoints of metric are:[
+ {
+  "average": 0,
+  "timestamp": 1568896920000
+ },
+ {
+  "average": 0,
+  "timestamp": 1568896980000
+ },
+ {
+  "average": 0,
+  "timestamp": 1568897040000
+ },
+ {
+  "average": 0,
+  "timestamp": 1568897100000
+ }
+]
+The metric value is: [
+ {
+  "name": "queue_instance_id",
+  "value": "82a6f4d2-f9cd-447e-b49a-979d53471ff0"
+ }
+]
+Get datapoints of metric end. (to): 1568897162924
+Get datapoints of metric begin... (from): 1568896862924
+The datapoints of metric are:[
+ {
+  "average": 0,
+  "timestamp": 1568896920000
+ },
+ {
+  "average": 0,
+  "timestamp": 1568896980000
+ },
+ {
+  "average": 0,
+  "timestamp": 1568897040000
+ },
+ {
+  "average": 0,
+  "timestamp": 1568897100000
+ }
+]
+The metric value is: [
+ {
+  "name": "queue_instance_id",
+  "value": "82a6f4d2-f9cd-447e-b49a-979d53471ff0"
+ }
+]
+Get datapoints of metric end. (to): 1568897162924

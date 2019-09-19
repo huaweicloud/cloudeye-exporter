@@ -147,7 +147,7 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 		}
 	}
 
-	if metricTimestamp ==0 {
+	if metricTimestamp == 0 {
 		return
 	}
 
