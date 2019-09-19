@@ -134,13 +134,15 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 				}
 
 				labels, values, preResourceName, privateFlag := getOriginalLabelInfo(&md.Dimensions)
-				labels = exporter.getExtensionLabels(labels, preResourceName, namespace, privateFlag)
-				dimensionValues := exporter.getExtensionLabelValues(values, &allResoucesInfo, getOriginalID(&md.Dimensions))
+			        if isResouceExist(&md.Dimensions, &allResoucesInfo)== true {
+                                        labels = exporter.getExtensionLabels(labels, preResourceName, namespace, privateFlag)
+                                        values = exporter.getExtensionLabelValues(values, &allResoucesInfo, getOriginalID(&md.Dimensions))
+			        }
 
 				newMetricName := prometheus.BuildFQName(GetMetricPrefixName(exporter.Prefix, namespace), preResourceName, md.MetricName)
 				ch <- prometheus.MustNewConstMetric(
 					prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
-					prometheus.GaugeValue, datapoint, dimensionValues...)
+					prometheus.GaugeValue, datapoint, values...)
 			}
 
 			metricTimestamp, _ = getMetricDataTimestamp((*mds)[len(*mds) - 1].Datapoints)
@@ -183,6 +185,16 @@ func (exporter *BaseHuaweiCloudExporter) debugMetricInfo(md metricdata.MetricDat
 		fmt.Println("The metric value is:", string(metricJson))
 		fmt.Println("Get datapoints of metric end. (to):", exporter.To)
 	}
+}
+
+func isResouceExist(dims *[]metricdata.Dimension, allResouceInfo *map[string][]string,) (bool) {
+	for _, dimension := range *dims {
+		if _, ok := (*allResouceInfo)[dimension.Value]; ok {
+			return true
+		}
+	}
+
+	return false
 }
 
 func getDatapoint(datapoints []metricdata.Data) (float64, error) {
