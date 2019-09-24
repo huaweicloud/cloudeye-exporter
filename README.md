@@ -24,6 +24,11 @@ $ go build
  ./cloudeye-exporter  -config=clouds.yml
 ```
 
+The default port is 8087, default config file location is ./clouds.yml.
+
+Visit metrics in http://localhost:8087/metrics?services=SYS.VPC,SYS.ELB
+
+
 ## Help
 ```
 Usage of ./cloudeye-exporter:
