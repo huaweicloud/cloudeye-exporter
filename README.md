@@ -71,7 +71,7 @@ global:
 scrape_configs:
   - job_name: 'huaweicloud'
     static_configs:
-    - targets: ['10.0.0.10:2113']
+    - targets: ['10.0.0.10:8087']
     params:
       services: ['SYS.VPC,SYS.ELB']
 ```
