@@ -2,9 +2,12 @@
 
 Prometheus cloudeye exporter for [Huaweicloud](https://www.huaweicloud.com/).
 
+## Download
+```
+$ git clone https://github.com/huaweicloud/cloudeye-exporter
+```
 
-
-## Building The Discovery with Exact steps on clean Ubuntu 16.04
+## (Option) Building The Discovery with Exact steps on clean Ubuntu 16.04 
 ```
 $ wget https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
 $ sudo tar -C /usr/local -xzf go1.12.5.linux-amd64.tar.gz
