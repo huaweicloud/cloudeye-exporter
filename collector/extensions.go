@@ -16,7 +16,6 @@ package collector
 
 import (
 	"fmt"
-	"strings"
 )
 
 // If the extension labels have to added in this exporter, you only have
@@ -37,8 +36,8 @@ var defaultExtensionLabels = map[string][]string{
 
 func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) map[string][]string {
 	resourceInfos := map[string][]string{}
-	switch strings.ToLower(namespace) {
-	case "sys.elb":
+	switch namespace {
+	case "SYS.ELB":
 		allELBs, _ := getAllELB(exporter.ClientConfig)
 		for _, elb := range *allELBs {
 			values := []string{}
@@ -54,14 +53,14 @@ func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) map[st
 			values = append(values, fmt.Sprintf("%d", listener.ProtocolPort))
 			resourceInfos[listener.ID] = values
 		}
-	case "sys.nat":
+	case "SYS.NAT":
 		allnat, _ := getAllNat(exporter.ClientConfig)
 		for _, nat := range *allnat {
 			values := []string{}
 			values = append(values, nat.Name)
 			resourceInfos[nat.ID] = values
 		}
-	case "sys.rds":
+	case "SYS.RDS":
 		allrds, _ := getAllRds(exporter.ClientConfig)
 		for _, rds := range allrds.Instances {
 			for _, node := range rds.Nodes {
@@ -71,7 +70,7 @@ func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) map[st
 				resourceInfos[node.Id] = nodes
 			}
 		}
-	case "sys.dms":
+	case "SYS.DMS":
 		alldms, _ := getAllDms(exporter.ClientConfig)
 		for _, dms := range alldms.Instances {
 			values := []string{}
@@ -85,7 +84,7 @@ func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) map[st
 			values = append(values, queue.Name)
 			resourceInfos[queue.ID] = values
 		}
-	case "sys.dcs":
+	case "SYS.DCS":
 		alldcs, _ := getAllDcs(exporter.ClientConfig)
 		for _, dcs := range alldcs.Instances {
 			values := []string{}
