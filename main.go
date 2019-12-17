@@ -21,21 +21,20 @@ import (
 	"strings"
 
 	"github.com/huaweicloud/cloudeye-exporter/collector"
-	"github.com/prometheus/common/log"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/common/log"
 )
-
 
 var (
 	clientConfig = flag.String("config", "./clouds.yml", "Path to the cloud configuration file")
-	debug = flag.Bool("debug", false, "If debug the code.")
+	debug        = flag.Bool("debug", false, "If debug the code.")
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	target := r.URL.Query().Get("services")
 	if target == "" {
-		http.Error(w, "'target' parameter must be specified", 400)
+		http.Error(w, "'services' parameter must be specified", 400)
 		return
 	}
 
@@ -56,10 +55,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	flag.Parse()
+	if *debug {
+		if err := log.Base().SetLevel("debug"); err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	config, err := collector.NewCloudConfigFromFile(*clientConfig)
 	if err != nil {
 		log.Fatal(err)
-		return
 	}
 
 	http.HandleFunc(config.Global.MetricPath, handler)
