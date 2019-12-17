@@ -36,16 +36,14 @@ The default port is 8087, default config file location is ./clouds.yml.
 
 Visit metrics in http://localhost:8087/metrics?services=SYS.VPC,SYS.ELB
 
+## Deploy to Kubernetes with helm
+```
+$ # edit deploy/cloudeye-exporter/values.yaml
+$ # then
+$ helm install cloudeye-exporter deploy/cloudeye-exporter
+```
 
-## Help
-```
-Usage of ./cloudeye-exporter:
-  -config string
-        Path to the cloud configuration file (default "./clouds.yml")
-  -debug
-        If debug the code.
- 
-```
+---
 
 ## Example of config file(clouds.yml)
 ```
