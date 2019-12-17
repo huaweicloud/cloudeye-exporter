@@ -1,0 +1,26 @@
+{{- if .Values.prometheus.serviceMonitor -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "cloudeye-exporter.fullname" . }}
+  labels:
+    {{- include "cloudeye-exporter.labels" . | nindent 4 }}
+    {{- .Values.prometheus.serviceMonitorLableSelector | toYaml | nindent 4 }}
+  namespace: {{ .Values.prometheus.serviceMonitorNamespace }}
+spec:
+  endpoints:
+  - interval: 60s
+    params:
+      services:
+      - {{ .Values.prometheus.scrapeServices | join "," }}
+    port: http
+    scheme: http
+    scrapeTimeout: 30s
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "cloudeye-exporter.selectorLabels" . | nindent 6 }}
+{{- end -}}
+      

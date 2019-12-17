@@ -20,6 +20,19 @@ config: >
     secret_key: "xsdfsddfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfdsfsd"
     region: "cn-north-1"
 
+prometheus:
+  serviceMonitor: true
+  serviceMonitorLableSelector:
+    release: eerie-zebra
+  serviceMonitorNamespace: monitoring
+  scrapeServices:
+  - SYS.RDS
+  # - SYS.ECS
+  # - SYS.ELB
+  # - SYS.NAT
+  # - SYS.DMS
+  # - SYS.DCS
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
