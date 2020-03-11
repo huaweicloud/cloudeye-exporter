@@ -40,6 +40,7 @@ Usage of ./cloudeye-exporter:
 ```
 
 ## Example of config file(clouds.yml)
+The "URL" value can be get from [Identity and Access Management (IAM) endpoint list](https://developer.huaweicloud.com/en-us/endpoint).
 ```
 global:
   prefix: "huaweicloud"
