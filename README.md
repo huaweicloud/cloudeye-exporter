@@ -7,7 +7,9 @@ Prometheus cloudeye exporter for [Huaweicloud](https://www.huaweicloud.com/).
 $ git clone https://github.com/huaweicloud/cloudeye-exporter
 ```
 
-## (Option) Building The Discovery with Exact steps on clean Ubuntu 16.04 
+## Build
+
+### (Option) Building The Discovery with Exact steps on clean Ubuntu 16.04 
 ```
 $ wget https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
 $ sudo tar -C /usr/local -xzf go1.12.5.linux-amd64.tar.gz
@@ -19,25 +21,29 @@ $ cd ~/go/src/github.com/huaweicloud/cloudeye-exporter
 $ go build
 ```
 
+### Build docker image
+```
+$ export DOCKER_USERNAME=xxx
+$ docker build -t $DOCKER_USERNAME/cloudeye-exporter .
+```
+
 ## Usage
 ```
- ./cloudeye-exporter  -config=clouds.yml
+ ./cloudeye-exporter -config=clouds.yml
 ```
 
 The default port is 8087, default config file location is ./clouds.yml.
 
 Visit metrics in http://localhost:8087/metrics?services=SYS.VPC,SYS.ELB
 
+## Deploy to Kubernetes with helm
+```
+$ # edit deploy/cloudeye-exporter/values.yaml
+$ # then
+$ helm install cloudeye-exporter deploy/cloudeye-exporter
+```
 
-## Help
-```
-Usage of ./cloudeye-exporter:
-  -config string
-        Path to the cloud configuration file (default "./clouds.yml")
-  -debug
-        If debug the code.
- 
-```
+---
 
 ## Example of config file(clouds.yml)
 The "URL" value can be get from [Identity and Access Management (IAM) endpoint list](https://developer.huaweicloud.com/en-us/endpoint).

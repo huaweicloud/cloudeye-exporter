@@ -23,19 +23,18 @@ import (
 // 1. Added the new labels name to defaultExtensionLabels
 // 2. Added the new labels values to getAllResource
 var defaultExtensionLabels = map[string][]string{
-	"sys_elb": []string{"name", "vip_address"},
+	"sys_elb":          []string{"name", "vip_address"},
 	"sys_elb_listener": []string{"name", "port"},
-	"sys_nat": []string{"name"},
-	"sys_rds": []string{"name", "role"},
-	"sys_dcs": []string{"name", "engine"},
-	"sys_dms": []string{"name"},
+	"sys_nat":          []string{"name"},
+	"sys_rds":          []string{"name", "role"},
+	"sys_dcs":          []string{"name", "engine"},
+	"sys_dms":          []string{"name"},
 	// Added extenstion labeles name for each service
 	// for example:
 	// "sys_vpc": []string{"name", "cidr"},
 }
 
-
-func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) (map[string][]string) {
+func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) map[string][]string {
 	resourceInfos := map[string][]string{}
 	switch namespace {
 	case "SYS.ELB":
@@ -55,7 +54,7 @@ func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) (map[s
 			resourceInfos[listener.ID] = values
 		}
 	case "SYS.NAT":
-	  	allnat, _ := getAllNat(exporter.ClientConfig)
+		allnat, _ := getAllNat(exporter.ClientConfig)
 		for _, nat := range *allnat {
 			values := []string{}
 			values = append(values, nat.Name)
