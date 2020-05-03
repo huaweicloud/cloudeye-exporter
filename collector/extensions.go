@@ -23,23 +23,26 @@ import (
 // 1. Added the new labels name to defaultExtensionLabels
 // 2. Added the new labels values to getAllResource
 var defaultExtensionLabels = map[string][]string{
-	"sys_elb": []string{"name", "vip_address"},
+	"sys_elb":          []string{"name", "vip_address"},
 	"sys_elb_listener": []string{"name", "port"},
-	"sys_nat": []string{"name"},
-	"sys_rds": []string{"name", "role"},
-	"sys_dcs": []string{"name", "engine"},
-	"sys_dms": []string{"name"},
+	"sys_nat":          []string{"name"},
+	"sys_rds":          []string{"name", "role"},
+	"sys_dcs":          []string{"name", "engine"},
+	"sys_dms":          []string{"name"},
 	// Added extenstion labeles name for each service
 	// for example:
 	// "sys_vpc": []string{"name", "cidr"},
 }
 
-
-func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) (map[string][]string) {
+func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) map[string][]string {
 	resourceInfos := map[string][]string{}
 	switch namespace {
 	case "SYS.ELB":
-		allELBs, _ := getAllELB(exporter.ClientConfig)
+		allELBs, err := getAllELB(exporter.ClientConfig)
+		if err != nil {
+			fmt.Println("Get all ELB error:", err.Error())
+			break
+		}
 		for _, elb := range *allELBs {
 			values := []string{}
 			values = append(values, elb.Name)
@@ -47,7 +50,11 @@ func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) (map[s
 			resourceInfos[elb.ID] = values
 		}
 
-		allListeners, _ := getAllListener(exporter.ClientConfig)
+		allListeners, err := getAllListener(exporter.ClientConfig)
+		if err != nil {
+			fmt.Println("Get all Listener error:", err.Error())
+			break
+		}
 		for _, listener := range *allListeners {
 			values := []string{}
 			values = append(values, listener.Name)
@@ -55,14 +62,22 @@ func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) (map[s
 			resourceInfos[listener.ID] = values
 		}
 	case "SYS.NAT":
-	  	allnat, _ := getAllNat(exporter.ClientConfig)
+		allnat, err := getAllNat(exporter.ClientConfig)
+		if err != nil {
+			fmt.Println("Get all Nat error:", err.Error())
+			break
+		}
 		for _, nat := range *allnat {
 			values := []string{}
 			values = append(values, nat.Name)
 			resourceInfos[nat.ID] = values
 		}
 	case "SYS.RDS":
-		allrds, _ := getAllRds(exporter.ClientConfig)
+		allrds, err := getAllRds(exporter.ClientConfig)
+		if err != nil {
+			fmt.Println("Get all Rds error:", err.Error())
+			break
+		}
 		for _, rds := range allrds.Instances {
 			for _, node := range rds.Nodes {
 				nodes := []string{}
@@ -72,21 +87,33 @@ func (exporter *BaseHuaweiCloudExporter) getAllResource(namespace string) (map[s
 			}
 		}
 	case "SYS.DMS":
-		alldms, _ := getAllDms(exporter.ClientConfig)
+		alldms, err := getAllDms(exporter.ClientConfig)
+		if err != nil {
+			fmt.Println("Get all Dms error:", err.Error())
+			break
+		}
 		for _, dms := range alldms.Instances {
 			values := []string{}
 			values = append(values, dms.Name)
 			resourceInfos[dms.InstanceID] = values
 		}
 
-		allqueue, _ := getAllDmsQueue(exporter.ClientConfig)
+		allqueue, err := getAllDmsQueue(exporter.ClientConfig)
+		if err != nil {
+			fmt.Println("Get all Dms Queue error:", err.Error())
+			break
+		}
 		for _, queue := range *allqueue {
 			values := []string{}
 			values = append(values, queue.Name)
 			resourceInfos[queue.ID] = values
 		}
 	case "SYS.DCS":
-		alldcs, _ := getAllDcs(exporter.ClientConfig)
+		alldcs, err := getAllDcs(exporter.ClientConfig)
+		if err != nil {
+			fmt.Println("Get all Dcs error:", err.Error())
+			break
+		}
 		for _, dcs := range alldcs.Instances {
 			values := []string{}
 			values = append(values, dcs.Name)
