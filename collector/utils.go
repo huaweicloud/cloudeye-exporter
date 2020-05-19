@@ -63,8 +63,7 @@ func NewCloudConfigFromFile(file string) (*CloudConfig, error) {
 	return &config, err
 }
 
-
-func SetDefaultConfigValues(config *CloudConfig)  {
+func SetDefaultConfigValues(config *CloudConfig) {
 	if config.Global.Port == "" {
 		config.Global.Port = ":8087"
 	}

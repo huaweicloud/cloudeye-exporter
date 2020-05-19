@@ -21,15 +21,14 @@ import (
 	"strings"
 
 	"github.com/huaweicloud/cloudeye-exporter/collector"
-	"github.com/prometheus/common/log"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/common/log"
 )
-
 
 var (
 	clientConfig = flag.String("config", "./clouds.yml", "Path to the cloud configuration file")
-	debug = flag.Bool("debug", false, "If debug the code.")
+	debug        = flag.Bool("debug", false, "If debug the code.")
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
