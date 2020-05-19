@@ -46,6 +46,9 @@ global:
   prefix: "huaweicloud"
   port: ":8087"
   metric_path: "/metrics"
+  retrieve_offset: "0"
+  cloudeye_timestamp: false
+  ignore_empty_datapoints: false
 
 auth:
   auth_url: "https://iam.cn-north-1.myhwclouds.com/v3"
@@ -67,6 +70,11 @@ auth:
   domain_name: "domain_name"
 
 ```
+
+Notes :
+* `global.retrieve_offset` (default "0") is an offset (example "-5m") to ask Cloudeye for some older metrics.
+* `global.cloudeye_timestamp` (default false) allows Cloudeye Exporter to send metrics with their Cloudeye timestamp
+* `global.ignore_empty_datapoints` (default false), when set, will ignore empty datapoints (no warnings)
 
 ## Prometheus Configuration
 The huaweicloud exporter needs to be passed the address as a parameter, this can be done with relabelling.

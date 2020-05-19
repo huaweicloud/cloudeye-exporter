@@ -20,29 +20,30 @@ import (
 )
 
 type CloudAuth struct {
-	ProjectName       string `yaml:"project_name"`
-	ProjectID         string `yaml:"project_id"`
-	DomainName        string `yaml:"domain_name"`
-	AccessKey         string `yaml:"access_key"`
-	Region            string `yaml:"region"`
-	SecretKey         string `yaml:"secret_key"`
-	AuthURL           string `yaml:"auth_url"`
-	UserName          string `yaml:"user_name"`
-	Password          string `yaml:"password"`
+	ProjectName string `yaml:"project_name"`
+	ProjectID   string `yaml:"project_id"`
+	DomainName  string `yaml:"domain_name"`
+	AccessKey   string `yaml:"access_key"`
+	Region      string `yaml:"region"`
+	SecretKey   string `yaml:"secret_key"`
+	AuthURL     string `yaml:"auth_url"`
+	UserName    string `yaml:"user_name"`
+	Password    string `yaml:"password"`
 }
 
 type Global struct {
-	Port       string `yaml:"port"`
-	Prefix     string `yaml:"prefix"`
-	MetricPath string `yaml:"metric_path"`
+	Port                  string `yaml:"port"`
+	Prefix                string `yaml:"prefix"`
+	MetricPath            string `yaml:"metric_path"`
+	RetrieveOffset        string `yaml:"retrieve_offset"`
+	CloudeyeTimestamp     bool   `yaml:"cloudeye_timestamp"`
+	IgnoreEmptyDatapoints bool   `yaml:"ignore_empty_datapoints"`
 }
-
 
 type CloudConfig struct {
-	Auth               CloudAuth `yaml:"auth"`
-	Global			   Global    `yaml:"global"`
+	Auth   CloudAuth `yaml:"auth"`
+	Global Global    `yaml:"global"`
 }
-
 
 func NewCloudConfigFromFile(file string) (*CloudConfig, error) {
 	var config CloudConfig
@@ -74,6 +75,10 @@ func SetDefaultConfigValues(config *CloudConfig)  {
 
 	if config.Global.Prefix == "" {
 		config.Global.Prefix = "huaweicloud"
+	}
+
+	if config.Global.RetrieveOffset == "" {
+		config.Global.RetrieveOffset = "0"
 	}
 }
 
