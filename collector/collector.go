@@ -45,14 +45,18 @@ var privateResourceFlag = map[string]string{
 }
 
 type BaseHuaweiCloudExporter struct {
-	From         string
-	To           string
-	Debug        bool
-	Namespaces   []string
-	Prefix       string
-	Metrics      map[string]*prometheus.Desc
-	ClientConfig *Config
-	Region       string
+	From                   string
+	To                     string
+	Debug                  bool
+	Namespaces             []string
+	Prefix                 string
+	Metrics                map[string]*prometheus.Desc
+	ClientConfig           *Config
+	Region                 string
+	RetrieveOffset         bool
+	RetrieveOffsetDuration time.Duration
+	CloudeyeTimestamp      bool
+	IgnoreEmptyDatapoints  bool
 }
 
 func replaceName(name string) string {
@@ -68,10 +72,22 @@ func GetMonitoringCollector(configpath string, namespaces []string, debug bool) 
 		log.Fatal(err)
 	}
 
+	retrieveOffsetDuration, err := time.ParseDuration(global_config.Global.RetrieveOffset)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	exporter := &BaseHuaweiCloudExporter{
-		Namespaces: namespaces,
-		Prefix:     global_config.Global.Prefix,
-		Debug:      debug,
+		Namespaces:             namespaces,
+		Prefix:                 global_config.Global.Prefix,
+		RetrieveOffset:         global_config.Global.RetrieveOffset != "0",
+		RetrieveOffsetDuration: retrieveOffsetDuration,
+		CloudeyeTimestamp:      global_config.Global.CloudeyeTimestamp,
+		IgnoreEmptyDatapoints:  global_config.Global.IgnoreEmptyDatapoints,
+		Debug:                  debug,
+	}
+	if exporter.RetrieveOffset {
+		log.Infof("Using an offset of %s for Cloudeye metrics", global_config.Global.RetrieveOffset)
 	}
 
 	exporter.ClientConfig = initClient(global_config)
@@ -123,9 +139,11 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 
 			for _, md := range *mds {
 				exporter.debugMetricInfo(md)
-				datapoint, err := getDatapoint(md.Datapoints)
+				datapoint, t, err := getDatapoint(md.Datapoints)
 				if err != nil {
-					fmt.Printf("%s, the metric is:", err, md.MetricName)
+					if !exporter.IgnoreEmptyDatapoints {
+						fmt.Printf("%s, the metric is:", err, md.MetricName)
+					}
 					continue
 				}
 
@@ -136,9 +154,17 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 				}
 
 				newMetricName := prometheus.BuildFQName(GetMetricPrefixName(exporter.Prefix, namespace), preResourceName, md.MetricName)
-				ch <- prometheus.MustNewConstMetric(
-					prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
-					prometheus.GaugeValue, datapoint, values...)
+				if exporter.CloudeyeTimestamp {
+					ch <- prometheus.NewMetricWithTimestamp(
+						t,
+						prometheus.MustNewConstMetric(
+							prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
+							prometheus.GaugeValue, datapoint, values...))
+				} else {
+					ch <- prometheus.MustNewConstMetric(
+						prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
+						prometheus.GaugeValue, datapoint, values...)
+				}
 			}
 
 			metricTimestamp, _ = getMetricDataTimestamp((*mds)[len(*mds)-1].Datapoints)
@@ -162,8 +188,12 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	periodm, _ := time.ParseDuration("-5m")
 
 	now := time.Now()
-	from := strconv.FormatInt(int64(now.Add(periodm).UnixNano()/1e6), 10)
-	to := strconv.FormatInt(int64(now.UnixNano()/1e6), 10)
+	now_with_offset := now
+	if exporter.RetrieveOffset {
+		now_with_offset = now.Add(exporter.RetrieveOffsetDuration)
+	}
+	from := strconv.FormatInt(int64(now_with_offset.Add(periodm).UnixNano()/1e6), 10)
+	to := strconv.FormatInt(int64(now_with_offset.UnixNano()/1e6), 10)
 	exporter.From = from
 	exporter.To = to
 
@@ -191,15 +221,17 @@ func isResouceExist(dims *[]metricdata.Dimension, allResouceInfo *map[string][]s
 	return false
 }
 
-func getDatapoint(datapoints []metricdata.Data) (float64, error) {
+func getDatapoint(datapoints []metricdata.Data) (float64, time.Time, error) {
 	var datapoint float64
+	var t time.Time
 	if len(datapoints) > 0 {
 		datapoint = (datapoints)[len(datapoints)-1].Average
+		t = time.Unix(int64((datapoints)[len(datapoints)-1].Timestamp), 0)
 	} else {
-		return 0, fmt.Errorf("The data point of metric are not found")
+		return 0, time.Unix(0, 0), fmt.Errorf("The data point of metric are not found")
 	}
 
-	return datapoint, nil
+	return datapoint, t, nil
 }
 
 func getMetricDataTimestamp(datapoints []metricdata.Data) (int, error) {
