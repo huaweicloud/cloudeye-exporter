@@ -48,23 +48,23 @@ global:
   metric_path: "/metrics"
 
 auth:
-  auth_url: "https://iam.cn-north-1.myhwclouds.com/v3"
-  project_name: "cn-north-1"
-  access_key: "xdfsdfsdfsdfsdfsdf"
-  secret_key: "xsdfsddfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfdsfsd"
-  region: "cn-north-1"
+  auth_url: "https://iam.xxx.yyy.com/v3"
+  project_name: "{project_name}"
+  access_key: "{access_key}"
+  secret_key: "{secret_key}"
+  region: "{region}"
 
 ```
 or
 
 ```
 auth:
-  auth_url: "https://iam.cn-north-1.myhwclouds.com/v3"
-  project_name: "cn-north-1"
-  user_name: "username"
-  password: "password"
-  region: "cn-north-1"
-  domain_name: "domain_name"
+  auth_url: "https://iam.xxx.yyy.com/v3"
+  project_name: "{project_name}"
+  user_name: "{username}"
+  password: "{password}"
+  region: "{region}"
+  domain_name: "{domain_name}"
 
 ```
 

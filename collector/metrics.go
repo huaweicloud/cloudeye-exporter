@@ -1,36 +1,28 @@
-// Copyright 2019 HuaweiCloud.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package collector
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 	"strconv"
 
+	"github.com/huaweicloud/cloudeye-exporter/logs"
 	"github.com/huaweicloud/golangsdk"
 	"github.com/huaweicloud/golangsdk/openstack"
+	"github.com/huaweicloud/golangsdk/openstack/autoscaling/v1/groups"
+	"github.com/huaweicloud/golangsdk/openstack/blockstorage/v2/volumes"
 	"github.com/huaweicloud/golangsdk/openstack/ces/v1/metricdata"
 	"github.com/huaweicloud/golangsdk/openstack/ces/v1/metrics"
-	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/listeners"
-	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/loadbalancers"
-	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/natgateways"
-
+	"github.com/huaweicloud/golangsdk/openstack/compute/v2/servers"
 	dcs "github.com/huaweicloud/golangsdk/openstack/dcs/v1/instances"
 	dms "github.com/huaweicloud/golangsdk/openstack/dms/v1/instances"
 	"github.com/huaweicloud/golangsdk/openstack/dms/v1/queues"
+	"github.com/huaweicloud/golangsdk/openstack/fgs/v2/function"
+	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/listeners"
+	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/loadbalancers"
+	"github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/natgateways"
 	rds "github.com/huaweicloud/golangsdk/openstack/rds/v3/instances"
+	"github.com/huaweicloud/golangsdk/openstack/vpc/v1/bandwidths"
+	"github.com/huaweicloud/golangsdk/openstack/vpc/v1/publicips"
 )
 
 type Config struct {
@@ -53,19 +45,13 @@ type Config struct {
 }
 
 func buildClient(c *Config) error {
-	err := fmt.Errorf("Must config token or aksk or username password to be authorized")
-
 	if c.AccessKey != "" && c.SecretKey != "" {
-		err = buildClientByAKSK(c)
+		return buildClientByAKSK(c)
 	} else if c.Password != "" && (c.Username != "" || c.UserID != "") {
-		err = buildClientByPassword(c)
+		return buildClientByPassword(c)
 	}
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return errors.New("Must config token or aksk or username password to be authorized")
 }
 
 func buildClientByPassword(c *Config) error {
@@ -165,7 +151,7 @@ func InitConfig(config *CloudConfig) (*Config, error) {
 
 	err := buildClient(&configOptions)
 	if err != nil {
-		fmt.Println("Failed to build client: ", err)
+		logs.Logger.Errorf("Failed to build client: %s", err.Error())
 		return nil, err
 	}
 
@@ -177,7 +163,7 @@ func getCESClient(c *Config) (*golangsdk.ServiceClient, error) {
 		Region: c.Region,
 	})
 	if clientErr != nil {
-		fmt.Println("Failed to get the NewCESV1 client: ", clientErr)
+		logs.Logger.Errorf("Failed to get the NewCESV1 client: %s", clientErr.Error())
 		return nil, clientErr
 	}
 
@@ -189,20 +175,11 @@ func getELBlient(c *Config) (*golangsdk.ServiceClient, error) {
 		Region: c.Region,
 	})
 	if clientErr != nil {
-		fmt.Println("Failed to get the NewLoadBalancerV2 client: ", clientErr)
+		logs.Logger.Errorf("Failed to get the NewLoadBalancerV2 client: %s", clientErr.Error())
 		return nil, clientErr
 	}
 
 	return client, nil
-}
-
-func getDimByDimension(num int, dimensions *[]metrics.Dimension) string {
-	dim := ""
-	if len(*dimensions) > num {
-		dim = (*dimensions)[num].Name + "," + (*dimensions)[num].Value
-	}
-
-	return dim
 }
 
 func getDataMetric(metric metrics.Metric) metricdata.Metric {
@@ -223,8 +200,16 @@ func getDataMetric(metric metrics.Metric) metricdata.Metric {
 func getBatchMetricData(c *Config, metrics *[]metricdata.Metric,
 	from string, to string) (*[]metricdata.MetricData, error) {
 
-	ifrom, _ := strconv.ParseInt(from, 10, 64)
-	ito, _ := strconv.ParseInt(to, 10, 64)
+	ifrom, err := strconv.ParseInt(from, 10, 64)
+	if err != nil {
+		logs.Logger.Errorf("Failed to Parse from: %s", err.Error())
+		return nil, err
+	}
+	ito, err := strconv.ParseInt(to, 10, 64)
+	if err != nil {
+		logs.Logger.Errorf("Failed to Parse to: %s", err.Error())
+		return nil, err
+	}
 	options := metricdata.BatchQueryOpts{
 		Metrics: *metrics,
 		From:    ifrom,
@@ -235,77 +220,42 @@ func getBatchMetricData(c *Config, metrics *[]metricdata.Metric,
 
 	client, err := getCESClient(c)
 	if err != nil {
-		fmt.Println("Failed to get ces client: ", err)
+		logs.Logger.Errorf("Failed to get ces client: %s", err.Error())
 		return nil, err
 	}
 
 	v, err := metricdata.BatchQuery(client, options).ExtractMetricDatas()
 	if err != nil {
-		fmt.Println("Failed to get metricdata: ", err)
+		logs.Logger.Errorf("Failed to get metricdata: %s", err.Error())
 		return nil, err
 	}
 
 	return &v, nil
 }
 
-func getMetricData(
-	c *Config,
-	metric *metrics.Metric,
-	dimensions *[]metrics.Dimension,
-	from string,
-	to string) (
-	*[]metricdata.Datapoint, error) {
-
-	options := metricdata.GetOpts{
-		Namespace:  metric.Namespace,
-		Dim0:       getDimByDimension(0, dimensions),
-		Dim1:       getDimByDimension(1, dimensions),
-		Dim2:       getDimByDimension(2, dimensions),
-		MetricName: metric.MetricName,
-		From:       from,
-		To:         to,
-		Period:     "1",
-		Filter:     "average",
-	}
-
-	client, err := getCESClient(c)
-	if err != nil {
-		fmt.Println("Failed to get client: ", err)
-		return nil, err
-	}
-
-	v, err := metricdata.Get(client, options).Extract()
-	if err != nil {
-		fmt.Println("Failed to get metricdata: ", err)
-		return nil, err
-	}
-
-	return &v.Datapoints, nil
-}
-
 func getAllMetric(client *Config, namespace string) (*[]metrics.Metric, error) {
 	c, err := getCESClient(client)
 	if err != nil {
-		fmt.Println("get all metric client: ", err)
+		logs.Logger.Errorf("Get all metric client: %s", err.Error())
 		return nil, err
 	}
 	limit := 1000
 	allpage, err := metrics.List(c, metrics.ListOpts{Namespace: namespace, Limit: &limit}).AllPages()
 	if err != nil {
-		fmt.Println("get all metric all pages error: ", err)
+		logs.Logger.Errorf("Get all metric all pages error: %s", err.Error())
 		return nil, err
 	}
 
 	v, err := metrics.ExtractAllPagesMetrics(allpage)
 	if err != nil {
-		fmt.Println("get all metric pages error: ", err)
+		logs.Logger.Errorf("Get all metric pages error: %s", err.Error())
 		return nil, err
 	}
 
 	return &v.Metrics, nil
 }
 
-func getAllELB(client *Config) (*[]loadbalancers.LoadBalancer, error) {
+func getAllLoadBalancer(client *Config) (*[]loadbalancers.LoadBalancer, error) {
 	c, err := getELBlient(client)
 	if err != nil {
 		return nil, err
@@ -313,13 +263,13 @@ func getAllELB(client *Config) (*[]loadbalancers.LoadBalancer, error) {
 
 	allPages, err := loadbalancers.List(c, loadbalancers.ListOpts{}).AllPages()
 	if err != nil {
-		fmt.Println("get loadbalancers all pages error: ", err)
+		logs.Logger.Errorf("List load balancer error: %s", err.Error())
 		return nil, err
 	}
 
 	allLoadbalancers, err := loadbalancers.ExtractLoadBalancers(allPages)
 	if err != nil {
-		fmt.Println("get loadbalancers pages error: ", err)
+		logs.Logger.Errorf("Extract load balancer pages error: %s", err.Error())
 		return nil, err
 	}
 
@@ -334,13 +284,13 @@ func getAllListener(client *Config) (*[]listeners.Listener, error) {
 
 	allPages, err := listeners.List(c, listeners.ListOpts{}).AllPages()
 	if err != nil {
-		fmt.Println("get all listener all pages error: ", err)
+		logs.Logger.Errorf("List listener all pages error: %s", err.Error())
 		return nil, err
 	}
 
 	allListeners, err := listeners.ExtractListeners(allPages)
 	if err != nil {
-		fmt.Println("get all listener all pages error: ", err)
+		logs.Logger.Errorf("Extract listener pages error: %s", err.Error())
 		return nil, err
 	}
 
@@ -357,13 +307,13 @@ func getAllNat(c *Config) (*[]natgateways.NatGateway, error) {
 
 	allPages, err := natgateways.List(client, natgateways.ListOpts{}).AllPages()
 	if err != nil {
-		fmt.Println("get all natgateways all pages error: ", err)
+		logs.Logger.Errorf("List nat gateways error: %s", err.Error())
 		return nil, err
 	}
 
 	allNatGateways, err := natgateways.ExtractNatGateways(allPages)
 	if err != nil {
-		fmt.Println("get all natgateways all pages error: ", err)
+		logs.Logger.Errorf("Extract nat gateway pages error: %s", err.Error())
 		return nil, err
 	}
 
@@ -375,19 +325,19 @@ func getAllRds(c *Config) (*rds.ListRdsResponse, error) {
 		Region: c.Region,
 	})
 	if err != nil {
-		fmt.Errorf("Unable to get NewRDSV3 client: %s", err)
+		logs.Logger.Errorf("Unable to get NewRDSV3 client: %s", err.Error())
 		return nil, err
 	}
 
 	allPages, err := rds.List(client, rds.ListRdsInstanceOpts{}).AllPages()
 	if err != nil {
-		fmt.Errorf("Unable to retrieve rds: %s", err)
+		logs.Logger.Errorf("List rds error: %s", err.Error())
 		return nil, err
 	}
 
 	allRds, err := rds.ExtractRdsInstances(allPages)
 	if err != nil {
-		fmt.Println("get all rds all pages error: ", err)
+		logs.Logger.Errorf("Extract rds pages error: %s", err.Error())
 		return nil, err
 	}
 
@@ -399,18 +349,19 @@ func getAllDcs(c *Config) (*dcs.ListDcsResponse, error) {
 		Region: c.Region,
 	})
 	if err != nil {
+		logs.Logger.Errorf("Failed to NewDCSServiceV1, error: %s", err.Error())
 		return nil, err
 	}
 
 	allPages, err := dcs.List(client, dcs.ListDcsInstanceOpts{}).AllPages()
 	if err != nil {
-		fmt.Errorf("Unable to retrieve Dcs: %s", err)
+		logs.Logger.Errorf("List dcs error: %s", err.Error())
 		return nil, err
 	}
 
 	allDcs, err := dcs.ExtractDcsInstances(allPages)
 	if err != nil {
-		fmt.Println("get all Dcs all pages error: ", err)
+		logs.Logger.Errorf("Extract dcs pages error: %s", err.Error())
 		return nil, err
 	}
 
@@ -422,18 +373,19 @@ func getAllDms(c *Config) (*dms.ListDmsResponse, error) {
 		Region: c.Region,
 	})
 	if err != nil {
+		logs.Logger.Errorf("Failed to NewDMSServiceV1, error: %s", err.Error())
 		return nil, err
 	}
 
 	allPages, err := dms.List(client, dms.ListDmsInstanceOpts{}).AllPages()
 	if err != nil {
-		fmt.Errorf("Unable to retrieve Dms: %s", err)
+		logs.Logger.Errorf("List dms instances error: %s", err.Error())
 		return nil, err
 	}
 
 	allDms, err := dms.ExtractDmsInstances(allPages)
 	if err != nil {
-		fmt.Println("get all Dms all pages error: ", err)
+		logs.Logger.Errorf("Extract dms instances pages error: %s", err.Error())
 		return nil, err
 	}
 
@@ -450,15 +402,162 @@ func getAllDmsQueue(c *Config) (*[]queues.Queue, error) {
 
 	allPages, err := queues.List(client, false).AllPages()
 	if err != nil {
-		fmt.Errorf("Unable to retrieve queues: %s", err)
+		logs.Logger.Errorf("List dms queues error: %s", err.Error())
 		return nil, err
 	}
 
 	allQueues, err := queues.ExtractQueues(allPages)
 	if err != nil {
-		fmt.Println("get all queues all pages error: ", err)
+		logs.Logger.Errorf("Extract dms queues pages error: %s", err.Error())
 		return nil, err
 	}
 
 	return &allQueues, nil
+}
+
+func getAllPublicIp(c *Config) (*[]publicips.PublicIP, error) {
+	client, err := openstack.NewVPCV1(c.HwClient, golangsdk.EndpointOpts{
+		Region: c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := publicips.List(client, publicips.ListOpts{
+		Limit: 1000,
+	}).AllPages()
+
+	if err != nil {
+		logs.Logger.Errorf("List public ips error: %s", err.Error())
+		return nil, err
+	}
+	publicipList, err1 := publicips.ExtractPublicIPs(allPages)
+
+	if err1 != nil {
+		logs.Logger.Errorf("Extract public ips pages error: %s", err.Error())
+		return nil, err
+	}
+
+	return &publicipList, nil
+}
+
+func getAllBandwidth(c *Config) (*[]bandwidths.BandWidth, error) {
+	client, err := openstack.NewVPCV1(c.HwClient, golangsdk.EndpointOpts{
+		Region: c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := bandwidths.List(client, bandwidths.ListOpts{
+		Limit: 1000,
+	}).AllPages()
+	if err != nil {
+		logs.Logger.Errorf("List bandwidths error: %s", err.Error())
+		return nil, err
+	}
+
+	result, err := bandwidths.ExtractBandWidths(allPages)
+	if err != nil {
+		logs.Logger.Errorf("Extract bandwidths all pages error: %s", err.Error())
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func getAllVolume(c *Config) (*[]volumes.Volume, error) {
+	client, err := openstack.NewBlockStorageV2(c.HwClient, golangsdk.EndpointOpts{
+		Region: c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := volumes.List(client, volumes.ListOpts{
+		Limit: 1000,
+	}).AllPages()
+	if err != nil {
+		logs.Logger.Errorf("List volumes error: %s", err.Error())
+		return nil, err
+	}
+
+	result, err := volumes.ExtractVolumes(allPages)
+	if err != nil {
+		logs.Logger.Errorf("Extract volumes all pages error: %s", err.Error())
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func getAllServer(c *Config) (*[]servers.Server, error) {
+	client, err := openstack.NewComputeV2(c.HwClient, golangsdk.EndpointOpts{
+		Region: c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := servers.List(client, servers.ListOpts{
+		Limit: 1000,
+	}).AllPages()
+	if err != nil {
+		logs.Logger.Errorf("List servers error: %s", err.Error())
+		return nil, err
+	}
+
+	result, err := servers.ExtractServers(allPages)
+	if err != nil {
+		logs.Logger.Errorf("Extract servers all pages error: %s", err.Error())
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func getAllGroup(c *Config) (*[]groups.Group, error) {
+	client, err := openstack.NewAutoScalingV1(c.HwClient, golangsdk.EndpointOpts{
+		Region: c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := groups.List(client, groups.ListOpts{}).AllPages()
+	if err != nil {
+		logs.Logger.Errorf("List groups error: %s", err.Error())
+		return nil, err
+	}
+
+	result, err := (allPages.(groups.GroupPage)).Extract()
+	if err != nil {
+		logs.Logger.Errorf("Extract groups all pages error: %s", err.Error())
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func getAllFunction(c *Config) (*function.FunctionList, error) {
+	client, err := openstack.NewFGSV2(c.HwClient, golangsdk.EndpointOpts{
+		Region: c.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	allPages, err := function.List(client, function.ListOpts{}).AllPages()
+	if err != nil {
+		logs.Logger.Errorf("List function error: %s", err.Error())
+		return nil, err
+	}
+
+	result, err := function.ExtractList(allPages)
+	if err != nil {
+		logs.Logger.Errorf("Extract function all pages error: %s", err.Error())
+		return nil, err
+	}
+
+	return &result, nil
 }
