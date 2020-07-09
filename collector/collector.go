@@ -1,29 +1,16 @@
-// Copyright 2019 HuaweiCloud.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package collector
 
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/huaweicloud/cloudeye-exporter/logs"
 	"github.com/huaweicloud/golangsdk/openstack/ces/v1/metricdata"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/common/log"
 )
 
 var defaultLabelsToResource = map[string]string{
@@ -34,6 +21,8 @@ var defaultLabelsToResource = map[string]string{
 	"virtual_interface_id":      "virtual",
 	"bandwidth_id":              "bandwidth",
 	"publicip_id":               "eip",
+	"rabbitmq_instance_id":      "instance",
+	"kafka_instance_id":         "instance",
 }
 
 var privateResourceFlag = map[string]string{
@@ -47,10 +36,10 @@ var privateResourceFlag = map[string]string{
 type BaseHuaweiCloudExporter struct {
 	From         string
 	To           string
-	Debug        bool
 	Namespaces   []string
 	Prefix       string
 	Metrics      map[string]*prometheus.Desc
+	MetricLen    int
 	ClientConfig *Config
 	Region       string
 }
@@ -62,19 +51,19 @@ func replaceName(name string) string {
 	return newName
 }
 
-func GetMonitoringCollector(configpath string, namespaces []string, debug bool) (*BaseHuaweiCloudExporter, error) {
-	global_config, err := NewCloudConfigFromFile(configpath)
+func GetMonitoringCollector(configpath string, namespaces []string) (*BaseHuaweiCloudExporter, error) {
+	globalConfig, err := NewCloudConfigFromFile(configpath)
 	if err != nil {
-		log.Fatal(err)
+		logs.Logger.Fatalln("NewCloudConfigFromFile error: ", err.Error())
+		os.Exit(1)
 	}
 
 	exporter := &BaseHuaweiCloudExporter{
 		Namespaces: namespaces,
-		Prefix:     global_config.Global.Prefix,
-		Debug:      debug,
+		Prefix:     globalConfig.Global.Prefix,
 	}
 
-	exporter.ClientConfig = initClient(global_config)
+	exporter.ClientConfig = initClient(globalConfig)
 
 	return exporter, nil
 }
@@ -89,23 +78,25 @@ func (exporter *BaseHuaweiCloudExporter) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prometheus.Metric, namespace string) {
+	defer func() {
+		if err := recover(); err != nil {
+			logs.Logger.Fatalln(err)
+		}
+	}()
+
 	allMetrics, err := getAllMetric(exporter.ClientConfig, namespace)
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	if len(*allMetrics) == 0 {
-		log.Warnf("The metric resources of service(%s) are not found.", namespace)
+		logs.Logger.Errorln("Get all metrics error: ", err.Error())
 		return
 	}
 
-	if exporter.Debug == true {
-		metricsJson, _ := json.MarshalIndent(*allMetrics, "", " ")
-		fmt.Println("The all metrics are:", string(metricsJson))
+	if len(*allMetrics) == 0 {
+		logs.Logger.Warnf("The metric resources of service(%s) are not found.", namespace)
+		return
 	}
+	exporter.MetricLen = len(*allMetrics)
 
 	allResoucesInfo := exporter.getAllResource(namespace)
-
 	metricTimestamp := 0
 	count := 0
 	end := len(*allMetrics)
@@ -125,14 +116,20 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 				exporter.debugMetricInfo(md)
 				datapoint, err := getDatapoint(md.Datapoints)
 				if err != nil {
-					fmt.Printf("%s, the metric is:", err, md.MetricName)
+					logs.Logger.Warnf("Get data point error: %s, the metric is: %s", err.Error(), md.MetricName)
 					continue
 				}
 
 				labels, values, preResourceName, privateFlag := getOriginalLabelInfo(&md.Dimensions)
-				if isResouceExist(&md.Dimensions, &allResoucesInfo) == true {
+				if isResouceExist(&md.Dimensions, &allResoucesInfo) {
 					labels = exporter.getExtensionLabels(labels, preResourceName, namespace, privateFlag)
 					values = exporter.getExtensionLabelValues(values, &allResoucesInfo, getOriginalID(&md.Dimensions))
+				}
+
+				if len(labels) != len(values) {
+					logs.Logger.Errorf("Inconsistent label and value: expected %d label %#v, but values got %d in %#v",
+						len(labels), labels, len(values), values)
+					continue
 				}
 
 				newMetricName := prometheus.BuildFQName(GetMetricPrefixName(exporter.Prefix, namespace), preResourceName, md.MetricName)
@@ -141,7 +138,10 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 					prometheus.GaugeValue, datapoint, values...)
 			}
 
-			metricTimestamp, _ = getMetricDataTimestamp((*mds)[len(*mds)-1].Datapoints)
+			metricTimestamp, err = getMetricDataTimestamp((*mds)[len(*mds)-1].Datapoints)
+			if err != nil {
+				logs.Logger.Warnln("Get metric data timestamp error: ", err.Error())
+			}
 		}
 	}
 
@@ -149,7 +149,10 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 		return
 	}
 
-	to64, _ := strconv.ParseFloat(exporter.To, 64)
+	to64, parseErr := strconv.ParseFloat(exporter.To, 64)
+	if parseErr != nil {
+		logs.Logger.Error("Parse exporter.To error: ", parseErr.Error())
+	}
 	stamp64 := float64(metricTimestamp)
 
 	sub_duration := (to64 - stamp64) / 1000
@@ -159,7 +162,10 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 }
 
 func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
-	periodm, _ := time.ParseDuration("-5m")
+	periodm, err := time.ParseDuration("-5m")
+	if err != nil {
+		logs.Logger.Errorln("ParseDuration -5m error:", err.Error())
+	}
 
 	now := time.Now()
 	from := strconv.FormatInt(int64(now.Add(periodm).UnixNano()/1e6), 10)
@@ -167,20 +173,42 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	exporter.From = from
 	exporter.To = to
 
+	finishChan := make(chan bool)
+	defer close(finishChan)
+	serviceTotal := 0
 	for _, namespace := range exporter.Namespaces {
-		exporter.collectMetricByNamespace(ch, namespace)
+		serviceTotal++
+		go func(ch chan<- prometheus.Metric, namespace string) {
+			exporter.collectMetricByNamespace(ch, namespace)
+			finishChan <- true
+		}(ch, namespace)
+	}
+	for i := 0; i < serviceTotal; i++ {
+		select {
+		case _, ok := <-finishChan:
+			if ok {
+				continue
+			}
+		case <-time.After(30 * time.Second):
+			logs.Logger.Errorf("Error collecting metrics: Timeout making calls, waited for 30s without response")
+			continue
+		}
 	}
 }
 
 func (exporter *BaseHuaweiCloudExporter) debugMetricInfo(md metricdata.MetricData) {
-	if exporter.Debug == true {
-		fmt.Println("Get datapoints of metric begin... (from):", exporter.From)
-		dataJson, _ := json.MarshalIndent(md.Datapoints, "", " ")
-		metricJson, _ := json.MarshalIndent(md.Dimensions, "", " ")
-		fmt.Println("The datapoints of metric are:" + string(dataJson))
-		fmt.Println("The metric value is:", string(metricJson))
-		fmt.Println("Get datapoints of metric end. (to):", exporter.To)
+	logs.Logger.Debugln("Get datapoints of metric begin... (from):", exporter.From)
+	dataJson, err := json.MarshalIndent(md.Datapoints, "", " ")
+	if err != nil {
+		logs.Logger.Debugln("MarshalIndent Datapoints error: ", err.Error())
 	}
+	metricJson, err := json.MarshalIndent(md.Dimensions, "", " ")
+	if err != nil {
+		logs.Logger.Debugln("MarshalIndent Dimensions error: ", err.Error())
+	}
+	logs.Logger.Debugln("The datapoints of metric are:" + string(dataJson))
+	logs.Logger.Debugln("The metric value is:", string(metricJson))
+	logs.Logger.Debugln("Get datapoints of metric end. (to):", exporter.To)
 }
 
 func isResouceExist(dims *[]metricdata.Dimension, allResouceInfo *map[string][]string) bool {
@@ -240,6 +268,10 @@ func getOriginalLabelInfo(dims *[]metricdata.Dimension) ([]string, []string, str
 		}
 
 		dimensionValues = append(dimensionValues, dimension.Value)
+		if strings.ContainsAny(dimension.Name, "-") {
+			labels = append(labels, strings.Replace(dimension.Name, "-", "_", -1))
+			continue
+		}
 		labels = append(labels, dimension.Name)
 	}
 
@@ -281,7 +313,7 @@ func (exporter *BaseHuaweiCloudExporter) getExtensionLabelValues(
 func initClient(global_config *CloudConfig) *Config {
 	c, err := InitConfig(global_config)
 	if err != nil {
-		log.Fatal(err)
+		logs.Logger.Fatalln("Init config error: ", err.Error())
 	}
 
 	return c

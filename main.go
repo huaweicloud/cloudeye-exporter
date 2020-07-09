@@ -1,17 +1,3 @@
-// Copyright 2019 HuaweiCloud.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package main
 
 import (
@@ -21,15 +7,14 @@ import (
 	"strings"
 
 	"github.com/huaweicloud/cloudeye-exporter/collector"
-	"github.com/prometheus/common/log"
+	"github.com/huaweicloud/cloudeye-exporter/logs"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-
 var (
 	clientConfig = flag.String("config", "./clouds.yml", "Path to the cloud configuration file")
-	debug = flag.Bool("debug", false, "If debug the code.")
+	debug        = flag.Bool("debug", false, "If debug the code.")
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -42,11 +27,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	targets := strings.Split(target, ",")
 	registry := prometheus.NewRegistry()
 
-	log.Infof("Start to monitor services: %s", targets)
-	exporter, err := collector.GetMonitoringCollector(*clientConfig, targets, *debug)
+	logs.Logger.Infof("Start to monitor services: %s", targets)
+	exporter, err := collector.GetMonitoringCollector(*clientConfig, targets)
 	registry.MustRegister(exporter)
 	if err != nil {
-		log.Errorf("Fail to start to morning services: %s, err: %s", targets, err)
+		logs.Logger.Errorf("Fail to start to morning services: %+v, err: %s", targets, err.Error())
 		return
 	}
 
@@ -56,17 +41,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	flag.Parse()
+	logs.InitLog(*debug)
 	config, err := collector.NewCloudConfigFromFile(*clientConfig)
 	if err != nil {
-		log.Fatal(err)
+		logs.Logger.Fatal("New Cloud Config From File error: ", err.Error())
 		return
 	}
 
 	http.HandleFunc(config.Global.MetricPath, handler)
 
-	log.Infoln("Start server at ", config.Global.Port)
+	logs.Logger.Infoln("Start server at ", config.Global.Port)
 	if err := http.ListenAndServe(config.Global.Port, nil); err != nil {
-		log.Error("Error occur when start server %v", err)
+		logs.Logger.Errorf("Error occur when start server %s", err.Error())
 		os.Exit(1)
 	}
 }
