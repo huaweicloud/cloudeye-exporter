@@ -174,7 +174,6 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	exporter.To = to
 
 	finishChan := make(chan bool)
-	defer close(finishChan)
 	serviceTotal := 0
 	for _, namespace := range exporter.Namespaces {
 		serviceTotal++
