@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -77,7 +78,7 @@ func (exporter *BaseHuaweiCloudExporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- prometheus.NewDesc("dummy", "dummy", nil, nil)
 }
 
-func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prometheus.Metric, namespace string) {
+func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Context, ch chan<- prometheus.Metric, namespace string) {
 	defer func() {
 		if err := recover(); err != nil {
 			logs.Logger.Fatalln(err)
@@ -133,9 +134,11 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 				}
 
 				newMetricName := prometheus.BuildFQName(GetMetricPrefixName(exporter.Prefix, namespace), preResourceName, md.MetricName)
-				ch <- prometheus.MustNewConstMetric(
+				if err := sendMetricData(ctx, ch, prometheus.MustNewConstMetric(
 					prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
-					prometheus.GaugeValue, datapoint, values...)
+					prometheus.GaugeValue, datapoint, values...)); err != nil {
+					logs.Logger.Errorf("Context has canceled, no need to send metric data, metric name: %s", newMetricName)
+				}
 			}
 
 			metricTimestamp, err = getMetricDataTimestamp((*mds)[len(*mds)-1].Datapoints)
@@ -156,9 +159,11 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ch chan<- prom
 	stamp64 := float64(metricTimestamp)
 
 	sub_duration := (to64 - stamp64) / 1000
-	ch <- prometheus.MustNewConstMetric(
+	if err := sendMetricData(ctx, ch, prometheus.MustNewConstMetric(
 		prometheus.NewDesc(GetMetricPrefixName(exporter.Prefix, namespace)+"_duration_seconds",
-			namespace, nil, nil), prometheus.GaugeValue, sub_duration)
+			namespace, nil, nil), prometheus.GaugeValue, sub_duration)); err != nil {
+		logs.Logger.Errorf("Context has canceled, no need to send metric data, metric name: %s", GetMetricPrefixName(exporter.Prefix, namespace)+"_duration_seconds")
+	}
 }
 
 func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
@@ -166,6 +171,8 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	if err != nil {
 		logs.Logger.Errorln("ParseDuration -5m error:", err.Error())
 	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	now := time.Now()
 	from := strconv.FormatInt(int64(now.Add(periodm).UnixNano()/1e6), 10)
@@ -178,7 +185,7 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	for _, namespace := range exporter.Namespaces {
 		serviceTotal++
 		go func(ch chan<- prometheus.Metric, namespace string) {
-			exporter.collectMetricByNamespace(ch, namespace)
+			exporter.collectMetricByNamespace(ctx, ch, namespace)
 			finishChan <- true
 		}(ch, namespace)
 	}
@@ -193,6 +200,20 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 			continue
 		}
 	}
+}
+
+func sendMetricData(ctx context.Context, ch chan<- prometheus.Metric, metric prometheus.Metric) error {
+	// Check whether the Context has canceled
+	select {
+	case _, ok := <-ctx.Done():
+		if ok {
+			return ctx.Err()
+		}
+	default: // continue
+	}
+	// If no, send the metric
+	ch <- metric
+	return nil
 }
 
 func (exporter *BaseHuaweiCloudExporter) debugMetricInfo(md metricdata.MetricData) {
