@@ -206,7 +206,7 @@ func sendMetricData(ctx context.Context, ch chan<- prometheus.Metric, metric pro
 	// Check whether the Context has canceled
 	select {
 	case _, ok := <-ctx.Done():
-		if ok {
+		if !ok {
 			return ctx.Err()
 		}
 	default: // continue
