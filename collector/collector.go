@@ -43,6 +43,8 @@ type BaseHuaweiCloudExporter struct {
 	MetricLen    int
 	ClientConfig *Config
 	Region       string
+	txnKey       string
+	MaxRoutines  int
 }
 
 func replaceName(name string) string {
@@ -60,8 +62,9 @@ func GetMonitoringCollector(configpath string, namespaces []string) (*BaseHuawei
 	}
 
 	exporter := &BaseHuaweiCloudExporter{
-		Namespaces: namespaces,
-		Prefix:     globalConfig.Global.Prefix,
+		Namespaces:  namespaces,
+		Prefix:      globalConfig.Global.Prefix,
+		MaxRoutines: globalConfig.Global.MaxRoutines,
 	}
 
 	exporter.ClientConfig = initClient(globalConfig)
@@ -85,91 +88,92 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Co
 		}
 	}()
 
+	logs.Logger.Debugf("[%s] Start getAllMetric", exporter.txnKey)
 	allMetrics, err := getAllMetric(exporter.ClientConfig, namespace)
 	if err != nil {
-		logs.Logger.Errorln("Get all metrics error: ", err.Error())
+		logs.Logger.Errorln("[%s] Get all metrics error: %s", exporter.txnKey, err.Error())
 		return
 	}
+	logs.Logger.Debugf("[%s] End getAllMetric, Total number of of metrics:%d", exporter.txnKey, len(*allMetrics))
 
 	if len(*allMetrics) == 0 {
-		logs.Logger.Warnf("The metric resources of service(%s) are not found.", namespace)
+		logs.Logger.Warnf("[%s] The metric resources of service(%s) are not found.", exporter.txnKey, namespace)
 		return
 	}
 	exporter.MetricLen = len(*allMetrics)
 
-	allResoucesInfo := exporter.getAllResource(namespace)
-	metricTimestamp := 0
+	logs.Logger.Debugf("[%s] Start getAllResource, namespace:%s", exporter.txnKey, namespace)
+	allResourcesInfo := exporter.getAllResource(namespace)
+	logs.Logger.Debugf("[%s] End getAllResource, Total number of of resource:%d", exporter.txnKey, len(allResourcesInfo))
+
 	count := 0
 	end := len(*allMetrics)
 	tmpMetrics := []metricdata.Metric{}
+
+	logs.Logger.Debugf("[%s] Start set data", exporter.txnKey)
+	workChan := make(chan bool, exporter.MaxRoutines)
+	finishChan := make(chan bool)
+	defer close(workChan)
+	defer close(finishChan)
+	taskCount := 0
 	for _, metric := range *allMetrics {
 		count++
-
 		tmpMetrics = append(tmpMetrics, getDataMetric(metric))
 		if (0 == count%10) || (count == end) {
-			mds, err := getBatchMetricData(exporter.ClientConfig, &tmpMetrics, exporter.From, exporter.To)
-			tmpMetrics = []metricdata.Metric{}
-			if err != nil {
-				continue
-			}
-
-			for _, md := range *mds {
-				exporter.debugMetricInfo(md)
-				datapoint, err := getDatapoint(md.Datapoints)
+			taskCount++
+			workChan <- true
+			go func(tmpMetrics []metricdata.Metric) {
+				defer func() {
+					<-workChan
+					finishChan <- true
+				}()
+				mds, err := getBatchMetricData(exporter.ClientConfig, &tmpMetrics, exporter.From, exporter.To)
 				if err != nil {
-					logs.Logger.Warnf("Get data point error: %s, the metric is: %s", err.Error(), md.MetricName)
-					continue
+					return
 				}
 
-				labels, values, preResourceName, privateFlag := getOriginalLabelInfo(&md.Dimensions)
-				if isResouceExist(&md.Dimensions, &allResoucesInfo) {
-					labels = exporter.getExtensionLabels(labels, preResourceName, namespace, privateFlag)
-					values = exporter.getExtensionLabelValues(values, &allResoucesInfo, getOriginalID(&md.Dimensions))
-				}
+				for _, md := range *mds {
+					exporter.debugMetricInfo(md)
+					datapoint, err := getDatapoint(md.Datapoints)
+					if err != nil {
+						logs.Logger.Warnf("[%s] Get data point error: %s, the metric is: %s", exporter.txnKey, err.Error(), md.MetricName)
+						continue
+					}
 
-				if len(labels) != len(values) {
-					logs.Logger.Errorf("Inconsistent label and value: expected %d label %#v, but values got %d in %#v",
-						len(labels), labels, len(values), values)
-					continue
-				}
+					labels, values, preResourceName, privateFlag := getOriginalLabelInfo(&md.Dimensions)
+					if isResouceExist(&md.Dimensions, &allResourcesInfo) {
+						labels = exporter.getExtensionLabels(labels, preResourceName, namespace, privateFlag)
+						values = exporter.getExtensionLabelValues(values, &allResourcesInfo, getOriginalID(&md.Dimensions))
+					}
 
-				newMetricName := prometheus.BuildFQName(GetMetricPrefixName(exporter.Prefix, namespace), preResourceName, md.MetricName)
-				if err := sendMetricData(ctx, ch, prometheus.MustNewConstMetric(
-					prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
-					prometheus.GaugeValue, datapoint, values...)); err != nil {
-					logs.Logger.Errorf("Context has canceled, no need to send metric data, metric name: %s", newMetricName)
-				}
-			}
+					if len(labels) != len(values) {
+						logs.Logger.Errorf("[%s] Inconsistent label and value: expected %d label %#v, but values got %d in %#v", exporter.txnKey,
+							len(labels), labels, len(values), values)
+						continue
+					}
 
-			metricTimestamp, err = getMetricDataTimestamp((*mds)[len(*mds)-1].Datapoints)
-			if err != nil {
-				logs.Logger.Warnln("Get metric data timestamp error: ", err.Error())
-			}
+					newMetricName := prometheus.BuildFQName(GetMetricPrefixName(exporter.Prefix, namespace), preResourceName, md.MetricName)
+					if err := sendMetricData(ctx, ch, prometheus.MustNewConstMetric(
+						prometheus.NewDesc(newMetricName, newMetricName, labels, nil),
+						prometheus.GaugeValue, datapoint, values...)); err != nil {
+						logs.Logger.Errorf("[%s] Context has canceled, no need to send metric data, metric name: %s", exporter.txnKey, newMetricName)
+					}
+				}
+			}(tmpMetrics)
+			tmpMetrics = []metricdata.Metric{}
 		}
 	}
-
-	if metricTimestamp == 0 {
-		return
+	for i := taskCount; i > 0; i-- {
+		<-finishChan
 	}
-
-	to64, parseErr := strconv.ParseFloat(exporter.To, 64)
-	if parseErr != nil {
-		logs.Logger.Error("Parse exporter.To error: ", parseErr.Error())
-	}
-	stamp64 := float64(metricTimestamp)
-
-	sub_duration := (to64 - stamp64) / 1000
-	if err := sendMetricData(ctx, ch, prometheus.MustNewConstMetric(
-		prometheus.NewDesc(GetMetricPrefixName(exporter.Prefix, namespace)+"_duration_seconds",
-			namespace, nil, nil), prometheus.GaugeValue, sub_duration)); err != nil {
-		logs.Logger.Errorf("Context has canceled, no need to send metric data, metric name: %s", GetMetricPrefixName(exporter.Prefix, namespace)+"_duration_seconds")
-	}
+	logs.Logger.Debugf("[%s] Finished of set data", exporter.txnKey)
 }
 
 func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
-	periodm, err := time.ParseDuration("-5m")
+	periodm, err := time.ParseDuration("-10m")
 	if err != nil {
-		logs.Logger.Errorln("ParseDuration -5m error:", err.Error())
+		logs.Logger.Errorln("ParseDuration -10m error:", err.Error())
+		return
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -179,9 +183,12 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	to := strconv.FormatInt(int64(now.UnixNano()/1e6), 10)
 	exporter.From = from
 	exporter.To = to
+	exporter.txnKey = fmt.Sprintf("%s-%s-%s", strings.Join(exporter.Namespaces, "-"), exporter.From, exporter.To)
 
 	finishChan := make(chan bool)
+	defer close(finishChan)
 	serviceTotal := 0
+	logs.Logger.Debugf("[%s] Start Collect to data", exporter.txnKey)
 	for _, namespace := range exporter.Namespaces {
 		serviceTotal++
 		go func(ch chan<- prometheus.Metric, namespace string) {
@@ -196,10 +203,11 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 				continue
 			}
 		case <-time.After(30 * time.Second):
-			logs.Logger.Errorf("Error collecting metrics: Timeout making calls, waited for 30s without response")
+			logs.Logger.Errorf("[%s] Error collecting metrics: Timeout making calls, waited for 30s without response", exporter.txnKey)
 			continue
 		}
 	}
+	logs.Logger.Debugf("[%s] End Collect to data", exporter.txnKey)
 }
 
 func sendMetricData(ctx context.Context, ch chan<- prometheus.Metric, metric prometheus.Metric) error {
@@ -217,18 +225,12 @@ func sendMetricData(ctx context.Context, ch chan<- prometheus.Metric, metric pro
 }
 
 func (exporter *BaseHuaweiCloudExporter) debugMetricInfo(md metricdata.MetricData) {
-	logs.Logger.Debugln("Get datapoints of metric begin... (from):", exporter.From)
-	dataJson, err := json.MarshalIndent(md.Datapoints, "", " ")
+	dataJson, err := json.Marshal(md)
 	if err != nil {
-		logs.Logger.Debugln("MarshalIndent Datapoints error: ", err.Error())
+		logs.Logger.Errorf("[%s] Marshal metricData error: %s", exporter.txnKey, err.Error())
+		return
 	}
-	metricJson, err := json.MarshalIndent(md.Dimensions, "", " ")
-	if err != nil {
-		logs.Logger.Debugln("MarshalIndent Dimensions error: ", err.Error())
-	}
-	logs.Logger.Debugln("The datapoints of metric are:" + string(dataJson))
-	logs.Logger.Debugln("The metric value is:", string(metricJson))
-	logs.Logger.Debugln("Get datapoints of metric end. (to):", exporter.To)
+	logs.Logger.Debugf("[%s] Get data points of metric are: %s", exporter.txnKey, string(dataJson))
 }
 
 func isResouceExist(dims *[]metricdata.Dimension, allResouceInfo *map[string][]string) bool {
@@ -248,17 +250,6 @@ func getDatapoint(datapoints []metricdata.Data) (float64, error) {
 	}
 
 	return datapoint, nil
-}
-
-func getMetricDataTimestamp(datapoints []metricdata.Data) (int, error) {
-	var metricTimestamp int
-	if len(datapoints) > 0 {
-		metricTimestamp = (datapoints)[len(datapoints)-1].Timestamp
-	} else {
-		return 0, fmt.Errorf("The data point of metric are not found")
-	}
-
-	return metricTimestamp, nil
 }
 
 func getOriginalID(dimensions *[]metricdata.Dimension) string {
