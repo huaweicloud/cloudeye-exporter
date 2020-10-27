@@ -18,9 +18,10 @@ type CloudAuth struct {
 }
 
 type Global struct {
-	Port       string `yaml:"port"`
-	Prefix     string `yaml:"prefix"`
-	MetricPath string `yaml:"metric_path"`
+	Port        string `yaml:"port"`
+	Prefix      string `yaml:"prefix"`
+	MetricPath  string `yaml:"metric_path"`
+	MaxRoutines int    `yaml:"max_routines"`
 }
 
 type CloudConfig struct {
@@ -58,11 +59,8 @@ func SetDefaultConfigValues(config *CloudConfig) {
 	if config.Global.Prefix == "" {
 		config.Global.Prefix = "huaweicloud"
 	}
-}
 
-//
-//func getFieldString(e *Employee, field string) string {
-//	r := reflect.ValueOf(e)
-//	f := reflect.Indirect(r).FieldByName(field)
-//	return f.String()
-//}
+	if config.Global.MaxRoutines == 0 {
+		config.Global.MaxRoutines = 20
+	}
+}
