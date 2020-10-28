@@ -186,7 +186,6 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	exporter.txnKey = fmt.Sprintf("%s-%s-%s", strings.Join(exporter.Namespaces, "-"), exporter.From, exporter.To)
 
 	finishChan := make(chan bool)
-	defer close(finishChan)
 	serviceTotal := 0
 	logs.Logger.Debugf("[%s] Start Collect to data", exporter.txnKey)
 	for _, namespace := range exporter.Namespaces {
