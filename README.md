@@ -19,6 +19,14 @@ $ cd ~/go/src/github.com/huaweicloud/cloudeye-exporter
 $ go build
 ```
 
+## Building and Running with Docker
+
+```
+$ cp clouds.yml clouds-custom.yml
+$ # Edit clouds-custom.yml
+$ docker build -t you/cloudeye-exporter .
+$ docker -p 8087 run -it --rm -v `pwd`/clouds-custom.yml:/app/clouds.yml you/cloudeye-exporter
+```
 ## Usage
 ```
  ./cloudeye-exporter  -config=clouds.yml
