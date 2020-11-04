@@ -25,7 +25,7 @@ $ go build
 $ cp clouds.yml clouds-custom.yml
 $ # Edit clouds-custom.yml
 $ docker build -t you/cloudeye-exporter .
-$ docker -p 8087 run -it --rm -v `pwd`/clouds-custom.yml:/app/clouds.yml you/cloudeye-exporter
+$ docker run -it -p 8087:8087 --rm -v `pwd`/clouds-custom.yml:/app/clouds.yml you/cloudeye-exporter
 ```
 ## Usage
 ```
