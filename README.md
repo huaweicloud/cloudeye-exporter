@@ -65,7 +65,7 @@ image:
 #    - secretName: your-secret
 #      hosts:
 #        - your.dns.name.com
-#EOF
+EOF
   
 ```
 ## Usage
