@@ -14,6 +14,7 @@ import (
 
 var (
 	clientConfig = flag.String("config", "./clouds.yml", "Path to the cloud configuration file")
+	filterEnable = flag.Bool("filter-enable", false, "Enabling monitoring metric filter")
 	debug        = flag.Bool("debug", false, "If debug the code.")
 )
 
@@ -45,6 +46,11 @@ func main() {
 	config, err := collector.NewCloudConfigFromFile(*clientConfig)
 	if err != nil {
 		logs.Logger.Fatal("New Cloud Config From File error: ", err.Error())
+		return
+	}
+	err = collector.InitFilterConfig(*filterEnable)
+	if err != nil {
+		logs.Logger.Fatal("Init filter Config error: ", err.Error())
 		return
 	}
 
