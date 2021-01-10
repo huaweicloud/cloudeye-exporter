@@ -1,8 +1,9 @@
 package collector
 
 import (
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
+
+	"gopkg.in/yaml.v2"
 )
 
 type CloudAuth struct {
@@ -63,4 +64,31 @@ func SetDefaultConfigValues(config *CloudConfig) {
 	if config.Global.MaxRoutines == 0 {
 		config.Global.MaxRoutines = 20
 	}
+}
+
+var filterConfigMap map[string]map[string][]string
+
+func InitFilterConfig(enable bool)error {
+	filterConfigMap = make(map[string]map[string][]string)
+	if !enable {
+		return nil
+	}
+
+	data, err := ioutil.ReadFile("metric_filter_config.yml")
+	if err != nil {
+		return err
+	}
+
+	err = yaml.Unmarshal(data, &filterConfigMap)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func getMetricConfigMap(namespace string) map[string][]string {
+	if configMap, ok := filterConfigMap[namespace];ok{
+		return configMap
+	}
+	return nil
 }

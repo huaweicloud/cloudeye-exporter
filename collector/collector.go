@@ -87,25 +87,27 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Co
 			logs.Logger.Fatalln(err)
 		}
 	}()
-
-	logs.Logger.Debugf("[%s] Start getAllMetric", exporter.txnKey)
-	allMetrics, err := getAllMetric(exporter.ClientConfig, namespace)
-	if err != nil {
-		logs.Logger.Errorln("[%s] Get all metrics error: %s", exporter.txnKey, err.Error())
-		return
-	}
-	logs.Logger.Debugf("[%s] End getAllMetric, Total number of of metrics:%d", exporter.txnKey, len(*allMetrics))
-
-	if len(*allMetrics) == 0 {
-		logs.Logger.Warnf("[%s] The metric resources of service(%s) are not found.", exporter.txnKey, namespace)
-		return
-	}
-	exporter.MetricLen = len(*allMetrics)
-
 	logs.Logger.Debugf("[%s] Start getAllResource, namespace:%s", exporter.txnKey, namespace)
-	allResourcesInfo := exporter.getAllResource(namespace)
+	allResourcesInfo, filterMetrics := exporter.getAllResource(namespace)
 	logs.Logger.Debugf("[%s] End getAllResource, Total number of of resource:%d", exporter.txnKey, len(allResourcesInfo))
+	allMetrics := filterMetrics
+	var err error
+	if len(*allMetrics) == 0 {
+		logs.Logger.Debugf("[%s] Start getAllMetric", exporter.txnKey)
+		allMetrics, err = getAllMetric(exporter.ClientConfig, namespace)
+		if err != nil {
+			logs.Logger.Errorln("[%s] Get all metrics error: %s", exporter.txnKey, err.Error())
+			return
+		}
+		logs.Logger.Debugf("[%s] End getAllMetric, Total number of of metrics:%d", exporter.txnKey, len(*allMetrics))
 
+		if len(*allMetrics) == 0 {
+			logs.Logger.Warnf("[%s] The metric resources of service(%s) are not found.", exporter.txnKey, namespace)
+			return
+		}
+	}
+
+	exporter.MetricLen = len(*allMetrics)
 	count := 0
 	end := len(*allMetrics)
 	tmpMetrics := []metricdata.Metric{}
