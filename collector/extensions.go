@@ -19,7 +19,8 @@ var defaultExtensionLabels = map[string][]string{
 	"sys_elb":                 []string{"name", "provider", "vip_address"},
 	"sys_elb_listener":        []string{"name", "port"},
 	"sys_nat":                 []string{"name"},
-	"sys_rds":                 []string{"port", "name", "role"},
+	"sys_rds":                 []string{"name"},
+	"sys_rds_instance":        []string{"port", "name", "role"},
 	"sys_dcs":                 []string{"ip", "port", "name", "engine"},
 	"sys_dms":                 []string{"name"},
 	"sys_dms_instance":        []string{"name", "engine_version", "resource_spec_code", "connect_address", "port"},
@@ -217,6 +218,7 @@ func (exporter *BaseHuaweiCloudExporter) getRdsResourceInfo() (map[string][]stri
 		}
 		configMap := getMetricConfigMap("SYS.RDS")
 		for _, rds := range allrds.Instances {
+			resourceInfos[rds.Id] = []string{rds.Name}
 			for _, node := range rds.Nodes {
 				resourceInfos[node.Id] = []string{fmt.Sprintf("%d", rds.Port), node.Name, node.Role}
 			}

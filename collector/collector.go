@@ -27,11 +27,14 @@ var defaultLabelsToResource = map[string]string{
 }
 
 var privateResourceFlag = map[string]string{
-	"kafka_broker":     "broker",
-	"kafka_topics":     "topics",
-	"kafka_partitions": "partitions",
-	"kafka_groups":     "groups",
-	"rabbitmq_node":    "rabbitmq_node",
+	"kafka_broker":              "broker",
+	"kafka_topics":              "topics",
+	"kafka_partitions":          "partitions",
+	"kafka_groups":              "groups",
+	"rabbitmq_node":             "rabbitmq_node",
+	"rds_instance_id":           "instance",
+	"postgresql_instance_id":    "instance",
+	"rds_instance_sqlserver_id": "instance",
 }
 
 type BaseHuaweiCloudExporter struct {
@@ -61,14 +64,17 @@ func GetMonitoringCollector(configpath string, namespaces []string) (*BaseHuawei
 		os.Exit(1)
 	}
 
-	exporter := &BaseHuaweiCloudExporter{
-		Namespaces:  namespaces,
-		Prefix:      globalConfig.Global.Prefix,
-		MaxRoutines: globalConfig.Global.MaxRoutines,
+	client, err := InitConfig(globalConfig)
+	if err != nil {
+		return nil, err
 	}
 
-	exporter.ClientConfig = initClient(globalConfig)
-
+	exporter := &BaseHuaweiCloudExporter{
+		Namespaces:   namespaces,
+		Prefix:       globalConfig.Global.Prefix,
+		MaxRoutines:  globalConfig.Global.MaxRoutines,
+		ClientConfig: client,
+	}
 	return exporter, nil
 }
 
@@ -320,13 +326,4 @@ func (exporter *BaseHuaweiCloudExporter) getExtensionLabelValues(
 	}
 
 	return dimensionValues
-}
-
-func initClient(global_config *CloudConfig) *Config {
-	c, err := InitConfig(global_config)
-	if err != nil {
-		logs.Logger.Fatalln("Init config error: ", err.Error())
-	}
-
-	return c
 }
