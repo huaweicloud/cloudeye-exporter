@@ -30,6 +30,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	logs.Logger.Infof("Start to monitor services: %s", targets)
 	exporter, err := collector.GetMonitoringCollector(*clientConfig, targets)
+	if err != nil {
+		w.WriteHeader(500)
+		_, err := w.Write([]byte(err.Error()))
+		if err != nil {
+			logs.Logger.Errorf("Fail to write response body, error: %s", err.Error())
+			return
+		}
+		return
+	}
 	registry.MustRegister(exporter)
 	if err != nil {
 		logs.Logger.Errorf("Fail to start to morning services: %+v, err: %s", targets, err.Error())
