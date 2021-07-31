@@ -19,10 +19,11 @@ type CloudAuth struct {
 }
 
 type Global struct {
-	Port        string `yaml:"port"`
-	Prefix      string `yaml:"prefix"`
-	MetricPath  string `yaml:"metric_path"`
-	MaxRoutines int    `yaml:"max_routines"`
+	Port            string `yaml:"port"`
+	Prefix          string `yaml:"prefix"`
+	MetricPath      string `yaml:"metric_path"`
+	MaxRoutines     int    `yaml:"max_routines"`
+	ScrapeBatchSize int    `yaml:"scrape_batch_size"`
 }
 
 type CloudConfig struct {
@@ -64,11 +65,15 @@ func SetDefaultConfigValues(config *CloudConfig) {
 	if config.Global.MaxRoutines == 0 {
 		config.Global.MaxRoutines = 20
 	}
+
+	if config.Global.ScrapeBatchSize == 0 {
+		config.Global.ScrapeBatchSize = 10
+	}
 }
 
 var filterConfigMap map[string]map[string][]string
 
-func InitFilterConfig(enable bool)error {
+func InitFilterConfig(enable bool) error {
 	filterConfigMap = make(map[string]map[string][]string)
 	if !enable {
 		return nil
@@ -87,7 +92,7 @@ func InitFilterConfig(enable bool)error {
 }
 
 func getMetricConfigMap(namespace string) map[string][]string {
-	if configMap, ok := filterConfigMap[namespace];ok{
+	if configMap, ok := filterConfigMap[namespace]; ok {
 		return configMap
 	}
 	return nil

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"unsafe"
 
 	"github.com/huaweicloud/cloudeye-exporter/logs"
 	"github.com/huaweicloud/golangsdk"
@@ -182,18 +183,11 @@ func getELBlient(c *Config) (*golangsdk.ServiceClient, error) {
 	return client, nil
 }
 
-func getDataMetric(metric metrics.Metric) metricdata.Metric {
+func transMetric(metric metrics.Metric) metricdata.Metric {
 	var m metricdata.Metric
 	m.Namespace = metric.Namespace
 	m.MetricName = metric.MetricName
-	m.Dimensions = []metricdata.Dimension{}
-	for _, dim := range metric.Dimensions {
-		nd := metricdata.Dimension{}
-		nd.Name = dim.Name
-		nd.Value = dim.Value
-		m.Dimensions = append(m.Dimensions, nd)
-	}
-
+	m.Dimensions = *(*[]metricdata.Dimension)(unsafe.Pointer(&metric.Dimensions))
 	return m
 }
 
@@ -236,17 +230,17 @@ func getBatchMetricData(c *Config, metrics *[]metricdata.Metric,
 func getAllMetric(client *Config, namespace string) (*[]metrics.Metric, error) {
 	c, err := getCESClient(client)
 	if err != nil {
-		logs.Logger.Errorf("Get all metric client: %s", err.Error())
+		logs.Logger.Errorf("Get CES client error: %s", err.Error())
 		return nil, err
 	}
 	limit := 1000
-	allpage, err := metrics.List(c, metrics.ListOpts{Namespace: namespace, Limit: &limit}).AllPages()
+	allpages, err := metrics.List(c, metrics.ListOpts{Namespace: namespace, Limit: &limit}).AllPages()
 	if err != nil {
 		logs.Logger.Errorf("Get all metric all pages error: %s", err.Error())
 		return nil, err
 	}
 
-	v, err := metrics.ExtractAllPagesMetrics(allpage)
+	v, err := metrics.ExtractAllPagesMetrics(allpages)
 	if err != nil {
 		logs.Logger.Errorf("Get all metric pages error: %s", err.Error())
 		return nil, err

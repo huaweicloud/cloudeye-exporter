@@ -79,7 +79,7 @@ func (exporter *BaseHuaweiCloudExporter) getElbResourceInfo() (map[string][]stri
 	filterMetrics := make([]metrics.Metric, 0)
 	elbInfo.Lock()
 	defer elbInfo.Unlock()
-	if elbInfo.Info == nil || time.Now().Unix() > elbInfo.TTL || elbInfo.LenMetric != exporter.MetricLen {
+	if elbInfo.Info == nil || time.Now().Unix() > elbInfo.TTL {
 		allELBs, err := getAllLoadBalancer(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all LoadBalancer error:", err.Error())
@@ -118,7 +118,6 @@ func (exporter *BaseHuaweiCloudExporter) getElbResourceInfo() (map[string][]stri
 		elbInfo.Info = resourceInfos
 		elbInfo.FilterMetrics = filterMetrics
 		elbInfo.TTL = time.Now().Add(TTL).Unix()
-		elbInfo.LenMetric = exporter.MetricLen
 	}
 	return elbInfo.Info, &elbInfo.FilterMetrics
 }
@@ -174,7 +173,7 @@ func (exporter *BaseHuaweiCloudExporter) getNatResourceInfo() (map[string][]stri
 	filterMetrics := make([]metrics.Metric, 0)
 	natInfo.Lock()
 	defer natInfo.Unlock()
-	if natInfo.Info == nil || time.Now().Unix() > natInfo.TTL || natInfo.LenMetric != exporter.MetricLen {
+	if natInfo.Info == nil || time.Now().Unix() > natInfo.TTL {
 		allnat, err := getAllNat(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all Nat error:", err.Error())
@@ -197,7 +196,6 @@ func (exporter *BaseHuaweiCloudExporter) getNatResourceInfo() (map[string][]stri
 		natInfo.Info = resourceInfos
 		natInfo.FilterMetrics = filterMetrics
 		natInfo.TTL = time.Now().Add(TTL).Unix()
-		natInfo.LenMetric = exporter.MetricLen
 	}
 	return natInfo.Info, &natInfo.FilterMetrics
 }
@@ -207,7 +205,7 @@ func (exporter *BaseHuaweiCloudExporter) getRdsResourceInfo() (map[string][]stri
 	filterMetrics := make([]metrics.Metric, 0)
 	rdsInfo.Lock()
 	defer rdsInfo.Unlock()
-	if rdsInfo.Info == nil || time.Now().Unix() > rdsInfo.TTL || rdsInfo.LenMetric != exporter.MetricLen {
+	if rdsInfo.Info == nil || time.Now().Unix() > rdsInfo.TTL {
 		allrds, err := getAllRds(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all Rds error:", err.Error())
@@ -242,7 +240,6 @@ func (exporter *BaseHuaweiCloudExporter) getRdsResourceInfo() (map[string][]stri
 		rdsInfo.Info = resourceInfos
 		rdsInfo.FilterMetrics = filterMetrics
 		rdsInfo.TTL = time.Now().Add(TTL).Unix()
-		rdsInfo.LenMetric = exporter.MetricLen
 	}
 	return rdsInfo.Info, &rdsInfo.FilterMetrics
 }
@@ -251,7 +248,7 @@ func (exporter *BaseHuaweiCloudExporter) getDmsResourceInfo() (map[string][]stri
 	resourceInfos := map[string][]string{}
 	dmsInfo.Lock()
 	defer dmsInfo.Unlock()
-	if dmsInfo.Info == nil || time.Now().Unix() > dmsInfo.TTL || dmsInfo.LenMetric != exporter.MetricLen {
+	if dmsInfo.Info == nil || time.Now().Unix() > dmsInfo.TTL {
 		allDmsInstance, err := getAllDms(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all Dms error:", err.Error())
@@ -278,7 +275,6 @@ func (exporter *BaseHuaweiCloudExporter) getDmsResourceInfo() (map[string][]stri
 
 		dmsInfo.Info = resourceInfos
 		dmsInfo.TTL = time.Now().Add(TTL).Unix()
-		dmsInfo.LenMetric = exporter.MetricLen
 	}
 	return dmsInfo.Info, &dmsInfo.FilterMetrics
 }
@@ -288,7 +284,7 @@ func (exporter *BaseHuaweiCloudExporter) getDcsResourceInfo() (map[string][]stri
 	filterMetrics := make([]metrics.Metric, 0)
 	dcsInfo.Lock()
 	defer dcsInfo.Unlock()
-	if dcsInfo.Info == nil || time.Now().Unix() > dcsInfo.TTL || dcsInfo.LenMetric != exporter.MetricLen {
+	if dcsInfo.Info == nil || time.Now().Unix() > dcsInfo.TTL {
 		allDcs, err := getAllDcs(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all Dcs error:", err.Error())
@@ -318,7 +314,6 @@ func (exporter *BaseHuaweiCloudExporter) getDcsResourceInfo() (map[string][]stri
 		dcsInfo.Info = resourceInfos
 		dcsInfo.FilterMetrics = filterMetrics
 		dcsInfo.TTL = time.Now().Add(TTL).Unix()
-		dcsInfo.LenMetric = exporter.MetricLen
 	}
 	return dcsInfo.Info, &dcsInfo.FilterMetrics
 }
@@ -327,7 +322,7 @@ func (exporter *BaseHuaweiCloudExporter) getVpcResourceInfo() (map[string][]stri
 	resourceInfos := map[string][]string{}
 	vpcInfo.Lock()
 	defer vpcInfo.Unlock()
-	if vpcInfo.Info == nil || time.Now().Unix() > vpcInfo.TTL || vpcInfo.LenMetric != exporter.MetricLen {
+	if vpcInfo.Info == nil || time.Now().Unix() > vpcInfo.TTL {
 		allPublicIps, err := getAllPublicIp(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all PublicIp error:", err.Error())
@@ -351,7 +346,6 @@ func (exporter *BaseHuaweiCloudExporter) getVpcResourceInfo() (map[string][]stri
 
 		vpcInfo.Info = resourceInfos
 		vpcInfo.TTL = time.Now().Add(TTL).Unix()
-		vpcInfo.LenMetric = exporter.MetricLen
 	}
 	return vpcInfo.Info, &vpcInfo.FilterMetrics
 }
@@ -360,7 +354,7 @@ func (exporter *BaseHuaweiCloudExporter) getEvsResourceInfo() (map[string][]stri
 	resourceInfos := map[string][]string{}
 	evsInfo.Lock()
 	defer evsInfo.Unlock()
-	if evsInfo.Info == nil || time.Now().Unix() > evsInfo.TTL || evsInfo.LenMetric != exporter.MetricLen {
+	if evsInfo.Info == nil || time.Now().Unix() > evsInfo.TTL {
 		allVolumes, err := getAllVolume(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorf("Get all Volume error: %s", err.Error())
@@ -379,7 +373,6 @@ func (exporter *BaseHuaweiCloudExporter) getEvsResourceInfo() (map[string][]stri
 
 		evsInfo.Info = resourceInfos
 		evsInfo.TTL = time.Now().Add(TTL).Unix()
-		evsInfo.LenMetric = exporter.MetricLen
 	}
 	return evsInfo.Info, &evsInfo.FilterMetrics
 }
@@ -388,7 +381,7 @@ func (exporter *BaseHuaweiCloudExporter) getEcsResourceInfo() (map[string][]stri
 	resourceInfos := map[string][]string{}
 	ecsInfo.Lock()
 	defer ecsInfo.Unlock()
-	if ecsInfo.Info == nil || time.Now().Unix() > ecsInfo.TTL || ecsInfo.LenMetric != exporter.MetricLen {
+	if ecsInfo.Info == nil || time.Now().Unix() > ecsInfo.TTL {
 		allServers, err := getAllServer(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all Server error:", err.Error())
@@ -404,7 +397,6 @@ func (exporter *BaseHuaweiCloudExporter) getEcsResourceInfo() (map[string][]stri
 
 		ecsInfo.Info = resourceInfos
 		ecsInfo.TTL = time.Now().Add(TTL).Unix()
-		ecsInfo.LenMetric = exporter.MetricLen
 	}
 	return ecsInfo.Info, &ecsInfo.FilterMetrics
 }
@@ -413,7 +405,7 @@ func (exporter *BaseHuaweiCloudExporter) getAsResourceInfo() (map[string][]strin
 	resourceInfos := map[string][]string{}
 	asInfo.Lock()
 	defer asInfo.Unlock()
-	if asInfo.Info == nil || time.Now().Unix() > asInfo.TTL || asInfo.LenMetric != exporter.MetricLen {
+	if asInfo.Info == nil || time.Now().Unix() > asInfo.TTL {
 		allGroups, err := getAllGroup(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all Group error:", err.Error())
@@ -429,7 +421,6 @@ func (exporter *BaseHuaweiCloudExporter) getAsResourceInfo() (map[string][]strin
 
 		asInfo.Info = resourceInfos
 		asInfo.TTL = time.Now().Add(TTL).Unix()
-		asInfo.LenMetric = exporter.MetricLen
 	}
 	return asInfo.Info, &asInfo.FilterMetrics
 }
@@ -438,7 +429,7 @@ func (exporter *BaseHuaweiCloudExporter) getFunctionGraphResourceInfo() (map[str
 	resourceInfos := map[string][]string{}
 	fgsInfo.Lock()
 	defer fgsInfo.Unlock()
-	if fgsInfo.Info == nil || time.Now().Unix() > fgsInfo.TTL || fgsInfo.LenMetric != exporter.MetricLen {
+	if fgsInfo.Info == nil || time.Now().Unix() > fgsInfo.TTL {
 		functionList, err := getAllFunction(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all Function error:", err.Error())
@@ -454,7 +445,6 @@ func (exporter *BaseHuaweiCloudExporter) getFunctionGraphResourceInfo() (map[str
 
 		fgsInfo.Info = resourceInfos
 		fgsInfo.TTL = time.Now().Add(TTL).Unix()
-		fgsInfo.LenMetric = exporter.MetricLen
 	}
 	return fgsInfo.Info, &fgsInfo.FilterMetrics
 }
