@@ -2,6 +2,8 @@
 
 Prometheus cloudeye exporter for [Huaweicloud](https://www.huaweicloud.com/).
 
+[中文](./README_cn.md)
+
 ## Download
 ```
 $ git clone https://github.com/huaweicloud/cloudeye-exporter
