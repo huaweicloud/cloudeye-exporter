@@ -27,8 +27,8 @@ global:
 auth:
 auth_url: "https://iam.cn-north-1.myhwclouds.com/v3"
 project_name: "cn-north-1"
-access_key: "xdfsdfsdfsdfsdfsdf"
-secret_key: "xsdfsddfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfdsfsd"
+access_key: ""
+secret_key: ""
 region: "cn-north-1"
 ```
 注：默认的监控端口为8087.
