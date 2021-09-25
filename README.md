@@ -21,6 +21,55 @@ $ cd ~/go/src/github.com/huaweicloud/cloudeye-exporter
 $ go build
 ```
 
+## Building and Running with Docker
+
+```shell script
+cp clouds.yml clouds-custom.yml
+# Edit clouds-custom.yml
+docker build -t you/cloudeye-exporter .
+docker run -it -p 8087:8087 --rm -v `pwd`/clouds-custom.yml:/app/clouds.yml you/cloudeye-exporter
+```
+
+## Using the Helm Chart
+
+```shell script
+# Fill the blanks
+export REPO=you/cloudeye-exporter
+export OS_DOMAIN_NAME=
+export OS_USERNAME=
+export OS_PASSWORD=
+export OS_PROJECT_NAME=
+export OS_AUTH_URL=
+export OS_REGION_NAME=
+
+cat <<EOF | helm install my -f - charts/cloudeye-exporter
+cloudConfig:
+  auth:
+    auth_url: ${OS_AUTH_URL}
+    project_name: ${OS_PROJECT_NAME}
+    user_name: ${OS_USERNAME}
+    password: ${OS_PASSWORD}
+    domain-name: ${OS_DOMAIN_NAME}
+    region: ${OS_REGION_NAME}
+
+image:
+  repository: ${REPO}
+  pullPolicy: IfNotPresent
+  tag: "1.1.2"
+#ingress:
+#  enabled: true
+#  annotations:
+#    kubernetes.io/ingress.class: nginx
+#  hosts:
+#    - host: your.dns.name.com
+#      paths: [ "/" ]
+#  tls:
+#    - secretName: your-secret
+#      hosts:
+#        - your.dns.name.com
+EOF
+  
+```
 ## Usage
 ```
  ./cloudeye-exporter  -config=clouds.yml
