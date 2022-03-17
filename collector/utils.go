@@ -1,99 +1,100 @@
 package collector
 
 import (
-	"io/ioutil"
+	"fmt"
+	"regexp"
+	"sort"
+	"strings"
+	"sync"
+	"time"
 
-	"gopkg.in/yaml.v2"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
+
+	"github.com/huaweicloud/cloudeye-exporter/logs"
 )
 
-type CloudAuth struct {
-	ProjectName string `yaml:"project_name"`
-	ProjectID   string `yaml:"project_id"`
-	DomainName  string `yaml:"domain_name"`
-	AccessKey   string `yaml:"access_key"`
-	Region      string `yaml:"region"`
-	SecretKey   string `yaml:"secret_key"`
-	AuthURL     string `yaml:"auth_url"`
-	UserName    string `yaml:"user_name"`
-	Password    string `yaml:"password"`
-}
+const TTL = time.Hour * 3
 
-type Global struct {
-	Port            string `yaml:"port"`
-	Prefix          string `yaml:"prefix"`
-	MetricPath      string `yaml:"metric_path"`
-	MaxRoutines     int    `yaml:"max_routines"`
-	ScrapeBatchSize int    `yaml:"scrape_batch_size"`
-}
+var tagRegexp *regexp.Regexp
 
-type CloudConfig struct {
-	Auth   CloudAuth `yaml:"auth"`
-	Global Global    `yaml:"global"`
-}
-
-func NewCloudConfigFromFile(file string) (*CloudConfig, error) {
-	var config CloudConfig
-
-	data, err := ioutil.ReadFile(file)
+func init() {
+	var err error
+	tagRegexp, err = regexp.Compile("^[A-Za-z_]+$")
 	if err != nil {
-		return nil, err
-	}
-
-	err = yaml.Unmarshal(data, &config)
-	if err != nil {
-		return nil, err
-	}
-
-	SetDefaultConfigValues(&config)
-
-	return &config, err
-}
-
-func SetDefaultConfigValues(config *CloudConfig) {
-	if config.Global.Port == "" {
-		config.Global.Port = ":8087"
-	}
-
-	if config.Global.MetricPath == "" {
-		config.Global.MetricPath = "/metrics"
-	}
-
-	if config.Global.Prefix == "" {
-		config.Global.Prefix = "huaweicloud"
-	}
-
-	if config.Global.MaxRoutines == 0 {
-		config.Global.MaxRoutines = 20
-	}
-
-	if config.Global.ScrapeBatchSize == 0 {
-		config.Global.ScrapeBatchSize = 10
+		logs.Logger.Error("init tag regexp error: %s", err.Error())
 	}
 }
 
-var filterConfigMap map[string]map[string][]string
-
-func InitFilterConfig(enable bool) error {
-	filterConfigMap = make(map[string]map[string][]string)
-	if !enable {
-		return nil
-	}
-
-	data, err := ioutil.ReadFile("metric_filter_config.yml")
-	if err != nil {
-		return err
-	}
-
-	err = yaml.Unmarshal(data, &filterConfigMap)
-	if err != nil {
-		return err
-	}
-	return nil
+type serversInfo struct {
+	TTL           int64
+	LabelInfo     map[string]labelInfo
+	FilterMetrics []model.MetricInfoList
+	sync.Mutex
 }
 
-func getMetricConfigMap(namespace string) map[string][]string {
-	if configMap, ok := filterConfigMap[namespace]; ok {
-		return configMap
+type labelInfo struct {
+	Name  []string
+	Value []string
+}
+
+type RmsInfo struct {
+	Id   string
+	Name string
+	EpId string
+	Tags map[string]string
+}
+
+func GetResourceKeyFromMetricInfo(metric model.MetricInfoList) string {
+	sort.Slice(metric.Dimensions, func(i, j int) bool {
+		return metric.Dimensions[i].Name < metric.Dimensions[j].Name
+	})
+	dimValuesList := make([]string, 0, len(metric.Dimensions))
+	for _, dim := range metric.Dimensions {
+		dimValuesList = append(dimValuesList, dim.Value)
 	}
-	return nil
+	return strings.Join(dimValuesList, ".")
+}
+
+func GetResourceKeyFromMetricData(metric model.BatchMetricData) string {
+	sort.Slice(*metric.Dimensions, func(i, j int) bool {
+		return (*metric.Dimensions)[i].Name < (*metric.Dimensions)[j].Name
+	})
+	dimValuesList := make([]string, 0, len(*metric.Dimensions))
+	for _, dim := range *metric.Dimensions {
+		dimValuesList = append(dimValuesList, dim.Value)
+	}
+	return strings.Join(dimValuesList, ".")
+}
+
+func getEndpoint(server, version string) string {
+	return fmt.Sprintf("https://%s/%s", strings.Replace(host, "iam", server, 1), version)
+}
+
+// 标签只允许大写字母，小写字母和下划线，过滤tags中有效的tag
+func getTags(tags map[string]string) ([]string, []string) {
+	var keys, values []string
+	for key, value := range tags {
+		valid := tagRegexp.MatchString(key)
+		if !valid {
+			continue
+		}
+		keys = append(keys, key)
+		values = append(values, value)
+	}
+	return keys, values
+}
+
+type ResourceBaseInfo struct {
+	ID   string
+	Name string
+	EpId string
+	Tags map[string]string
+}
+
+func getDimsNameKey(dims []model.MetricsDimension) string {
+	dimsNamesList := make([]string, 0, len(dims))
+	for _, dim := range dims {
+		dimsNamesList = append(dimsNamesList, dim.Name)
+	}
+	return strings.Join(dimsNamesList, ",")
 }

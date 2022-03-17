@@ -1,0 +1,25 @@
+package model
+
+import (
+	"encoding/json"
+
+	"strings"
+)
+
+// Response Object
+type UpdateIpGroupResponse struct {
+	Ipgroup *IpGroup `json:"ipgroup,omitempty"`
+	// 请求ID。  注：自动生成 。
+
+	RequestId      *string `json:"request_id,omitempty"`
+	HttpStatusCode int     `json:"-"`
+}
+
+func (o UpdateIpGroupResponse) String() string {
+	data, err := json.Marshal(o)
+	if err != nil {
+		return "UpdateIpGroupResponse struct{}"
+	}
+
+	return strings.Join([]string{"UpdateIpGroupResponse", string(data)}, " ")
+}

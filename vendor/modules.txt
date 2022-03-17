@@ -1,56 +1,63 @@
-# github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
-github.com/alecthomas/template
-github.com/alecthomas/template/parse
-# github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d
-github.com/alecthomas/units
 # github.com/beorn7/perks v1.0.1
 github.com/beorn7/perks/quantile
 # github.com/cespare/xxhash/v2 v2.1.1
 github.com/cespare/xxhash/v2
+# github.com/cihub/seelog v0.0.0-20191126193922-f561c5e57575
+## explicit
+github.com/cihub/seelog
+github.com/cihub/seelog/archive
+github.com/cihub/seelog/archive/gzip
+github.com/cihub/seelog/archive/tar
+github.com/cihub/seelog/archive/zip
 # github.com/golang/protobuf v1.4.2
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
-# github.com/huaweicloud/golangsdk v0.0.0-20200703083934-0708c52f1c75
+# github.com/huaweicloud/huaweicloud-sdk-go-v3 v0.0.65
 ## explicit
-github.com/huaweicloud/golangsdk
-github.com/huaweicloud/golangsdk/internal
-github.com/huaweicloud/golangsdk/openstack
-github.com/huaweicloud/golangsdk/openstack/autoscaling/v1/groups
-github.com/huaweicloud/golangsdk/openstack/blockstorage/v2/volumes
-github.com/huaweicloud/golangsdk/openstack/ces/v1/metricdata
-github.com/huaweicloud/golangsdk/openstack/ces/v1/metrics
-github.com/huaweicloud/golangsdk/openstack/compute/v2/flavors
-github.com/huaweicloud/golangsdk/openstack/compute/v2/images
-github.com/huaweicloud/golangsdk/openstack/compute/v2/servers
-github.com/huaweicloud/golangsdk/openstack/dcs/v1/instances
-github.com/huaweicloud/golangsdk/openstack/dms/v1/instances
-github.com/huaweicloud/golangsdk/openstack/dms/v1/queues
-github.com/huaweicloud/golangsdk/openstack/fgs/v2/function
-github.com/huaweicloud/golangsdk/openstack/identity/v2/tenants
-github.com/huaweicloud/golangsdk/openstack/identity/v2/tokens
-github.com/huaweicloud/golangsdk/openstack/identity/v3/domains
-github.com/huaweicloud/golangsdk/openstack/identity/v3/endpoints
-github.com/huaweicloud/golangsdk/openstack/identity/v3/projects
-github.com/huaweicloud/golangsdk/openstack/identity/v3/services
-github.com/huaweicloud/golangsdk/openstack/identity/v3/tokens
-github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/l7policies
-github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/listeners
-github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/loadbalancers
-github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/monitors
-github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/lbaas_v2/pools
-github.com/huaweicloud/golangsdk/openstack/networking/v2/extensions/natgateways
-github.com/huaweicloud/golangsdk/openstack/rds/v3/instances
-github.com/huaweicloud/golangsdk/openstack/utils
-github.com/huaweicloud/golangsdk/openstack/vpc/v1/bandwidths
-github.com/huaweicloud/golangsdk/openstack/vpc/v1/publicips
-github.com/huaweicloud/golangsdk/pagination
-# github.com/konsorten/go-windows-terminal-sequences v1.0.3
-github.com/konsorten/go-windows-terminal-sequences
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/cache
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/env
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/global
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/iam
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/signer
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/config
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/httphandler
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/impl
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/region
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/request
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/response
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdkerr
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdktime
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ecs/v2
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ecs/v2/model
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/elb/v3
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/elb/v3/model
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/evs/v2
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/evs/v2/model
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/gaussdbforopengauss/v3
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/gaussdbforopengauss/v3/model
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/iam/v3
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/iam/v3/model
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/rms/v1
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/rms/v1/model
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/rms/v1/region
+# github.com/json-iterator/go v1.1.10
+github.com/json-iterator/go
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
 github.com/matttproud/golang_protobuf_extensions/pbutil
+# github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
+github.com/modern-go/concurrent
+# github.com/modern-go/reflect2 v1.0.1
+github.com/modern-go/reflect2
 # github.com/prometheus/client_golang v1.7.1
 ## explicit
 github.com/prometheus/client_golang/prometheus
@@ -62,20 +69,15 @@ github.com/prometheus/client_model/go
 ## explicit
 github.com/prometheus/common/expfmt
 github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
-github.com/prometheus/common/log
 github.com/prometheus/common/model
 # github.com/prometheus/procfs v0.1.3
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
-# github.com/sirupsen/logrus v1.6.0
-github.com/sirupsen/logrus
 # golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-golang.org/x/sys/windows/registry
-golang.org/x/sys/windows/svc/eventlog
 # google.golang.org/protobuf v1.23.0
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
@@ -107,8 +109,6 @@ google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/known/anypb
 google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/timestamppb
-# gopkg.in/alecthomas/kingpin.v2 v2.2.6
-gopkg.in/alecthomas/kingpin.v2
 # gopkg.in/yaml.v2 v2.3.0
 ## explicit
 gopkg.in/yaml.v2
