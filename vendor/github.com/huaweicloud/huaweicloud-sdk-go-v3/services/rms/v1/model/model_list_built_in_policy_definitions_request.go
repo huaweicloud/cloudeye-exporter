@@ -1,0 +1,23 @@
+package model
+
+import (
+	"encoding/json"
+
+	"strings"
+)
+
+// Request Object
+type ListBuiltInPolicyDefinitionsRequest struct {
+	// 选择接口返回的信息的语言，默认为\"zh-cn\"中文
+
+	XLanguage *string `json:"X-Language,omitempty"`
+}
+
+func (o ListBuiltInPolicyDefinitionsRequest) String() string {
+	data, err := json.Marshal(o)
+	if err != nil {
+		return "ListBuiltInPolicyDefinitionsRequest struct{}"
+	}
+
+	return strings.Join([]string{"ListBuiltInPolicyDefinitionsRequest", string(data)}, " ")
+}

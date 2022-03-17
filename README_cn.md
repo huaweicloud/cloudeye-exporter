@@ -48,22 +48,22 @@ $ cd prometheus-2.14.0.linux-amd64
 2. 配置接入cloudeye exporter结点
 
    修改prometheus中的prometheus.yml文件配置。如下配置所示在scrape_configs下新增job_name名为’huaweicloud’的结点。其中targets中配置的是访问cloudeye-exporter服务的ip地址和端口号，services配置的是你想要监控的服务，比如SYS.VPC,SYS.RDS。
-	```
-	$ vi prometheus.yml
-	global:
-	  scrape_interval: 1m # Set the scrape interval to every 1 minute seconds. Default is every 1 minute.
-	  scrape_timeout: 1m
-	scrape_configs:
-	  - job_name: 'huaweicloud'
-		static_configs:
-		- targets: ['192.168.0.xx:8087']
-		params:
-		  services: ['SYS.VPC,SYS.RDS']
-	```
+   ```
+   $ vi prometheus.yml
+   global:
+     scrape_interval: 1m # Set the scrape interval to every 1 minute seconds. Default is every 1 minute.
+     scrape_timeout: 1m
+   scrape_configs:
+     - job_name: 'huaweicloud'
+       static_configs:
+       - targets: ['192.168.0.xx:8087']
+       params:
+         services: ['SYS.VPC,SYS.RDS']
+   ```
 3. 启动prometheus监控华为云服务
 ```
 ./prometheus
 ```
- * 登录http://127.0.0.1:9090/graph
- * 查看指定指标的监控结果
+* 登录http://127.0.0.1:9090/graph
+* 查看指定指标的监控结果
 

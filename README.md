@@ -35,10 +35,7 @@ Visit metrics in http://localhost:8087/metrics?services=SYS.VPC,SYS.ELB
 ```
 Usage of ./cloudeye-exporter:
   -config string
-        Path to the cloud configuration file (default "./clouds.yml")
-  -debug
-        If debug the code.
- 
+        Path to the cloud configuration file (default "./clouds.yml") 
 ```
 
 ## Example of config file(clouds.yml)
@@ -49,24 +46,13 @@ global:
   port: ":8087"
   metric_path: "/metrics"
   scrape_batch_size: 10
+
 auth:
   auth_url: "https://iam.xxx.yyy.com/v3"
   project_name: "{project_name}"
   access_key: "{access_key}"
   secret_key: "{secret_key}"
   region: "{region}"
-
-```
-or
-
-```
-auth:
-  auth_url: "https://iam.xxx.yyy.com/v3"
-  project_name: "{project_name}"
-  user_name: "{username}"
-  password: "{password}"
-  region: "{region}"
-  domain_name: "{domain_name}"
 
 ```
 
