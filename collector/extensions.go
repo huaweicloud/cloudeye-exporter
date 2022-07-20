@@ -63,6 +63,8 @@ func (exporter *BaseHuaweiCloudExporter) listAllResources(namespace string) (map
 		return exporter.getASResourceInfo()
 	case "SYS.FunctionGraph":
 		return exporter.getFunctionGraphResourceInfo()
+	case "SYS.DRS":
+		return exporter.getDrsResourceInfo()
 	default:
 		return map[string]labelInfo{}, []model.MetricInfoList{}
 	}

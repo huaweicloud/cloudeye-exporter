@@ -828,3 +828,25 @@ SYS.FunctionGraph:
       - minDuration
       - concurrency
       - reservedinstancenum
+SYS.DRS:
+  dim_metric_name:
+    instance_id:
+      - cpu_util
+      - mem_util
+      - network_incoming_bytes_rate
+      - network_outgoing_bytes_rate
+      - disk_read_bytes_rate
+      - disk_write_bytes_rate
+      - disk_util
+      - extract_bytes_rate
+      - extract_rows_rate
+      - extract_latency
+      - apply_bytes_rate
+      - apply_rows_rate
+      - apply_transactions_rate
+      - apply_ddls_rate
+      - apply_latency
+      - apply_average_execute_time
+      - apply_average_commit_time
+      - apply_current_state
+      - apply_thread_workers

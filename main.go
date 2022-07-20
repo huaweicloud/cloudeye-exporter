@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -34,6 +35,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	logs.Logger.Infof("End to monitor services: %s", targets)
 }
 
+func epHandler(w http.ResponseWriter, r *http.Request) {
+	epsInfo, err := collector.GetEPSInfo()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("get eps info error: %s", err.Error()), http.StatusInternalServerError)
+		return
+	}
+	_, err = w.Write([]byte(epsInfo))
+	if err != nil {
+		logs.Logger.Errorf("Response to caller error: %s", err.Error())
+	}
+}
+
 func main() {
 	flag.Parse()
 	logs.InitLog()
@@ -49,6 +62,7 @@ func main() {
 	}
 
 	http.HandleFunc(collector.CloudConf.Global.MetricPath, handler)
+	http.HandleFunc(collector.CloudConf.Global.EpsInfoPath, epHandler)
 
 	logs.Logger.Info("Start server at ", collector.CloudConf.Global.Port)
 	if err := http.ListenAndServe(collector.CloudConf.Global.Port, nil); err != nil {
