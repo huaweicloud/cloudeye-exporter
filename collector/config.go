@@ -30,6 +30,7 @@ type Global struct {
 	Port            string `yaml:"port"`
 	Prefix          string `yaml:"prefix"`
 	MetricPath      string `yaml:"metric_path"`
+	EpsInfoPath     string `yaml:"eps_path"`
 	MaxRoutines     int    `yaml:"max_routines"`
 	ScrapeBatchSize int    `yaml:"scrape_batch_size"`
 }
@@ -69,6 +70,10 @@ func SetDefaultConfigValues(config *CloudConfig) {
 
 	if config.Global.MetricPath == "" {
 		config.Global.MetricPath = "/metrics"
+	}
+
+	if config.Global.EpsInfoPath == "" {
+		config.Global.EpsInfoPath = "/eps-info"
 	}
 
 	if config.Global.Prefix == "" {
