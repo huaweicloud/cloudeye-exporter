@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"sort"
@@ -84,6 +85,26 @@ func getTags(tags map[string]string) ([]string, []string) {
 	return keys, values
 }
 
+func fmtTags(tagInfo interface{}) map[string]string {
+	bytes, err := json.Marshal(tagInfo)
+	if err != nil {
+		return nil
+	}
+	var tags []struct {
+		Key   string `json:"key,omitempty"`
+		Value string `json:"value,omitempty"`
+	}
+	err = json.Unmarshal(bytes, &tags)
+	if err != nil {
+		return nil
+	}
+	tagMap := make(map[string]string)
+	for _, tag := range tags {
+		tagMap[tag.Key] = tag.Value
+	}
+	return tagMap
+}
+
 type ResourceBaseInfo struct {
 	ID   string
 	Name string
@@ -97,4 +118,33 @@ func getDimsNameKey(dims []model.MetricsDimension) string {
 		dimsNamesList = append(dimsNamesList, dim.Name)
 	}
 	return strings.Join(dimsNamesList, ",")
+}
+
+func buildSingleDimensionMetrics(metricNames []string, namespace, dimName, dimValue string) []model.MetricInfoList {
+	filterMetrics := make([]model.MetricInfoList, len(metricNames))
+	for index := range metricNames {
+		filterMetrics[index] = model.MetricInfoList{
+			Namespace:  namespace,
+			MetricName: metricNames[index],
+			Dimensions: []model.MetricsDimension{
+				{
+					Name:  dimName,
+					Value: dimValue,
+				},
+			},
+		}
+	}
+	return filterMetrics
+}
+
+func buildDimensionMetrics(metricNames []string, namespace string, dimensions []model.MetricsDimension) []model.MetricInfoList {
+	filterMetrics := make([]model.MetricInfoList, len(metricNames))
+	for index := range metricNames {
+		filterMetrics[index] = model.MetricInfoList{
+			Namespace:  namespace,
+			MetricName: metricNames[index],
+			Dimensions: dimensions,
+		}
+	}
+	return filterMetrics
 }

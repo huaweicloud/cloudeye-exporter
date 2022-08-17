@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
@@ -11,13 +11,13 @@ type TrackerConfigBody struct {
 	Channel *ChannelConfigBody `json:"channel"`
 
 	Selector *SelectorConfigBody `json:"selector"`
-	// IAM委托名称
 
+	// IAM委托名称
 	AgencyName string `json:"agency_name"`
 }
 
 func (o TrackerConfigBody) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "TrackerConfigBody struct{}"
 	}

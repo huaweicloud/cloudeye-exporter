@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type ShowResourceHistoryResponse struct {
-	// 资源历史列表
 
+	// 资源历史列表
 	Items *[]HistoryItem `json:"items,omitempty"`
 
 	PageInfo       *PageInfo `json:"page_info,omitempty"`
@@ -17,7 +17,7 @@ type ShowResourceHistoryResponse struct {
 }
 
 func (o ShowResourceHistoryResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowResourceHistoryResponse struct{}"
 	}

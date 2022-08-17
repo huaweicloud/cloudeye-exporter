@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type KeystoneShowCatalogResponse struct {
-	// 服务目录信息列表。
 
+	// 服务目录信息列表。
 	Catalog *[]Catalog `json:"catalog,omitempty"`
 
 	Links          *LinksSelf `json:"links,omitempty"`
@@ -17,7 +17,7 @@ type KeystoneShowCatalogResponse struct {
 }
 
 func (o KeystoneShowCatalogResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "KeystoneShowCatalogResponse struct{}"
 	}

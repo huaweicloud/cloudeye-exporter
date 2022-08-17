@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
@@ -9,14 +9,14 @@ import (
 // Response Object
 type KeystoneListEndpointsResponse struct {
 	Links *Links `json:"links,omitempty"`
-	// 终端节点信息列表。
 
+	// 终端节点信息列表。
 	Endpoints      *[]Endpoint `json:"endpoints,omitempty"`
 	HttpStatusCode int         `json:"-"`
 }
 
 func (o KeystoneListEndpointsResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "KeystoneListEndpointsResponse struct{}"
 	}

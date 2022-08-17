@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,19 +11,19 @@ import (
 
 //
 type DisassociateServerVirtualIpOption struct {
+
 	// 云服务器添加网卡的信息。  约束：解绑虚拟IP时，subnet_id为空字符串
-
 	SubnetId DisassociateServerVirtualIpOptionSubnetId `json:"subnet_id"`
+
 	// 网卡即将配置的虚拟IP的地址。  约束：解绑虚拟IP时，ip_address为空字符串
-
 	IpAddress DisassociateServerVirtualIpOptionIpAddress `json:"ip_address"`
-	// 虚拟IP的allowed_address_pairs属性是否添加网卡的IP/Mac对。
 
+	// 虚拟IP的allowed_address_pairs属性是否添加网卡的IP/Mac对。
 	ReverseBinding *bool `json:"reverse_binding,omitempty"`
 }
 
 func (o DisassociateServerVirtualIpOption) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "DisassociateServerVirtualIpOption struct{}"
 	}
@@ -47,8 +47,12 @@ func GetDisassociateServerVirtualIpOptionSubnetIdEnum() DisassociateServerVirtua
 	}
 }
 
+func (c DisassociateServerVirtualIpOptionSubnetId) Value() string {
+	return c.value
+}
+
 func (c DisassociateServerVirtualIpOptionSubnetId) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *DisassociateServerVirtualIpOptionSubnetId) UnmarshalJSON(b []byte) error {
@@ -81,8 +85,12 @@ func GetDisassociateServerVirtualIpOptionIpAddressEnum() DisassociateServerVirtu
 	}
 }
 
+func (c DisassociateServerVirtualIpOptionIpAddress) Value() string {
+	return c.value
+}
+
 func (c DisassociateServerVirtualIpOptionIpAddress) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *DisassociateServerVirtualIpOptionIpAddress) UnmarshalJSON(b []byte) error {

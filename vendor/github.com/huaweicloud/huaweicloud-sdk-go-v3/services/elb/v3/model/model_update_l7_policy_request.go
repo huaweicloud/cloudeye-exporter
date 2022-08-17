@@ -1,22 +1,22 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type UpdateL7PolicyRequest struct {
-	// 转发策略ID
 
+	// 转发策略ID。
 	L7policyId string `json:"l7policy_id"`
 
 	Body *UpdateL7PolicyRequestBody `json:"body,omitempty"`
 }
 
 func (o UpdateL7PolicyRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "UpdateL7PolicyRequest struct{}"
 	}

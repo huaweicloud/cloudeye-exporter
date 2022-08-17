@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,16 +11,16 @@ import (
 
 // volume信息。
 type OpenGaussVolumeResponse struct {
-	// 磁盘类型。  取值如下，区分大小写：  - ULTRAHIGH，表示SSD。
 
+	// 磁盘类型。  取值如下，区分大小写：  - ULTRAHIGH，表示SSD。 - ESSD，表示急速云盘
 	Type OpenGaussVolumeResponseType `json:"type"`
-	// 磁盘大小。  GaussDB(for openGauss)分布式实例创建时需指定大小：要求必须为（分片数 * 40GB）的倍数，取值范围：（分片数*40GB）~（分片数*16TB）。
 
+	// 磁盘大小。  GaussDB(for openGauss)分布式实例创建时需指定大小：要求必须为（分片数 * 40GB）的倍数，取值范围：（分片数*40GB）~（分片数*16TB）。
 	Size int32 `json:"size"`
 }
 
 func (o OpenGaussVolumeResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "OpenGaussVolumeResponse struct{}"
 	}
@@ -34,6 +34,7 @@ type OpenGaussVolumeResponseType struct {
 
 type OpenGaussVolumeResponseTypeEnum struct {
 	ULTRAHIGH OpenGaussVolumeResponseType
+	ESSD      OpenGaussVolumeResponseType
 }
 
 func GetOpenGaussVolumeResponseTypeEnum() OpenGaussVolumeResponseTypeEnum {
@@ -41,11 +42,18 @@ func GetOpenGaussVolumeResponseTypeEnum() OpenGaussVolumeResponseTypeEnum {
 		ULTRAHIGH: OpenGaussVolumeResponseType{
 			value: "ULTRAHIGH",
 		},
+		ESSD: OpenGaussVolumeResponseType{
+			value: "ESSD",
+		},
 	}
 }
 
+func (c OpenGaussVolumeResponseType) Value() string {
+	return c.value
+}
+
 func (c OpenGaussVolumeResponseType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *OpenGaussVolumeResponseType) UnmarshalJSON(b []byte) error {

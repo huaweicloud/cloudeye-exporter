@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,16 +11,16 @@ import (
 
 // Request Object
 type ShowDomainQuotaRequest struct {
+
 	// 待查询的账号ID，获取方式请参见：[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。
-
 	DomainId string `json:"domain_id"`
-	// 查询配额的类型，取值范围为：user, group, idp, agency, policy, assigment_group_mp, assigment_agency_mp, assigment_group_ep, assigment_user_ep。
 
+	// 查询配额的类型，取值范围为：user, group, idp, agency, policy, assigment_group_mp, assigment_agency_mp, assigment_group_ep, assigment_user_ep。
 	Type *ShowDomainQuotaRequestType `json:"type,omitempty"`
 }
 
 func (o ShowDomainQuotaRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowDomainQuotaRequest struct{}"
 	}
@@ -76,8 +76,12 @@ func GetShowDomainQuotaRequestTypeEnum() ShowDomainQuotaRequestTypeEnum {
 	}
 }
 
+func (c ShowDomainQuotaRequestType) Value() string {
+	return c.value
+}
+
 func (c ShowDomainQuotaRequestType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *ShowDomainQuotaRequestType) UnmarshalJSON(b []byte) error {

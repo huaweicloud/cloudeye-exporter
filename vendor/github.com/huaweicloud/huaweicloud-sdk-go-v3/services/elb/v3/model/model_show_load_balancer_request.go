@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type ShowLoadBalancerRequest struct {
-	// 负载均衡器ID。
 
+	// 负载均衡器ID。
 	LoadbalancerId string `json:"loadbalancer_id"`
 }
 
 func (o ShowLoadBalancerRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowLoadBalancerRequest struct{}"
 	}

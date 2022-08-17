@@ -108,7 +108,9 @@ func (httpRequest *DefaultHttpRequest) GetBodyToBytes() (*bytes.Buffer, error) {
 		if v.Kind() == reflect.String {
 			buf.WriteString(v.Interface().(string))
 		} else {
-			err := json.NewEncoder(buf).Encode(httpRequest.body)
+			encoder := json.NewEncoder(buf)
+			encoder.SetEscapeHTML(false)
+			err := encoder.Encode(httpRequest.body)
 			if err != nil {
 				return nil, err
 			}
@@ -259,7 +261,7 @@ func (httpRequest *DefaultHttpRequest) fillQueryParams(req *http.Request) {
 		}
 	}
 
-	req.URL.RawQuery = strings.ReplaceAll(strings.Trim(q.Encode(), "="), "=&", "&")
+	req.URL.RawQuery = strings.ReplaceAll(strings.ReplaceAll(strings.Trim(q.Encode(), "="), "=&", "&"), "+", "%20")
 }
 
 func (httpRequest *DefaultHttpRequest) CanonicalStringQueryParams(value reflect.Value) string {
@@ -409,6 +411,9 @@ func (builder *HttpRequestBuilder) WithBody(kind string, body interface{}) *Http
 		for i := 0; i < fieldNum; i++ {
 			jsonTag := t.Field(i).Tag.Get("json")
 			if jsonTag != "" {
+				if v.FieldByName(t.Field(i).Name).IsNil() && strings.Contains(jsonTag, "omitempty") {
+					continue
+				}
 				builder.AddFormParam(strings.Split(jsonTag, ",")[0], v.FieldByName(t.Field(i).Name).Interface().(def.FormData))
 			} else {
 				builder.AddFormParam(t.Field(i).Name, v.FieldByName(t.Field(i).Name).Interface().(def.FormData))

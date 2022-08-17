@@ -21,7 +21,9 @@ type FunctionProperties struct {
 	Package  string `json:"package"`
 }
 
-func (exporter *BaseHuaweiCloudExporter) getFunctionGraphResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
+type FunctionGraphInfo struct{}
+
+func (getter FunctionGraphInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]cesmodel.MetricInfoList, 0)
 	functionGraphInfo.Lock()

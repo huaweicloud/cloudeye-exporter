@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type Quotas struct {
-	// 资源配额列表。
 
+	// 资源配额列表。
 	Resources []Resource `json:"resources"`
 }
 
 func (o Quotas) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "Quotas struct{}"
 	}

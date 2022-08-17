@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type DeletePoolRequest struct {
-	// 后端服务器组ID。
 
+	// 后端服务器组ID。
 	PoolId string `json:"pool_id"`
 }
 
 func (o DeletePoolRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "DeletePoolRequest struct{}"
 	}

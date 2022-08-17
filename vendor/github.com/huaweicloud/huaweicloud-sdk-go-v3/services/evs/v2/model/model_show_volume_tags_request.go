@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type ShowVolumeTagsRequest struct {
-	// 云硬盘ID
 
+	// 云硬盘ID
 	VolumeId string `json:"volume_id"`
 }
 
 func (o ShowVolumeTagsRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowVolumeTagsRequest struct{}"
 	}

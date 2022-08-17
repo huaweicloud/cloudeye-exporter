@@ -1,21 +1,21 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type ListVolumeTagsResponse struct {
-	// 所有云硬盘的标签信息
 
+	// 所有云硬盘的标签信息
 	Tags           map[string][]string `json:"tags,omitempty"`
 	HttpStatusCode int                 `json:"-"`
 }
 
 func (o ListVolumeTagsResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListVolumeTagsResponse struct{}"
 	}

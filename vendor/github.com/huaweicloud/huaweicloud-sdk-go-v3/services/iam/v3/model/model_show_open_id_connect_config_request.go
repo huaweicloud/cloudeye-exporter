@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type ShowOpenIdConnectConfigRequest struct {
-	// 身份提供商ID
 
+	// 身份提供商ID
 	IdpId string `json:"idp_id"`
 }
 
 func (o ShowOpenIdConnectConfigRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowOpenIdConnectConfigRequest struct{}"
 	}

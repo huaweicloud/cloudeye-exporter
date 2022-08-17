@@ -23,7 +23,9 @@ type RdsInstanceProperties struct {
 
 var rdsInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getRdsResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type RDSInfo struct{}
+
+func (getter RDSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
 	rdsInfo.Lock()

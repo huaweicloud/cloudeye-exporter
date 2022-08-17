@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,13 +11,13 @@ import (
 
 // 停用企业项目操作
 type DisableAction struct {
-	// 停用操作
 
+	// 停用操作
 	Action DisableActionAction `json:"action"`
 }
 
 func (o DisableAction) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "DisableAction struct{}"
 	}
@@ -41,8 +41,12 @@ func GetDisableActionActionEnum() DisableActionActionEnum {
 	}
 }
 
+func (c DisableActionAction) Value() string {
+	return c.value
+}
+
 func (c DisableActionAction) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *DisableActionAction) UnmarshalJSON(b []byte) error {

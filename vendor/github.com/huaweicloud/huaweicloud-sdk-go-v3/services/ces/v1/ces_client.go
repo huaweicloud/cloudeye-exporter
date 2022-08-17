@@ -2,7 +2,7 @@ package v1
 
 import (
 	http_client "github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
-
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/invoker"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 )
 
@@ -19,7 +19,12 @@ func CesClientBuilder() *http_client.HcHttpClientBuilder {
 	return builder
 }
 
-//批量查询指定时间范围内指定指标的指定粒度的监控数据，目前最多支持500指标的批量查询。 对于不同的period取值和查询的指标数量，默认的最大查询区间(to-from)不同。 规则为\"指标数量*(to-from)/监控周期<=3000\"，若超出阈值，会自动调整from以满足规则。
+// BatchListMetricData 批量查询监控数据
+//
+// 批量查询指定时间范围内指定指标的指定粒度的监控数据，目前最多支持500指标的批量查询。 对于不同的period取值和查询的指标数量，默认的最大查询区间(to-from)不同。 规则为\&quot;指标数量*(to-from)/监控周期&lt;&#x3D;3000\&quot;，若超出阈值，会自动调整from以满足规则。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) BatchListMetricData(request *model.BatchListMetricDataRequest) (*model.BatchListMetricDataResponse, error) {
 	requestDef := GenReqDefForBatchListMetricData()
 
@@ -30,7 +35,18 @@ func (c *CesClient) BatchListMetricData(request *model.BatchListMetricDataReques
 	}
 }
 
-//创建一条告警规则。
+// BatchListMetricDataInvoker 批量查询监控数据
+func (c *CesClient) BatchListMetricDataInvoker(request *model.BatchListMetricDataRequest) *BatchListMetricDataInvoker {
+	requestDef := GenReqDefForBatchListMetricData()
+	return &BatchListMetricDataInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// CreateAlarm 创建告警规则
+//
+// 创建一条告警规则。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) CreateAlarm(request *model.CreateAlarmRequest) (*model.CreateAlarmResponse, error) {
 	requestDef := GenReqDefForCreateAlarm()
 
@@ -41,7 +57,18 @@ func (c *CesClient) CreateAlarm(request *model.CreateAlarmRequest) (*model.Creat
 	}
 }
 
-//创建自定义告警模板。
+// CreateAlarmInvoker 创建告警规则
+func (c *CesClient) CreateAlarmInvoker(request *model.CreateAlarmRequest) *CreateAlarmInvoker {
+	requestDef := GenReqDefForCreateAlarm()
+	return &CreateAlarmInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// CreateAlarmTemplate 创建自定义告警模板
+//
+// 创建自定义告警模板。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) CreateAlarmTemplate(request *model.CreateAlarmTemplateRequest) (*model.CreateAlarmTemplateResponse, error) {
 	requestDef := GenReqDefForCreateAlarmTemplate()
 
@@ -52,7 +79,18 @@ func (c *CesClient) CreateAlarmTemplate(request *model.CreateAlarmTemplateReques
 	}
 }
 
-//上报自定义事件。
+// CreateAlarmTemplateInvoker 创建自定义告警模板
+func (c *CesClient) CreateAlarmTemplateInvoker(request *model.CreateAlarmTemplateRequest) *CreateAlarmTemplateInvoker {
+	requestDef := GenReqDefForCreateAlarmTemplate()
+	return &CreateAlarmTemplateInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// CreateEvents 上报事件
+//
+// 上报自定义事件。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) CreateEvents(request *model.CreateEventsRequest) (*model.CreateEventsResponse, error) {
 	requestDef := GenReqDefForCreateEvents()
 
@@ -63,7 +101,18 @@ func (c *CesClient) CreateEvents(request *model.CreateEventsRequest) (*model.Cre
 	}
 }
 
-//添加一条或多条指标监控数据。
+// CreateEventsInvoker 上报事件
+func (c *CesClient) CreateEventsInvoker(request *model.CreateEventsRequest) *CreateEventsInvoker {
+	requestDef := GenReqDefForCreateEvents()
+	return &CreateEventsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// CreateMetricData 添加监控数据
+//
+// 添加一条或多条指标监控数据。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) CreateMetricData(request *model.CreateMetricDataRequest) (*model.CreateMetricDataResponse, error) {
 	requestDef := GenReqDefForCreateMetricData()
 
@@ -74,7 +123,18 @@ func (c *CesClient) CreateMetricData(request *model.CreateMetricDataRequest) (*m
 	}
 }
 
-//创建资源分组，资源分组支持将各类资源按照业务集中进行分组管理，可以从分组角度查看监控与告警信息，以提升运维效率。
+// CreateMetricDataInvoker 添加监控数据
+func (c *CesClient) CreateMetricDataInvoker(request *model.CreateMetricDataRequest) *CreateMetricDataInvoker {
+	requestDef := GenReqDefForCreateMetricData()
+	return &CreateMetricDataInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// CreateResourceGroup 创建资源分组
+//
+// 创建资源分组，资源分组支持将各类资源按照业务集中进行分组管理，可以从分组角度查看监控与告警信息，以提升运维效率。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) CreateResourceGroup(request *model.CreateResourceGroupRequest) (*model.CreateResourceGroupResponse, error) {
 	requestDef := GenReqDefForCreateResourceGroup()
 
@@ -85,7 +145,18 @@ func (c *CesClient) CreateResourceGroup(request *model.CreateResourceGroupReques
 	}
 }
 
-//删除一条告警规则。
+// CreateResourceGroupInvoker 创建资源分组
+func (c *CesClient) CreateResourceGroupInvoker(request *model.CreateResourceGroupRequest) *CreateResourceGroupInvoker {
+	requestDef := GenReqDefForCreateResourceGroup()
+	return &CreateResourceGroupInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// DeleteAlarm 删除告警规则
+//
+// 删除一条告警规则。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) DeleteAlarm(request *model.DeleteAlarmRequest) (*model.DeleteAlarmResponse, error) {
 	requestDef := GenReqDefForDeleteAlarm()
 
@@ -96,7 +167,18 @@ func (c *CesClient) DeleteAlarm(request *model.DeleteAlarmRequest) (*model.Delet
 	}
 }
 
-//根据ID删除自定义告警模板。
+// DeleteAlarmInvoker 删除告警规则
+func (c *CesClient) DeleteAlarmInvoker(request *model.DeleteAlarmRequest) *DeleteAlarmInvoker {
+	requestDef := GenReqDefForDeleteAlarm()
+	return &DeleteAlarmInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// DeleteAlarmTemplate 删除自定义告警模板
+//
+// 根据ID删除自定义告警模板。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) DeleteAlarmTemplate(request *model.DeleteAlarmTemplateRequest) (*model.DeleteAlarmTemplateResponse, error) {
 	requestDef := GenReqDefForDeleteAlarmTemplate()
 
@@ -107,7 +189,18 @@ func (c *CesClient) DeleteAlarmTemplate(request *model.DeleteAlarmTemplateReques
 	}
 }
 
-//删除一条资源分组。
+// DeleteAlarmTemplateInvoker 删除自定义告警模板
+func (c *CesClient) DeleteAlarmTemplateInvoker(request *model.DeleteAlarmTemplateRequest) *DeleteAlarmTemplateInvoker {
+	requestDef := GenReqDefForDeleteAlarmTemplate()
+	return &DeleteAlarmTemplateInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// DeleteResourceGroup 删除资源分组
+//
+// 删除一条资源分组。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) DeleteResourceGroup(request *model.DeleteResourceGroupRequest) (*model.DeleteResourceGroupResponse, error) {
 	requestDef := GenReqDefForDeleteResourceGroup()
 
@@ -118,7 +211,18 @@ func (c *CesClient) DeleteResourceGroup(request *model.DeleteResourceGroupReques
 	}
 }
 
-//查询告警历史列表。
+// DeleteResourceGroupInvoker 删除资源分组
+func (c *CesClient) DeleteResourceGroupInvoker(request *model.DeleteResourceGroupRequest) *DeleteResourceGroupInvoker {
+	requestDef := GenReqDefForDeleteResourceGroup()
+	return &DeleteResourceGroupInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ListAlarmHistories 查询告警历史
+//
+// 查询告警历史列表。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ListAlarmHistories(request *model.ListAlarmHistoriesRequest) (*model.ListAlarmHistoriesResponse, error) {
 	requestDef := GenReqDefForListAlarmHistories()
 
@@ -129,7 +233,18 @@ func (c *CesClient) ListAlarmHistories(request *model.ListAlarmHistoriesRequest)
 	}
 }
 
-//查询自定义告警模板列表
+// ListAlarmHistoriesInvoker 查询告警历史
+func (c *CesClient) ListAlarmHistoriesInvoker(request *model.ListAlarmHistoriesRequest) *ListAlarmHistoriesInvoker {
+	requestDef := GenReqDefForListAlarmHistories()
+	return &ListAlarmHistoriesInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ListAlarmTemplates 查询自定义告警模板列表
+//
+// 查询自定义告警模板列表
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ListAlarmTemplates(request *model.ListAlarmTemplatesRequest) (*model.ListAlarmTemplatesResponse, error) {
 	requestDef := GenReqDefForListAlarmTemplates()
 
@@ -140,7 +255,18 @@ func (c *CesClient) ListAlarmTemplates(request *model.ListAlarmTemplatesRequest)
 	}
 }
 
-//查询告警规则列表，可以指定分页条件限制结果数量，可以指定排序规则。
+// ListAlarmTemplatesInvoker 查询自定义告警模板列表
+func (c *CesClient) ListAlarmTemplatesInvoker(request *model.ListAlarmTemplatesRequest) *ListAlarmTemplatesInvoker {
+	requestDef := GenReqDefForListAlarmTemplates()
+	return &ListAlarmTemplatesInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ListAlarms 查询告警规则列表
+//
+// 查询告警规则列表，可以指定分页条件限制结果数量，可以指定排序规则。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ListAlarms(request *model.ListAlarmsRequest) (*model.ListAlarmsResponse, error) {
 	requestDef := GenReqDefForListAlarms()
 
@@ -151,7 +277,18 @@ func (c *CesClient) ListAlarms(request *model.ListAlarmsRequest) (*model.ListAla
 	}
 }
 
-//根据事件监控名称，查询该事件发生的详细信息。
+// ListAlarmsInvoker 查询告警规则列表
+func (c *CesClient) ListAlarmsInvoker(request *model.ListAlarmsRequest) *ListAlarmsInvoker {
+	requestDef := GenReqDefForListAlarms()
+	return &ListAlarmsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ListEventDetail 查询某一事件监控详情
+//
+// 根据事件监控名称，查询该事件发生的详细信息。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ListEventDetail(request *model.ListEventDetailRequest) (*model.ListEventDetailResponse, error) {
 	requestDef := GenReqDefForListEventDetail()
 
@@ -162,7 +299,18 @@ func (c *CesClient) ListEventDetail(request *model.ListEventDetailRequest) (*mod
 	}
 }
 
-//查询事件监控列表，包括系统事件和自定义事件。
+// ListEventDetailInvoker 查询某一事件监控详情
+func (c *CesClient) ListEventDetailInvoker(request *model.ListEventDetailRequest) *ListEventDetailInvoker {
+	requestDef := GenReqDefForListEventDetail()
+	return &ListEventDetailInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ListEvents 查询事件监控列表
+//
+// 查询事件监控列表，包括系统事件和自定义事件。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ListEvents(request *model.ListEventsRequest) (*model.ListEventsResponse, error) {
 	requestDef := GenReqDefForListEvents()
 
@@ -173,7 +321,18 @@ func (c *CesClient) ListEvents(request *model.ListEventsRequest) (*model.ListEve
 	}
 }
 
-//查询系统当前可监控指标列表，可以指定指标命名空间、指标名称、维度、排序方式，起始记录和最大记录条数过滤查询结果。
+// ListEventsInvoker 查询事件监控列表
+func (c *CesClient) ListEventsInvoker(request *model.ListEventsRequest) *ListEventsInvoker {
+	requestDef := GenReqDefForListEvents()
+	return &ListEventsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ListMetrics 查询指标列表
+//
+// 查询系统当前可监控指标列表，可以指定指标命名空间、指标名称、维度、排序方式，起始记录和最大记录条数过滤查询结果。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ListMetrics(request *model.ListMetricsRequest) (*model.ListMetricsResponse, error) {
 	requestDef := GenReqDefForListMetrics()
 
@@ -184,7 +343,18 @@ func (c *CesClient) ListMetrics(request *model.ListMetricsRequest) (*model.ListM
 	}
 }
 
-//查询所创建的所有资源分组。
+// ListMetricsInvoker 查询指标列表
+func (c *CesClient) ListMetricsInvoker(request *model.ListMetricsRequest) *ListMetricsInvoker {
+	requestDef := GenReqDefForListMetrics()
+	return &ListMetricsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ListResourceGroup 查询所有资源分组
+//
+// 查询所创建的所有资源分组。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ListResourceGroup(request *model.ListResourceGroupRequest) (*model.ListResourceGroupResponse, error) {
 	requestDef := GenReqDefForListResourceGroup()
 
@@ -195,7 +365,18 @@ func (c *CesClient) ListResourceGroup(request *model.ListResourceGroupRequest) (
 	}
 }
 
-//根据告警ID查询告警规则信息。
+// ListResourceGroupInvoker 查询所有资源分组
+func (c *CesClient) ListResourceGroupInvoker(request *model.ListResourceGroupRequest) *ListResourceGroupInvoker {
+	requestDef := GenReqDefForListResourceGroup()
+	return &ListResourceGroupInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ShowAlarm 查询单条告警规则信息
+//
+// 根据告警ID查询告警规则信息。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ShowAlarm(request *model.ShowAlarmRequest) (*model.ShowAlarmResponse, error) {
 	requestDef := GenReqDefForShowAlarm()
 
@@ -206,7 +387,18 @@ func (c *CesClient) ShowAlarm(request *model.ShowAlarmRequest) (*model.ShowAlarm
 	}
 }
 
-//查询指定时间范围指定事件类型的主机配置数据，可以通过参数指定需要查询的数据维度。注意：该接口提供给HANA场景下SAP Monitor查询主机配置数据，其他场景下查不到主机配置数据。
+// ShowAlarmInvoker 查询单条告警规则信息
+func (c *CesClient) ShowAlarmInvoker(request *model.ShowAlarmRequest) *ShowAlarmInvoker {
+	requestDef := GenReqDefForShowAlarm()
+	return &ShowAlarmInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ShowEventData 查询主机配置数据
+//
+// 查询指定时间范围指定事件类型的主机配置数据，可以通过参数指定需要查询的数据维度。注意：该接口提供给HANA场景下SAP Monitor查询主机配置数据，其他场景下查不到主机配置数据。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ShowEventData(request *model.ShowEventDataRequest) (*model.ShowEventDataResponse, error) {
 	requestDef := GenReqDefForShowEventData()
 
@@ -217,7 +409,18 @@ func (c *CesClient) ShowEventData(request *model.ShowEventDataRequest) (*model.S
 	}
 }
 
-//查询指定时间范围指定指标的指定粒度的监控数据，可以通过参数指定需要查询的数据维度。
+// ShowEventDataInvoker 查询主机配置数据
+func (c *CesClient) ShowEventDataInvoker(request *model.ShowEventDataRequest) *ShowEventDataInvoker {
+	requestDef := GenReqDefForShowEventData()
+	return &ShowEventDataInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ShowMetricData 查询监控数据
+//
+// 查询指定时间范围指定指标的指定粒度的监控数据，可以通过参数指定需要查询的数据维度。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ShowMetricData(request *model.ShowMetricDataRequest) (*model.ShowMetricDataResponse, error) {
 	requestDef := GenReqDefForShowMetricData()
 
@@ -228,7 +431,18 @@ func (c *CesClient) ShowMetricData(request *model.ShowMetricDataRequest) (*model
 	}
 }
 
-//查询用户可以创建的资源配额总数及当前使用量，当前仅有告警规则一种资源类型。
+// ShowMetricDataInvoker 查询监控数据
+func (c *CesClient) ShowMetricDataInvoker(request *model.ShowMetricDataRequest) *ShowMetricDataInvoker {
+	requestDef := GenReqDefForShowMetricData()
+	return &ShowMetricDataInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ShowQuotas 查询配额
+//
+// 查询用户可以创建的资源配额总数及当前使用量，当前仅有告警规则一种资源类型。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ShowQuotas(request *model.ShowQuotasRequest) (*model.ShowQuotasResponse, error) {
 	requestDef := GenReqDefForShowQuotas()
 
@@ -239,7 +453,18 @@ func (c *CesClient) ShowQuotas(request *model.ShowQuotasRequest) (*model.ShowQuo
 	}
 }
 
-//根据资源分组ID查询资源分组下的资源。
+// ShowQuotasInvoker 查询配额
+func (c *CesClient) ShowQuotasInvoker(request *model.ShowQuotasRequest) *ShowQuotasInvoker {
+	requestDef := GenReqDefForShowQuotas()
+	return &ShowQuotasInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ShowResourceGroup 查询资源分组下的资源
+//
+// 根据资源分组ID查询资源分组下的资源。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) ShowResourceGroup(request *model.ShowResourceGroupRequest) (*model.ShowResourceGroupResponse, error) {
 	requestDef := GenReqDefForShowResourceGroup()
 
@@ -250,7 +475,18 @@ func (c *CesClient) ShowResourceGroup(request *model.ShowResourceGroupRequest) (
 	}
 }
 
-//修改告警规则。
+// ShowResourceGroupInvoker 查询资源分组下的资源
+func (c *CesClient) ShowResourceGroupInvoker(request *model.ShowResourceGroupRequest) *ShowResourceGroupInvoker {
+	requestDef := GenReqDefForShowResourceGroup()
+	return &ShowResourceGroupInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// UpdateAlarm 修改告警规则
+//
+// 修改告警规则。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) UpdateAlarm(request *model.UpdateAlarmRequest) (*model.UpdateAlarmResponse, error) {
 	requestDef := GenReqDefForUpdateAlarm()
 
@@ -261,7 +497,18 @@ func (c *CesClient) UpdateAlarm(request *model.UpdateAlarmRequest) (*model.Updat
 	}
 }
 
-//启动或停止一条告警规则。
+// UpdateAlarmInvoker 修改告警规则
+func (c *CesClient) UpdateAlarmInvoker(request *model.UpdateAlarmRequest) *UpdateAlarmInvoker {
+	requestDef := GenReqDefForUpdateAlarm()
+	return &UpdateAlarmInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// UpdateAlarmAction 启停告警规则
+//
+// 启动或停止一条告警规则。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) UpdateAlarmAction(request *model.UpdateAlarmActionRequest) (*model.UpdateAlarmActionResponse, error) {
 	requestDef := GenReqDefForUpdateAlarmAction()
 
@@ -272,7 +519,18 @@ func (c *CesClient) UpdateAlarmAction(request *model.UpdateAlarmActionRequest) (
 	}
 }
 
-//更新自定义告警模板。
+// UpdateAlarmActionInvoker 启停告警规则
+func (c *CesClient) UpdateAlarmActionInvoker(request *model.UpdateAlarmActionRequest) *UpdateAlarmActionInvoker {
+	requestDef := GenReqDefForUpdateAlarmAction()
+	return &UpdateAlarmActionInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// UpdateAlarmTemplate 更新自定义告警模板
+//
+// 更新自定义告警模板。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) UpdateAlarmTemplate(request *model.UpdateAlarmTemplateRequest) (*model.UpdateAlarmTemplateResponse, error) {
 	requestDef := GenReqDefForUpdateAlarmTemplate()
 
@@ -283,7 +541,18 @@ func (c *CesClient) UpdateAlarmTemplate(request *model.UpdateAlarmTemplateReques
 	}
 }
 
-//更新资源分组，资源分组支持将各类资源按照业务集中进行分组管理，可以从分组角度查看监控与告警信息，以提升运维效率。
+// UpdateAlarmTemplateInvoker 更新自定义告警模板
+func (c *CesClient) UpdateAlarmTemplateInvoker(request *model.UpdateAlarmTemplateRequest) *UpdateAlarmTemplateInvoker {
+	requestDef := GenReqDefForUpdateAlarmTemplate()
+	return &UpdateAlarmTemplateInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// UpdateResourceGroup 更新资源分组
+//
+// 更新资源分组，资源分组支持将各类资源按照业务集中进行分组管理，可以从分组角度查看监控与告警信息，以提升运维效率。
+//
+// 详细说明请参考华为云API Explorer。
+// Please refer to Huawei cloud API Explorer for details.
 func (c *CesClient) UpdateResourceGroup(request *model.UpdateResourceGroupRequest) (*model.UpdateResourceGroupResponse, error) {
 	requestDef := GenReqDefForUpdateResourceGroup()
 
@@ -292,4 +561,10 @@ func (c *CesClient) UpdateResourceGroup(request *model.UpdateResourceGroupReques
 	} else {
 		return resp.(*model.UpdateResourceGroupResponse), nil
 	}
+}
+
+// UpdateResourceGroupInvoker 更新资源分组
+func (c *CesClient) UpdateResourceGroupInvoker(request *model.UpdateResourceGroupRequest) *UpdateResourceGroupInvoker {
+	requestDef := GenReqDefForUpdateResourceGroup()
+	return &UpdateResourceGroupInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }

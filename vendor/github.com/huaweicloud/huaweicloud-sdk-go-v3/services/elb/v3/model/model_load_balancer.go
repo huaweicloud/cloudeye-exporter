@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -9,171 +9,129 @@ import (
 	"strings"
 )
 
-// 创建loadbalancer的消息返回体
+// 负载均衡器的详细信息。
 type LoadBalancer struct {
-	// 功能描述：负载均衡器ID。
 
+	// 负载均衡器ID。
 	Id string `json:"id"`
-	// 功能描述：负载均衡器描述信息。
 
+	// 负载均衡器描述信息。
 	Description string `json:"description"`
-	// 功能描述：负载均衡器的配置状态。 取值范围：ACTIVE、PENDING_CREATE 或者ERROR。 约束：该字段为预留字段，暂未启用，默认为ACTIVE。
 
+	// 负载均衡器的配置状态。取值： - ACTIVE：使用中。 - PENDING_DELETE：删除中。
 	ProvisioningStatus string `json:"provisioning_status"`
-	// 功能描述：负载均衡器的管理状态。 约束：只支持设定为true。
 
+	// 负载均衡器的管理状态。固定为true。
 	AdminStateUp bool `json:"admin_state_up"`
-	// 功能描述：负载均衡器的生产者名称。 约束：只支持vlb。
 
+	// 负载均衡器的生产者名称。固定为vlb。
 	Provider string `json:"provider"`
-	// 功能描述：负载均衡器关联的后端云服务器组ID的列表。
 
+	// 负载均衡器直接关联的后端云服务器组的ID列表。
 	Pools []PoolRef `json:"pools"`
-	// 功能描述：负载均衡器关联的监听器ID的列表。
 
+	// 负载均衡器关联的监听器的ID列表。
 	Listeners []ListenerRef `json:"listeners"`
-	// 功能描述：负载均衡器的操作状态。 取值范围：ONLINE、OFFLINE、DEGRADED、DISABLED或NO_MONITOR。 约束：该字段为预留字段，暂未启用，默认为ONLINE。
 
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status"`
-	// 功能描述：负载均衡器的虚拟IP。
+	// 负载均衡器的操作状态。取值： - ONLINE：在线。
+	OperatingStatus string `json:"operating_status"`
 
-	VipAddress string `json:"vip_address"`
-	// 功能描述：负载均衡器所在的子网ID。 约束：vpc_id , vip_subnet_cidr_id, ipv6_vip_virsubnet_id不能同时为空，且需要在同一个vpc下。
-
-	VipSubnetCidrId string `json:"vip_subnet_cidr_id"`
-	// 功能描述：负载均衡器的负载均衡器名称。
-
+	// 负载均衡器的名称。
 	Name string `json:"name"`
-	// 负载均衡器所在的项目ID。
 
+	// 负载均衡器所属的项目ID。
 	ProjectId string `json:"project_id"`
-	// 负载均衡器虚拟IP对应的端口ID。
 
+	// 负载均衡器所在子网的IPv4子网ID。
+	VipSubnetCidrId string `json:"vip_subnet_cidr_id"`
+
+	// 负载均衡器的IPv4虚拟IP地址。
+	VipAddress string `json:"vip_address"`
+
+	// 负载均衡器的IPv4对应的port ID。[创建弹性负载均衡时，会自动为负载均衡创建一个port并关联一个默认的安全组，这个安全组对所有流量不生效。](tag:dt,dt_test,hcso_dt)
 	VipPortId string `json:"vip_port_id"`
-	// 功能描述：负载均衡的标签列表。
 
+	// 负载均衡的标签列表。
 	Tags []Tag `json:"tags"`
-	// 功能描述：负载均衡器的创建时间。
 
+	// 负载均衡器的创建时间。格式：yyyy-MM-dd'T'HH:mm:ss'Z'
 	CreatedAt string `json:"created_at"`
-	// 功能描述：负载均衡器的更新时间。
 
+	// 负载均衡器的更新时间。格式：yyyy-MM-dd'T'HH:mm:ss'Z'
 	UpdatedAt string `json:"updated_at"`
-	// 功能描述：是否是性能保障性实例 取值范围：共享型：false；性能保障型：true
 
+	// 是否独享型LB，取值： - false：共享型。 - true：独享型。
 	Guaranteed bool `json:"guaranteed"`
-	// 功能描述：实例对应的vpc属性。若无，则从vip_subnet_cidr_id获取。  约束：vpc_id , vip_subnet_cidr_id, ipv6_vip_virsubnet_id不能同时为空，且需要在同一个vpc下。
 
+	// 负载均衡器所在VPC ID。
 	VpcId string `json:"vpc_id"`
-	// 功能描述：公网ELB实例绑定EIP信息。
 
+	// 负载均衡器绑定的EIP。只支持绑定一个EIP。  注：该字段与publicips一致。
 	Eips []EipInfo `json:"eips"`
-	// 功能描述：双栈实例对应v6的ip地址。
 
+	// 双栈类型负载均衡器的IPv6地址。 [ 不支持IPv6，请勿使用。](tag:dt,dt_test)
 	Ipv6VipAddress string `json:"ipv6_vip_address"`
-	// 功能描述：双栈实例对应v6的网络id 。 约束： 1、默认为空，只有开启IPv6时才会传入。 2、vpc_id , vip_subnet_cidr_id, ipv6_vip_virsubnet_id不能同时为空，且需要在同一个vpc下。
 
+	// 双栈类型负载均衡器所在子网的IPv6网络ID。 [ 不支持IPv6，请勿使用。](tag:dt,dt_test)
 	Ipv6VipVirsubnetId string `json:"ipv6_vip_virsubnet_id"`
-	// 功能描述：IPv6的VIP端口id。
 
+	// 双栈类型负载均衡器的IPv6对应的port ID。 [ 不支持IPv6，请勿使用。](tag:dt,dt_test)
 	Ipv6VipPortId string `json:"ipv6_vip_port_id"`
-	// 功能描述：可用区列表。默认指定所有可利用的AZ。可调用nova接口（/v2/{project_id}/os-availability-zone）查询可用AZ
 
+	// 负载均衡器所在的可用区列表。
 	AvailabilityZoneList []string `json:"availability_zone_list"`
-	// 功能描述：企业项目ID
 
-	EnterpriseProjectId *string `json:"enterprise_project_id,omitempty"`
-	// 功能描述：四层Flavor。
+	// 企业项目ID。创建时不传则返回\"0\"，表示资源属于default企业项目。  注：\"0\"并不是真实存在的企业项目ID，在创建、更新和查询时不能作为请求参数传入。  [不支持该字段，请勿使用](tag:dt,dt_test,hcso_dt)
+	EnterpriseProjectId string `json:"enterprise_project_id"`
 
+	// 四层Flavor ID。  对于弹性扩缩容实例，表示上限规格。  [hsco场景下所有LB实例共享带宽，该字段无效，请勿使用。](tag:hcso)
 	L4FlavorId string `json:"l4_flavor_id"`
-	// 功能描述：预留L4 弹性flavor。
 
+	// 四层弹性Flavor ID。  不支持该字段，请勿使用。
 	L4ScaleFlavorId string `json:"l4_scale_flavor_id"`
-	// 功能描述：七层Flavor。
 
+	// 七层Flavor ID。 对于弹性扩缩容实例，表示上限规格ID。  [hsco场景下所有LB实例共享带宽，该字段无效，请勿使用。](tag:hcso)
 	L7FlavorId string `json:"l7_flavor_id"`
-	// 功能描述：预留弹性flavor。
 
+	// 七层弹性Flavor ID。  不支持该字段，请勿使用。
 	L7ScaleFlavorId string `json:"l7_scale_flavor_id"`
-	// 功能描述：弹性公网EIP信息
 
-	Publicips *[]PublicIpInfo `json:"publicips,omitempty"`
-	// 功能描述：下联面子网ID  loadbalancer使用的下联面端口会动态的从这些网络中占用IP
+	// 负载均衡器绑定的公网IP。只支持绑定一个公网IP。  注：该字段与eips一致。
+	Publicips []PublicIpInfo `json:"publicips"`
 
-	ElbVirsubnetIds *[]string `json:"elb_virsubnet_ids,omitempty"`
-	// 功能描述：下联面子网类型
+	// 负载均衡器绑定的global eip。只支持绑定一个global eip。
+	GlobalEips []GlobalEipInfo `json:"global_eips"`
 
-	ElbVirsubnetType *LoadBalancerElbVirsubnetType `json:"elb_virsubnet_type,omitempty"`
-	// 是否启用跨VPC后端转发
+	// 下联面子网网络ID列表。可以通过GET https://{VPC_Endpoint}/v1/{project_id}/subnets  响应参数中的id得到。  [  若不指定该字段，则会在当前负载均衡器所在的VPC中任意选一个子网，优选双栈网络。](tag:hws,hws_hk,ocb,tlf,ctc,hcs,sbc,g42,tm,cmcc,hk_g42,mix,hk_sbc,hws_ocb,fcs)   若指定多个下联面子网，则按顺序优先使用第一个子网来为负载均衡器下联面端口分配ip地址。   下联面子网必须属于该LB所在的VPC。
+	ElbVirsubnetIds []string `json:"elb_virsubnet_ids"`
 
-	IpTargetEnable *bool `json:"ip_target_enable,omitempty"`
-	// 是否开启删除保护
+	// 下联面子网类型 - ipv4：ipv4 - dualstack：双栈
+	ElbVirsubnetType LoadBalancerElbVirsubnetType `json:"elb_virsubnet_type"`
 
-	DeletionProtectionEnable *bool `json:"deletion_protection_enable,omitempty"`
-	// 负载均衡器的冻结场景。若负载均衡器有多个冻结场景，用逗号分隔 POLICE：公安冻结场景。 ILLEGAL：违规冻结场景。 VERIFY：客户未实名认证冻结场景。 PARTNER：合作伙伴冻结（合作伙伴冻结子客户资源）。 ARREAR：欠费冻结场景。
+	// 是否启用跨VPC后端转发。取值： - true：开启、 - false：不开启。  仅独享型负载均衡器支持该特性。  开启跨VPC后端转发后，后端服务器组不仅支持添加云上VPC内的服务器，还支持添加其他VPC、其他公有云、云下数据中心的服务器。 [ 不支持该字段，请勿使用。](tag:dt,dt_test)
+	IpTargetEnable bool `json:"ip_target_enable"`
 
+	// 负载均衡器的冻结场景。若负载均衡器有多个冻结场景，用逗号分隔。取值： - POLICE：公安冻结场景。 - ILLEGAL：违规冻结场景。 - VERIFY：客户未实名认证冻结场景。 - RTNER：合作伙伴冻结（合作伙伴冻结子客户资源）。 - REAR：欠费冻结场景。  [不支持该字段，请勿使用。](tag:dt,dt_test)
 	FrozenScene string `json:"frozen_scene"`
 
-	Ipv6Bandwidth *BandwidthRef `json:"ipv6_bandwidth,omitempty"`
+	Ipv6Bandwidth *BandwidthRef `json:"ipv6_bandwidth"`
+
+	// 是否开启删除保护，取值： - false：不开启。 - true：开启。 >退场时需要先关闭所有资源的删除保护开关。  仅当前局点启用删除保护特性后才会返回该字段。
+	DeletionProtectionEnable *bool `json:"deletion_protection_enable,omitempty"`
+
+	Autoscaling *AutoscalingRef `json:"autoscaling,omitempty"`
+
+	// LB所属AZ组
+	PublicBorderGroup *string `json:"public_border_group,omitempty"`
 }
 
 func (o LoadBalancer) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "LoadBalancer struct{}"
 	}
 
 	return strings.Join([]string{"LoadBalancer", string(data)}, " ")
-}
-
-type LoadBalancerOperatingStatus struct {
-	value string
-}
-
-type LoadBalancerOperatingStatusEnum struct {
-	ONLINE     LoadBalancerOperatingStatus
-	OFFLINE    LoadBalancerOperatingStatus
-	DEGRADED   LoadBalancerOperatingStatus
-	DISABLED   LoadBalancerOperatingStatus
-	NO_MONITOR LoadBalancerOperatingStatus
-}
-
-func GetLoadBalancerOperatingStatusEnum() LoadBalancerOperatingStatusEnum {
-	return LoadBalancerOperatingStatusEnum{
-		ONLINE: LoadBalancerOperatingStatus{
-			value: "ONLINE",
-		},
-		OFFLINE: LoadBalancerOperatingStatus{
-			value: "OFFLINE",
-		},
-		DEGRADED: LoadBalancerOperatingStatus{
-			value: "DEGRADED",
-		},
-		DISABLED: LoadBalancerOperatingStatus{
-			value: "DISABLED",
-		},
-		NO_MONITOR: LoadBalancerOperatingStatus{
-			value: "NO_MONITOR",
-		},
-	}
-}
-
-func (c LoadBalancerOperatingStatus) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
-}
-
-func (c *LoadBalancerOperatingStatus) UnmarshalJSON(b []byte) error {
-	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
-		return err
-	} else {
-		return errors.New("convert enum data to string error")
-	}
 }
 
 type LoadBalancerElbVirsubnetType struct {
@@ -196,8 +154,12 @@ func GetLoadBalancerElbVirsubnetTypeEnum() LoadBalancerElbVirsubnetTypeEnum {
 	}
 }
 
+func (c LoadBalancerElbVirsubnetType) Value() string {
+	return c.value
+}
+
 func (c LoadBalancerElbVirsubnetType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *LoadBalancerElbVirsubnetType) UnmarshalJSON(b []byte) error {

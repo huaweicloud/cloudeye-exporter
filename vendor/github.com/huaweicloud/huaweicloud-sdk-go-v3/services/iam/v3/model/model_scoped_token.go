@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type ScopedToken struct {
-	// 联邦unscoped token的ID。
 
+	// 联邦unscoped token的ID。
 	Id string `json:"id"`
 }
 
 func (o ScopedToken) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ScopedToken struct{}"
 	}

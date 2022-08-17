@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type KeystoneListGroupsResponse struct {
-	// 用户组信息列表。
 
+	// 用户组信息列表。
 	Groups *[]KeystoneGroupResult `json:"groups,omitempty"`
 
 	Links          *Links `json:"links,omitempty"`
@@ -17,7 +17,7 @@ type KeystoneListGroupsResponse struct {
 }
 
 func (o KeystoneListGroupsResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "KeystoneListGroupsResponse struct{}"
 	}

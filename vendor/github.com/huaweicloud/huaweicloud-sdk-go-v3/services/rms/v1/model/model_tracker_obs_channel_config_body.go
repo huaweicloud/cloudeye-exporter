@@ -1,23 +1,23 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // OBS设置对象
 type TrackerObsChannelConfigBody struct {
+
 	// OBS桶名称
-
 	BucketName string `json:"bucket_name"`
-	// region id
 
+	// 区域id
 	RegionId string `json:"region_id"`
 }
 
 func (o TrackerObsChannelConfigBody) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "TrackerObsChannelConfigBody struct{}"
 	}

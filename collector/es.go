@@ -35,7 +35,9 @@ type Instance struct {
 
 var esInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getEsResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type ESInfo struct{}
+
+func (getter ESInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
 	esInfo.Lock()

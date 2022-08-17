@@ -1,40 +1,40 @@
 package model
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdktime"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 	"strings"
 )
 
 // 企业项目详情
 type EpDetail struct {
+
 	// 企业项目ID
-
 	Id string `json:"id"`
+
 	// 企业项目名称
-
 	Name string `json:"name"`
+
 	// 企业项目描述
-
 	Description string `json:"description"`
+
 	// 企业项目状态。1启用，2停用
-
 	Status int32 `json:"status"`
+
 	// 创建时间，格式为UTC格式。如：2018-05-18T06:49:06Z。
-
 	CreatedAt *sdktime.SdkTime `json:"created_at"`
+
 	// 修改时间，格式为UTC格式。如：2018-05-28T02:21:36Z。
-
 	UpdatedAt *sdktime.SdkTime `json:"updated_at"`
-	// 项目类型： - prod：商用项目 - poc：测试项目
 
+	// 项目类型： - prod：商用项目 - poc：测试项目
 	Type EpDetailType `json:"type"`
 }
 
 func (o EpDetail) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "EpDetail struct{}"
 	}
@@ -62,8 +62,12 @@ func GetEpDetailTypeEnum() EpDetailTypeEnum {
 	}
 }
 
+func (c EpDetailType) Value() string {
+	return c.value
+}
+
 func (c EpDetailType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *EpDetailType) UnmarshalJSON(b []byte) error {

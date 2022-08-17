@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type DeleteSnapshotRequest struct {
-	// 快照ID。
 
+	// 快照ID。
 	SnapshotId string `json:"snapshot_id"`
 }
 
 func (o DeleteSnapshotRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "DeleteSnapshotRequest struct{}"
 	}

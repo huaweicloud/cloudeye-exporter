@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
@@ -9,14 +9,14 @@ import (
 // Response Object
 type KeystoneListDomainPermissionsForGroupResponse struct {
 	Links *Links `json:"links,omitempty"`
-	// 权限信息列表。
 
+	// 权限信息列表。
 	Roles          *[]RoleResult `json:"roles,omitempty"`
 	HttpStatusCode int           `json:"-"`
 }
 
 func (o KeystoneListDomainPermissionsForGroupResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "KeystoneListDomainPermissionsForGroupResponse struct{}"
 	}

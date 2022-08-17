@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type ListPolicyAssignmentsResponse struct {
-	// 规则列表
 
+	// 规则列表
 	Value *[]PolicyAssignment `json:"value,omitempty"`
 
 	PageInfo       *PageInfo `json:"page_info,omitempty"`
@@ -17,7 +17,7 @@ type ListPolicyAssignmentsResponse struct {
 }
 
 func (o ListPolicyAssignmentsResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListPolicyAssignmentsResponse struct{}"
 	}

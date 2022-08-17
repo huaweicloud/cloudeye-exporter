@@ -1,22 +1,22 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type CreateInstanceRequest struct {
-	// 语言
 
+	// 语言
 	XLanguage *string `json:"X-Language,omitempty"`
 
 	Body *OpenGaussInstanceRequest `json:"body,omitempty"`
 }
 
 func (o CreateInstanceRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "CreateInstanceRequest struct{}"
 	}

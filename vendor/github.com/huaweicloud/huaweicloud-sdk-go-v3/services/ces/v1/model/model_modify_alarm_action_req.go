@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type ModifyAlarmActionReq struct {
-	// 告警是否启用。true：启动。false：停止
 
+	// 告警是否启用。true：启动。false：停止
 	AlarmEnabled bool `json:"alarm_enabled"`
 }
 
 func (o ModifyAlarmActionReq) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ModifyAlarmActionReq struct{}"
 	}

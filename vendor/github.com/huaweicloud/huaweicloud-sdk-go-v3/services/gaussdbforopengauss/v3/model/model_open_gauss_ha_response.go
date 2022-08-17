@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -9,21 +9,21 @@ import (
 	"strings"
 )
 
-// 创建分布式实例时可见。
+// 实例部署形态。
 type OpenGaussHaResponse struct {
-	// GaussDB(for openGauss)仅支持分布式模式，返回值为：Enterprise（企业版）。
 
+	// GaussDB(for openGauss) 分布式模式，返回值为：Enterprise（企业版）；主备版，返回值为：Ha(主备版)。
 	Mode OpenGaussHaResponseMode `json:"mode"`
+
 	// 备机同步参数。  取值：  GaussDB(for openGauss)为“sync”。 说明： - “sync”为同步模式。
-
 	ReplicationMode OpenGaussHaResponseReplicationMode `json:"replication_mode"`
-	// GaussDB(for openGauss)的预留参数：指定实例一致性类型，取值范围：strong（强一致性） | eventual(最终一致性)。
 
+	// GaussDB(for openGauss)的预留参数：指定实例一致性类型，取值范围：strong（强一致性） | eventual(最终一致性)。
 	Consistency OpenGaussHaResponseConsistency `json:"consistency"`
 }
 
 func (o OpenGaussHaResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "OpenGaussHaResponse struct{}"
 	}
@@ -37,6 +37,7 @@ type OpenGaussHaResponseMode struct {
 
 type OpenGaussHaResponseModeEnum struct {
 	ENTERPRISE OpenGaussHaResponseMode
+	HA         OpenGaussHaResponseMode
 }
 
 func GetOpenGaussHaResponseModeEnum() OpenGaussHaResponseModeEnum {
@@ -44,11 +45,18 @@ func GetOpenGaussHaResponseModeEnum() OpenGaussHaResponseModeEnum {
 		ENTERPRISE: OpenGaussHaResponseMode{
 			value: "Enterprise",
 		},
+		HA: OpenGaussHaResponseMode{
+			value: "Ha",
+		},
 	}
 }
 
+func (c OpenGaussHaResponseMode) Value() string {
+	return c.value
+}
+
 func (c OpenGaussHaResponseMode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *OpenGaussHaResponseMode) UnmarshalJSON(b []byte) error {
@@ -81,8 +89,12 @@ func GetOpenGaussHaResponseReplicationModeEnum() OpenGaussHaResponseReplicationM
 	}
 }
 
+func (c OpenGaussHaResponseReplicationMode) Value() string {
+	return c.value
+}
+
 func (c OpenGaussHaResponseReplicationMode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *OpenGaussHaResponseReplicationMode) UnmarshalJSON(b []byte) error {
@@ -119,8 +131,12 @@ func GetOpenGaussHaResponseConsistencyEnum() OpenGaussHaResponseConsistencyEnum 
 	}
 }
 
+func (c OpenGaussHaResponseConsistency) Value() string {
+	return c.value
+}
+
 func (c OpenGaussHaResponseConsistency) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *OpenGaussHaResponseConsistency) UnmarshalJSON(b []byte) error {

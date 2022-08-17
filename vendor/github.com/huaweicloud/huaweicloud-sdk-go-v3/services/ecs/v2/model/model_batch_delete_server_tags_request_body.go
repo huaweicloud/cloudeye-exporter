@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,16 +11,16 @@ import (
 
 // This is a auto create Body Object
 type BatchDeleteServerTagsRequestBody struct {
+
 	// 操作标识（仅支持小写）：delete（删除）。
-
 	Action BatchDeleteServerTagsRequestBodyAction `json:"action"`
-	// 标签列表。
 
+	// 标签列表。
 	Tags []ServerTag `json:"tags"`
 }
 
 func (o BatchDeleteServerTagsRequestBody) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "BatchDeleteServerTagsRequestBody struct{}"
 	}
@@ -44,8 +44,12 @@ func GetBatchDeleteServerTagsRequestBodyActionEnum() BatchDeleteServerTagsReques
 	}
 }
 
+func (c BatchDeleteServerTagsRequestBodyAction) Value() string {
+	return c.value
+}
+
 func (c BatchDeleteServerTagsRequestBodyAction) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *BatchDeleteServerTagsRequestBodyAction) UnmarshalJSON(b []byte) error {

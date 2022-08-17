@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type ShowFlavorRequest struct {
-	// 规格ID。
 
+	// 规格ID。
 	FlavorId string `json:"flavor_id"`
 }
 
 func (o ShowFlavorRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowFlavorRequest struct{}"
 	}

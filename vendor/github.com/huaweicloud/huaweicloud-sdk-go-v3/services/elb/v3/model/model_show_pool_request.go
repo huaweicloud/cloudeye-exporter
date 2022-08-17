@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type ShowPoolRequest struct {
-	// 后端服务器组ID。
 
+	// 后端服务器组ID。
 	PoolId string `json:"pool_id"`
 }
 
 func (o ShowPoolRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowPoolRequest struct{}"
 	}

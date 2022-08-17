@@ -1,21 +1,21 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type NovaListKeypairsResponse struct {
-	// 密钥信息列表。
 
+	// 密钥信息列表。
 	Keypairs       *[]NovaListKeypairsResult `json:"keypairs,omitempty"`
 	HttpStatusCode int                       `json:"-"`
 }
 
 func (o NovaListKeypairsResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "NovaListKeypairsResponse struct{}"
 	}

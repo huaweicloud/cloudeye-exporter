@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type OsfederationIdentityprovider struct {
-	// 身份提供商ID。
 
+	// 身份提供商ID。
 	Id string `json:"id"`
 }
 
 func (o OsfederationIdentityprovider) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "OsfederationIdentityprovider struct{}"
 	}

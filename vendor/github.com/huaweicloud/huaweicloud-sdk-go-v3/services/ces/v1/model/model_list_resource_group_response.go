@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type ListResourceGroupResponse struct {
-	// 一个或者多个资源分组信息。
 
+	// 一个或者多个资源分组信息。
 	ResourceGroups *[]ResourceGroupInfo `json:"resource_groups,omitempty"`
 
 	MetaData       *TotalMetaData `json:"meta_data,omitempty"`
@@ -17,7 +17,7 @@ type ListResourceGroupResponse struct {
 }
 
 func (o ListResourceGroupResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListResourceGroupResponse struct{}"
 	}

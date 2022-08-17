@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type DeletePermanentAccessKeyRequest struct {
-	// 待删除的指定AK。
 
+	// 待删除的指定AK。
 	AccessKey string `json:"access_key"`
 }
 
 func (o DeletePermanentAccessKeyRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "DeletePermanentAccessKeyRequest struct{}"
 	}

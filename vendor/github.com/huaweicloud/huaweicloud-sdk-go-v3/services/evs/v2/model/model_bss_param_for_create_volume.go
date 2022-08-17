@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,25 +11,25 @@ import (
 
 // 包周期创卷的计费策略参数。
 type BssParamForCreateVolume struct {
+
 	// 功能说明：计费模式。默认值为postPaid。 取值范围： * prePaid：包年包月 * postPaid：按需
-
 	ChargingMode *BssParamForCreateVolumeChargingMode `json:"chargingMode,omitempty"`
+
 	// 功能说明：是否立即支付。chargingMode为PrePaid时该参数会生效。默认值为false。 取值范围： * true：立即支付，从帐户余额中自动扣费 * false：不立即支付，创建订单暂不支付
-
 	IsAutoPay *BssParamForCreateVolumeIsAutoPay `json:"isAutoPay,omitempty"`
+
 	// 功能说明：是否自动续订。chargingMode为prePaid时该参数会生效。默认值为false。 取值范围： * true：自动续订，自动续订周期与订购周期相同 * false：不自动续订
-
 	IsAutoRenew *BssParamForCreateVolumeIsAutoRenew `json:"isAutoRenew,omitempty"`
+
 	// 功能说明：订购周期数，chargingMode为prePaid时该参数会生效，并且该参数为为必选。 取值范围： * periodType为month时，为[1-9] * periodType为year时，为[1-1]
-
 	PeriodNum *int32 `json:"periodNum,omitempty"`
-	// 功能说明：订购周期单位。chargingMode为prePaid时该参数会生效，并且该参数为必选。 取值范围： * month：月 * year：年
 
+	// 功能说明：订购周期单位。chargingMode为prePaid时该参数会生效，并且该参数为必选。 取值范围： * month：月 * year：年
 	PeriodType *BssParamForCreateVolumePeriodType `json:"periodType,omitempty"`
 }
 
 func (o BssParamForCreateVolume) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "BssParamForCreateVolume struct{}"
 	}
@@ -57,8 +57,12 @@ func GetBssParamForCreateVolumeChargingModeEnum() BssParamForCreateVolumeChargin
 	}
 }
 
+func (c BssParamForCreateVolumeChargingMode) Value() string {
+	return c.value
+}
+
 func (c BssParamForCreateVolumeChargingMode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *BssParamForCreateVolumeChargingMode) UnmarshalJSON(b []byte) error {
@@ -95,8 +99,12 @@ func GetBssParamForCreateVolumeIsAutoPayEnum() BssParamForCreateVolumeIsAutoPayE
 	}
 }
 
+func (c BssParamForCreateVolumeIsAutoPay) Value() string {
+	return c.value
+}
+
 func (c BssParamForCreateVolumeIsAutoPay) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *BssParamForCreateVolumeIsAutoPay) UnmarshalJSON(b []byte) error {
@@ -133,8 +141,12 @@ func GetBssParamForCreateVolumeIsAutoRenewEnum() BssParamForCreateVolumeIsAutoRe
 	}
 }
 
+func (c BssParamForCreateVolumeIsAutoRenew) Value() string {
+	return c.value
+}
+
 func (c BssParamForCreateVolumeIsAutoRenew) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *BssParamForCreateVolumeIsAutoRenew) UnmarshalJSON(b []byte) error {
@@ -171,8 +183,12 @@ func GetBssParamForCreateVolumePeriodTypeEnum() BssParamForCreateVolumePeriodTyp
 	}
 }
 
+func (c BssParamForCreateVolumePeriodType) Value() string {
+	return c.value
+}
+
 func (c BssParamForCreateVolumePeriodType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *BssParamForCreateVolumePeriodType) UnmarshalJSON(b []byte) error {

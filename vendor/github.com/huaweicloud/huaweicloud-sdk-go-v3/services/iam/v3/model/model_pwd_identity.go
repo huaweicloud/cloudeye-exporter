@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,15 +11,15 @@ import (
 
 //
 type PwdIdentity struct {
-	// 认证方法，该字段内容为[\"password\"]。
 
+	// 认证方法，该字段内容为[\"password\"]。
 	Methods []PwdIdentityMethods `json:"methods"`
 
 	Password *PwdPassword `json:"password"`
 }
 
 func (o PwdIdentity) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "PwdIdentity struct{}"
 	}
@@ -43,8 +43,12 @@ func GetPwdIdentityMethodsEnum() PwdIdentityMethodsEnum {
 	}
 }
 
+func (c PwdIdentityMethods) Value() string {
+	return c.value
+}
+
 func (c PwdIdentityMethods) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *PwdIdentityMethods) UnmarshalJSON(b []byte) error {

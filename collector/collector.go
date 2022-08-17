@@ -117,7 +117,7 @@ func getDimLabel(metric model.BatchMetricData) labelInfo {
 func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Context, ch chan<- prometheus.Metric, namespace string) {
 	defer func() {
 		if err := recover(); err != nil {
-			logs.Logger.Errorf("[%s] recover xxx error: %v", exporter.txnKey, err)
+			logs.Logger.Errorf("[%s] recover error: %+v", exporter.txnKey, err)
 		}
 	}()
 

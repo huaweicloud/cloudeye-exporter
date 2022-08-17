@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -9,18 +9,18 @@ import (
 	"strings"
 )
 
-// 数据库信息。
+// 数据库版本。不填时，默认为当前最新版本。  数据库支持版本可根据查询数据库引擎版本接口获取
 type OpenGaussDatastoreResponse struct {
-	// 数据库引擎，返回值如下：  GaussDB(openGauss)
 
+	// 数据库引擎，不区分大小写，取值如下：  GaussDB(for openGauss)
 	Type OpenGaussDatastoreResponseType `json:"type"`
-	// 数据库版本。
 
+	// 数据库版本。
 	Version string `json:"version"`
 }
 
 func (o OpenGaussDatastoreResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "OpenGaussDatastoreResponse struct{}"
 	}
@@ -33,19 +33,23 @@ type OpenGaussDatastoreResponseType struct {
 }
 
 type OpenGaussDatastoreResponseTypeEnum struct {
-	GAUSS_DB_OPEN_GAUSS OpenGaussDatastoreResponseType
+	GAUSS_DB_FOR_OPEN_GAUSS OpenGaussDatastoreResponseType
 }
 
 func GetOpenGaussDatastoreResponseTypeEnum() OpenGaussDatastoreResponseTypeEnum {
 	return OpenGaussDatastoreResponseTypeEnum{
-		GAUSS_DB_OPEN_GAUSS: OpenGaussDatastoreResponseType{
-			value: "GaussDB(openGauss)",
+		GAUSS_DB_FOR_OPEN_GAUSS: OpenGaussDatastoreResponseType{
+			value: "GaussDB(for openGauss)",
 		},
 	}
 }
 
+func (c OpenGaussDatastoreResponseType) Value() string {
+	return c.value
+}
+
 func (c OpenGaussDatastoreResponseType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *OpenGaussDatastoreResponseType) UnmarshalJSON(b []byte) error {

@@ -1,22 +1,22 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type KeystoneCreateIdentityProviderRequest struct {
-	// 待注册的身份提供商ID。
 
+	// 待注册的身份提供商ID。
 	Id string `json:"id"`
 
 	Body *KeystoneCreateIdentityProviderRequestBody `json:"body,omitempty"`
 }
 
 func (o KeystoneCreateIdentityProviderRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "KeystoneCreateIdentityProviderRequest struct{}"
 	}

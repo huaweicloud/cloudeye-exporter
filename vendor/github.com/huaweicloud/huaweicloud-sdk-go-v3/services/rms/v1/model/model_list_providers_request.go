@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,19 +11,19 @@ import (
 
 // Request Object
 type ListProvidersRequest struct {
+
 	// 分页偏移
-
 	Offset *int32 `json:"offset,omitempty"`
+
 	// 最大的返回数量
-
 	Limit *int32 `json:"limit,omitempty"`
-	// 选择接口返回的信息的语言，默认为\"zh-cn\"中文
 
+	// 选择接口返回的信息的语言，默认为\"zh-cn\"中文
 	XLanguage *ListProvidersRequestXLanguage `json:"X-Language,omitempty"`
 }
 
 func (o ListProvidersRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListProvidersRequest struct{}"
 	}
@@ -51,8 +51,12 @@ func GetListProvidersRequestXLanguageEnum() ListProvidersRequestXLanguageEnum {
 	}
 }
 
+func (c ListProvidersRequestXLanguage) Value() string {
+	return c.value
+}
+
 func (c ListProvidersRequestXLanguage) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *ListProvidersRequestXLanguage) UnmarshalJSON(b []byte) error {

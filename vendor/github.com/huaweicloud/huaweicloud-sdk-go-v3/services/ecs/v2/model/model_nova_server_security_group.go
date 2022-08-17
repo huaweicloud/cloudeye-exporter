@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type NovaServerSecurityGroup struct {
-	// 安全组名称或者uuid。
 
+	// 安全组名称或者uuid。
 	Name *string `json:"name,omitempty"`
 }
 
 func (o NovaServerSecurityGroup) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "NovaServerSecurityGroup struct{}"
 	}

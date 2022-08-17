@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,8 +11,8 @@ import (
 
 //
 type AgencyAuthIdentity struct {
-	// 认证方法，该字段内容为[\"assume_role\"]。
 
+	// 认证方法，该字段内容为[\"assume_role\"]。
 	Methods []AgencyAuthIdentityMethods `json:"methods"`
 
 	AssumeRole *IdentityAssumerole `json:"assume_role"`
@@ -21,7 +21,7 @@ type AgencyAuthIdentity struct {
 }
 
 func (o AgencyAuthIdentity) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "AgencyAuthIdentity struct{}"
 	}
@@ -45,8 +45,12 @@ func GetAgencyAuthIdentityMethodsEnum() AgencyAuthIdentityMethodsEnum {
 	}
 }
 
+func (c AgencyAuthIdentityMethods) Value() string {
+	return c.value
+}
+
 func (c AgencyAuthIdentityMethods) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *AgencyAuthIdentityMethods) UnmarshalJSON(b []byte) error {
