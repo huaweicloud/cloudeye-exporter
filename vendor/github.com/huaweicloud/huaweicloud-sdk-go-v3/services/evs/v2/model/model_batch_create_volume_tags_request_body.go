@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,16 +11,16 @@ import (
 
 // This is a auto create Body Object
 type BatchCreateVolumeTagsRequestBody struct {
+
 	// 操作标识，当前支持的取值如下：  添加标签：create
-
 	Action BatchCreateVolumeTagsRequestBodyAction `json:"action"`
-	// 标签列表。
 
+	// 标签列表。
 	Tags []Tag `json:"tags"`
 }
 
 func (o BatchCreateVolumeTagsRequestBody) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "BatchCreateVolumeTagsRequestBody struct{}"
 	}
@@ -44,8 +44,12 @@ func GetBatchCreateVolumeTagsRequestBodyActionEnum() BatchCreateVolumeTagsReques
 	}
 }
 
+func (c BatchCreateVolumeTagsRequestBodyAction) Value() string {
+	return c.value
+}
+
 func (c BatchCreateVolumeTagsRequestBodyAction) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *BatchCreateVolumeTagsRequestBodyAction) UnmarshalJSON(b []byte) error {

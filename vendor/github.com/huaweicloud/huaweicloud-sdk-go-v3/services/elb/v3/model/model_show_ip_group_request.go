@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type ShowIpGroupRequest struct {
-	// IP地址组id
 
+	// IP地址组ID。
 	IpgroupId string `json:"ipgroup_id"`
 }
 
 func (o ShowIpGroupRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowIpGroupRequest struct{}"
 	}

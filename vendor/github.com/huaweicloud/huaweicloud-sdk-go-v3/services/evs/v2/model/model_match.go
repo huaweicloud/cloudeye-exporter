@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -10,16 +10,16 @@ import (
 )
 
 type Match struct {
+
 	// 键。取值范围如下： resource_name：资源名称。 service_type：服务类型。
-
 	Key MatchKey `json:"key"`
-	// 值。最大长度255个字符。 key为“resource_name”时，value为模糊匹配。
 
+	// 值。最大长度255个字符。 key为“resource_name”时，value为模糊匹配。
 	Value string `json:"value"`
 }
 
 func (o Match) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "Match struct{}"
 	}
@@ -47,8 +47,12 @@ func GetMatchKeyEnum() MatchKeyEnum {
 	}
 }
 
+func (c MatchKey) Value() string {
+	return c.value
+}
+
 func (c MatchKey) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *MatchKey) UnmarshalJSON(b []byte) error {

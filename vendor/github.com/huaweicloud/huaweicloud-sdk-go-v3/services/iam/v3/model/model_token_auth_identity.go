@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,8 +11,8 @@ import (
 
 //
 type TokenAuthIdentity struct {
-	// 认证方法，该字段内容为[\"token\"]。
 
+	// 认证方法，该字段内容为[\"token\"]。
 	Methods []TokenAuthIdentityMethods `json:"methods"`
 
 	Token *IdentityToken `json:"token,omitempty"`
@@ -21,7 +21,7 @@ type TokenAuthIdentity struct {
 }
 
 func (o TokenAuthIdentity) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "TokenAuthIdentity struct{}"
 	}
@@ -45,8 +45,12 @@ func GetTokenAuthIdentityMethodsEnum() TokenAuthIdentityMethodsEnum {
 	}
 }
 
+func (c TokenAuthIdentityMethods) Value() string {
+	return c.value
+}
+
 func (c TokenAuthIdentityMethods) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *TokenAuthIdentityMethods) UnmarshalJSON(b []byte) error {

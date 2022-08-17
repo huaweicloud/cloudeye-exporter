@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,16 +11,16 @@ import (
 
 // Request Object
 type KeystoneListEndpointsRequest struct {
+
 	// 终端节点平面。可能取值为：public、internal或admin。public： 用户可在公共网络接口上看到。internal：用户可在内部网络接口上看到。admin：管理员可以在安全的网络接口上看到。
-
 	Interface *KeystoneListEndpointsRequestInterface `json:"interface,omitempty"`
-	// 服务ID。
 
+	// 服务ID。
 	ServiceId *string `json:"service_id,omitempty"`
 }
 
 func (o KeystoneListEndpointsRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "KeystoneListEndpointsRequest struct{}"
 	}
@@ -52,8 +52,12 @@ func GetKeystoneListEndpointsRequestInterfaceEnum() KeystoneListEndpointsRequest
 	}
 }
 
+func (c KeystoneListEndpointsRequestInterface) Value() string {
+	return c.value
+}
+
 func (c KeystoneListEndpointsRequestInterface) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *KeystoneListEndpointsRequestInterface) UnmarshalJSON(b []byte) error {

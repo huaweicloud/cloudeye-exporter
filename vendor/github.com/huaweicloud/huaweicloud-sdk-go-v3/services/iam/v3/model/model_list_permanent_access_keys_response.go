@@ -1,21 +1,21 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type ListPermanentAccessKeysResponse struct {
-	// 认证结果信息列表。
 
+	// 认证结果信息列表。
 	Credentials    *[]Credentials `json:"credentials,omitempty"`
 	HttpStatusCode int            `json:"-"`
 }
 
 func (o ListPermanentAccessKeysResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListPermanentAccessKeysResponse struct{}"
 	}

@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"encoding/json"
 	"strings"
 	"time"
 
@@ -15,13 +16,15 @@ import (
 
 var ecsInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getEcsResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type ECSInfo struct{}
+
+func (getter ECSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
 	ecsInfo.Lock()
 	defer ecsInfo.Unlock()
 	if ecsInfo.LabelInfo == nil || time.Now().Unix() > ecsInfo.TTL {
-		var servers []ResourceBaseInfo
+		var servers []EcsInstancesInfo
 		var err error
 		if getResourceFromRMS("SYS.ECS") {
 			servers, err = getAllServerFromRMS()
@@ -39,8 +42,8 @@ func (exporter *BaseHuaweiCloudExporter) getEcsResourceInfo() (map[string]labelI
 				metrics := buildSingleDimensionMetrics(metricNames, "SYS.ECS", "instance_id", server.ID)
 				filterMetrics = append(filterMetrics, metrics...)
 				info := labelInfo{
-					Name:  []string{"hostname", "epId"},
-					Value: []string{server.Name, server.EpId},
+					Name:  []string{"hostname", "epId", "hostIP"},
+					Value: []string{server.Name, server.EpId, server.IP},
 				}
 				keys, values := getTags(server.Tags)
 				info.Name = append(info.Name, keys...)
@@ -56,21 +59,25 @@ func (exporter *BaseHuaweiCloudExporter) getEcsResourceInfo() (map[string]labelI
 	return ecsInfo.LabelInfo, ecsInfo.FilterMetrics
 }
 
+type EcsInstancesInfo struct {
+	ResourceBaseInfo
+	IP string
+}
+
 func getECSClient() *ecs.EcsClient {
 	return ecs.NewEcsClient(ecs.EcsClientBuilder().WithCredential(
 		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
 		WithHttpConfig(config.DefaultHttpConfig().WithIgnoreSSLVerification(true)).
 		WithEndpoint(getEndpoint("ecs", "v2")).Build())
 }
-
-func getAllServer() ([]ResourceBaseInfo, error) {
+func getAllServer() ([]EcsInstancesInfo, error) {
 	limit := int32(1000)
 	offset := int32(1)
 	options := &ecsmodel.ListServersDetailsRequest{
 		Limit:  &limit,
 		Offset: &offset,
 	}
-	var servers []ResourceBaseInfo
+	var servers []EcsInstancesInfo
 	for {
 		response, err := getECSClient().ListServersDetails(options)
 		if err != nil {
@@ -84,33 +91,86 @@ func getAllServer() ([]ResourceBaseInfo, error) {
 			tags := make(map[string]string, len(*server.Tags))
 			for _, tag := range *server.Tags {
 				tagArray := strings.Split(tag, "=")
-				tags[tagArray[0]] = tagArray[1]
+				if len(tagArray) == 2 {
+					tags[tagArray[0]] = tagArray[1]
+				}
 			}
-			servers = append(servers, ResourceBaseInfo{ID: server.Id, Name: server.Name,
-				Tags: tags, EpId: *server.EnterpriseProjectId})
+			servers = append(servers, EcsInstancesInfo{
+				ResourceBaseInfo: ResourceBaseInfo{
+					ID: server.Id, Name: server.Name,
+					Tags: tags, EpId: *server.EnterpriseProjectId},
+				IP: getIPFromEcsInfo(server.Addresses),
+			})
 		}
 		*options.Offset += 1
 	}
 	return servers, nil
 }
 
-func getAllServerFromRMS() ([]ResourceBaseInfo, error) {
+func getIPFromEcsInfo(addresses map[string][]ecsmodel.ServerAddress) string {
+	var ips []string
+	for _, address := range addresses {
+		for i := range address {
+			ips = append(ips, address[i].Addr)
+		}
+	}
+	return strings.Join(ips, ",")
+}
+
+func getAllServerFromRMS() ([]EcsInstancesInfo, error) {
 	resp, err := listResources("ecs", "cloudservers")
 	if err != nil {
 		logs.Logger.Error(err)
 		return nil, err
 	}
-	services := make([]ResourceBaseInfo, len(resp))
+	services := make([]EcsInstancesInfo, len(resp))
 	for index, resource := range resp {
+		properties, err := fmtEcsProperties(resource.Properties)
+		if err != nil {
+			continue
+		}
 		services[index].ID = *resource.Id
 		services[index].Name = *resource.Name
 		services[index].EpId = *resource.EpId
 		services[index].Tags = resource.Tags
+		services[index].IP = getIPInfoFromProperties(properties)
 	}
 	return services, nil
 }
 
-func (exporter *BaseHuaweiCloudExporter) getAGTResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type EcsProperties struct {
+	Addresses []struct {
+		Addr string
+	} `json:"addresses"`
+}
+
+func getIPInfoFromProperties(properties *EcsProperties) string {
+	var ips []string
+	for i := range properties.Addresses {
+		ips = append(ips, properties.Addresses[i].Addr)
+	}
+	return strings.Join(ips, ",")
+}
+
+func fmtEcsProperties(properties map[string]interface{}) (*EcsProperties, error) {
+	bytes, err := json.Marshal(properties)
+	if err != nil {
+		logs.Logger.Errorf("Marshal ecs properties error: %s", err.Error())
+		return nil, err
+	}
+	var ecsProperties EcsProperties
+	err = json.Unmarshal(bytes, &ecsProperties)
+	if err != nil {
+		logs.Logger.Errorf("Unmarshal to EcsProperties error: %s", err.Error())
+		return nil, err
+	}
+
+	return &ecsProperties, nil
+}
+
+type AGTECSInfo struct{}
+
+func (getter AGTECSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	ecsInfo.Lock()
 	defer ecsInfo.Unlock()
 	return ecsInfo.LabelInfo, nil

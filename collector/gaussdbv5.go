@@ -23,7 +23,9 @@ type GaussdbV5Node struct {
 
 var gaussdbV5Info serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getGaussdbV5ResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
+type GAUSSDBV5Info struct{}
+
+func (getter GAUSSDBV5Info) GetResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]cesmodel.MetricInfoList, 0)
 	gaussdbV5Info.Lock()
@@ -38,6 +40,9 @@ func (exporter *BaseHuaweiCloudExporter) getGaussdbV5ResourceInfo() (map[string]
 					Name:  []string{"name"},
 					Value: []string{instance.Name},
 				}
+				keys, values := getTags(fmtTags(instance.Tags))
+				info.Name = append(info.Name, keys...)
+				info.Value = append(info.Value, values...)
 				resourceInfos[GetResourceKeyFromMetricInfo(metrics[0])] = info
 
 				if nodeMetricNames, ok := sysConfigMap["gaussdbv5_instance_id,gaussdbv5_node_id"]; ok {

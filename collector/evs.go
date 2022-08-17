@@ -24,7 +24,9 @@ type EvsInfo struct {
 
 var evsInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getEvsResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type EVSInfo struct{}
+
+func (getter EVSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
 	evsInfo.Lock()

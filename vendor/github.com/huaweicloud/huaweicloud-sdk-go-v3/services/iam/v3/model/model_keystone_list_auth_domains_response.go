@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type KeystoneListAuthDomainsResponse struct {
-	// 账号信息列表。
 
+	// 账号信息列表。
 	Domains *[]Domains `json:"domains,omitempty"`
 
 	Links          *LinksSelf `json:"links,omitempty"`
@@ -17,7 +17,7 @@ type KeystoneListAuthDomainsResponse struct {
 }
 
 func (o KeystoneListAuthDomainsResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "KeystoneListAuthDomainsResponse struct{}"
 	}

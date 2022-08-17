@@ -1,19 +1,19 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 type DeleteTagsOption struct {
-	// 标签键。
 
+	// 标签键。
 	Key string `json:"key"`
 }
 
 func (o DeleteTagsOption) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "DeleteTagsOption struct{}"
 	}

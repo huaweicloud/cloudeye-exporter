@@ -1,24 +1,24 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type ListEnterpriseProjectResponse struct {
+
 	// 企业项目列表
-
 	EnterpriseProjects *[]EpDetail `json:"enterprise_projects,omitempty"`
-	// 企业项目总数
 
+	// 企业项目总数
 	TotalCount     *int32 `json:"total_count,omitempty"`
 	HttpStatusCode int    `json:"-"`
 }
 
 func (o ListEnterpriseProjectResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListEnterpriseProjectResponse struct{}"
 	}

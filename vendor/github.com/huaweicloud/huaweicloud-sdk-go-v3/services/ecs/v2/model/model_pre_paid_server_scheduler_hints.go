@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,19 +11,19 @@ import (
 
 //
 type PrePaidServerSchedulerHints struct {
+
 	// 云服务器组ID，UUID格式。  云服务器组的ID可以从控制台或者参考[查询云服务器组列表](https://support.huaweicloud.com/api-ecs/ecs_03_1402.html)获取。
-
 	Group *string `json:"group,omitempty"`
+
 	// 在指定的专属主机或者共享主机上创建弹性云服务器。参数值为shared或者dedicated。
-
 	Tenancy *PrePaidServerSchedulerHintsTenancy `json:"tenancy,omitempty"`
-	// 专属主机的ID。
 
+	// 专属主机的ID。
 	DedicatedHostId *string `json:"dedicated_host_id,omitempty"`
 }
 
 func (o PrePaidServerSchedulerHints) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "PrePaidServerSchedulerHints struct{}"
 	}
@@ -51,8 +51,12 @@ func GetPrePaidServerSchedulerHintsTenancyEnum() PrePaidServerSchedulerHintsTena
 	}
 }
 
+func (c PrePaidServerSchedulerHintsTenancy) Value() string {
+	return c.value
+}
+
 func (c PrePaidServerSchedulerHintsTenancy) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *PrePaidServerSchedulerHintsTenancy) UnmarshalJSON(b []byte) error {

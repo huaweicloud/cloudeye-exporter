@@ -10,7 +10,9 @@ import (
 
 var asInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getASResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
+type ASInfo struct{}
+
+func (getter ASInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]cesmodel.MetricInfoList, 0)
 	asInfo.Lock()

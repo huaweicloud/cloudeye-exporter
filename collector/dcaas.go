@@ -27,15 +27,19 @@ type VifInfo struct {
 	VifProperties
 }
 type VifProperties struct {
-	DeviceId      string `json:"device_id"`
-	RouteMode     string `json:"route_mode"`
-	AddressFamily string `json:"address_family"`
-	Vlan          int    `json:"vlan"`
+	DeviceId          string `json:"device_id"`
+	RouteMode         string `json:"route_mode"`
+	AddressFamily     string `json:"address_family"`
+	Vlan              int    `json:"vlan"`
+	RemoteGatewayV4IP string `json:"remote_gateway_v4_ip"`
+	LocalGatewayV4IP  string `json:"local_gateway_v4_ip"`
 }
 
 var dcaasInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getDcaasResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type DCAASInfo struct{}
+
+func (getter DCAASInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
 	dcaasInfo.Lock()
@@ -90,9 +94,9 @@ func buildVifsInfo(sysConfigMap map[string][]string, filterMetrics *[]model.Metr
 			metrics := buildSingleDimensionMetrics(metricNames, "SYS.DCAAS", "virtual_interface_id", vifs[index].ID)
 			*filterMetrics = append(*filterMetrics, metrics...)
 			info := labelInfo{
-				Name: []string{"name", "epId", "device_id", "route_mode", "address_family", "vlan"},
+				Name: []string{"name", "epId", "device_id", "route_mode", "address_family", "vlan", "remote_gateway_v4_ip", "local_gateway_v4_ip"},
 				Value: []string{vifs[index].Name, vifs[index].EpId, vifs[index].DeviceId, vifs[index].RouteMode,
-					vifs[index].AddressFamily, fmt.Sprintf("%d", vifs[index].Vlan)},
+					vifs[index].AddressFamily, fmt.Sprintf("%d", vifs[index].Vlan), vifs[index].RemoteGatewayV4IP, vifs[index].LocalGatewayV4IP},
 			}
 			keys, values := getTags(vifs[index].Tags)
 			info.Name = append(info.Name, keys...)

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,28 +11,28 @@ import (
 
 //
 type CreateAgencyOption struct {
+
 	// 委托名，长度不大于64位。
-
 	Name string `json:"name"`
+
 	// 委托方账号ID。
-
 	DomainId string `json:"domain_id"`
+
 	// 被委托方账号ID。trust_domain_id和trust_domain_name至少填写一个，若都填写优先校验trust_domain_name。
-
 	TrustDomainId *string `json:"trust_domain_id,omitempty"`
+
 	// 被委托方账号名。trust_domain_id和trust_domain_name至少填写一个，若都填写优先校验trust_domain_name。
-
 	TrustDomainName *string `json:"trust_domain_name,omitempty"`
+
 	// 委托描述信息，长度不大于255位。
-
 	Description *string `json:"description,omitempty"`
-	// 委托的期限。取值为“FOREVER\"表示委托的期限为永久，取值为\"ONEDAY\"表示委托的期限为一天。不填写该参数则默认为\"null\"也表示委托的期限为永久。
 
+	// 委托的期限。取值为“FOREVER\"表示委托的期限为永久，取值为\"ONEDAY\"表示委托的期限为一天。不填写该参数则默认为\"null\"也表示委托的期限为永久。
 	Duration *CreateAgencyOptionDuration `json:"duration,omitempty"`
 }
 
 func (o CreateAgencyOption) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "CreateAgencyOption struct{}"
 	}
@@ -60,8 +60,12 @@ func GetCreateAgencyOptionDurationEnum() CreateAgencyOptionDurationEnum {
 	}
 }
 
+func (c CreateAgencyOptionDuration) Value() string {
+	return c.value
+}
+
 func (c CreateAgencyOptionDuration) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *CreateAgencyOptionDuration) UnmarshalJSON(b []byte) error {

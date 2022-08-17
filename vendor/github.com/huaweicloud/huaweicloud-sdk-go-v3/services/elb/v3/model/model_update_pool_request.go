@@ -1,22 +1,22 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type UpdatePoolRequest struct {
-	// 后端服务器组ID
 
+	// 后端服务器组ID。
 	PoolId string `json:"pool_id"`
 
 	Body *UpdatePoolRequestBody `json:"body,omitempty"`
 }
 
 func (o UpdatePoolRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "UpdatePoolRequest struct{}"
 	}

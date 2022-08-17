@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type ServerNicSecurityGroup struct {
-	// 安全组ID。
 
+	// 安全组ID。
 	Id string `json:"id"`
 }
 
 func (o ServerNicSecurityGroup) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ServerNicSecurityGroup struct{}"
 	}

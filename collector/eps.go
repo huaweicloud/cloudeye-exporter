@@ -64,8 +64,7 @@ func listEps() ([]model.EpDetail, error) {
 		if len(*response.EnterpriseProjects) == 0 {
 			break
 		}
-		Offset += limit
-		req.Offset = &Offset
+		*req.Offset += limit
 	}
 	epsInfo.EpDetails = resources
 	epsInfo.TTL = time.Now().Add(TTL).Unix()

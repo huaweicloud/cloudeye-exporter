@@ -88,7 +88,9 @@ func listPools() []model.Pool {
 	return pools
 }
 
-func (exporter *BaseHuaweiCloudExporter) getElbResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
+type ELBInfo struct{}
+
+func (getter ELBInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]cesmodel.MetricInfoList, 0)
 	elbInfo.Lock()
@@ -102,7 +104,7 @@ func (exporter *BaseHuaweiCloudExporter) getElbResourceInfo() (map[string]labelI
 				filterMetrics = append(filterMetrics, metrics...)
 				info := labelInfo{
 					Name:  []string{"name", "epId", "vip_address", "provider"},
-					Value: []string{loadBalancer.Name, *loadBalancer.EnterpriseProjectId, loadBalancer.VipAddress, loadBalancer.Provider},
+					Value: []string{loadBalancer.Name, loadBalancer.EnterpriseProjectId, loadBalancer.VipAddress, loadBalancer.Provider},
 				}
 				keys, values := getElbTags(loadBalancer.Tags)
 				info.Name = append(info.Name, keys...)

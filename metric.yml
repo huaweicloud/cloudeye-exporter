@@ -850,3 +850,152 @@ SYS.DRS:
       - apply_average_commit_time
       - apply_current_state
       - apply_thread_workers
+SYS.DDS:
+  dim_metric_name:
+    mongodb_instance_id:
+      - mongo001_command_ps
+      - mongo002_delete_ps
+      - mongo003_insert_ps
+      - mongo004_query_ps
+      - mongo005_update_ps
+      - mongo006_getmore_ps
+      - mongo007_chunk_num1
+      - mongo007_chunk_num2
+      - mongo007_chunk_num3
+      - mongo007_chunk_num4
+      - mongo007_chunk_num5
+      - mongo007_chunk_num6
+      - mongo007_chunk_num7
+      - mongo007_chunk_num8
+      - mongo007_chunk_num9
+      - mongo007_chunk_num10
+      - mongo007_chunk_num11
+      - mongo007_chunk_num12
+      - mongo008_connections
+      - mongo009_migFail_num
+    'mongodb_instance_id,mongodb_node_id':
+      - mongo001_command_ps
+      - mongo002_delete_ps
+      - mongo003_insert_ps
+      - mongo004_query_ps
+      - mongo005_update_ps
+      - mongo006_getmore_ps
+      - mongo007_connections
+      - mongo007_connections_usage
+      - mongo008_mem_resident
+      - mongo009_mem_virtual
+      - mongo010_regular_asserts_ps
+      - mongo011_warning_asserts_ps
+      - mongo012_msg_asserts_ps
+      - mongo013_user_asserts_ps
+      - mongo014_queues_total
+      - mongo015_queues_readers
+      - mongo016_queues_writers
+      - mongo017_page_faults
+      - mongo018_porfling_num
+      - mongo019_cursors_open
+      - mongo020_cursors_timeOut
+      - mongo021_wt_cahe_usage
+      - mongo022_wt_cahe_dirty
+      - mongo023_wInto_wtCache
+      - mongo024_wFrom_wtCache
+      - mongo025_repl_oplog_win
+      - mongo026_oplog_size_ph
+      - mongo025_repl_headroom
+      - mongo026_repl_lag
+      - mongo027_repl_command_ps
+      - mongo028_repl_update_ps
+      - mongo029_repl_delete_ps
+      - mongo030_repl_insert_ps
+      - mongo031_cpu_usage
+      - mongo032_mem_usage
+      - mongo033_bytes_out
+      - mongo034_bytes_in
+      - mongo035_disk_usage
+      - mongo036_iops
+      - mongo037_read_throughput
+      - mongo038_write_throughput
+      - mongo039_avg_disk_sec_per_read
+      - mongo040_avg_disk_sec_per_write
+      - mongo041_avg_disk_queue_length
+      - mongo042_disk_total_size
+      - mongo043_disk_used_size
+      - mongo044_swap_usage
+      - mongo050_top_total_time
+      - mongo051_top_read_time
+      - mongo052_top_write_time
+      - mongo053_wt_flushes_status
+      - mongo054_wt_cache_used_percent
+      - mongo055_wt_cache_dirty_percent
+      - mongo070_rocks_active_memtable
+      - mongo071_rocks_oplogcf_active_memtable
+      - mongo072_rocks_all_memtable
+      - mongo073_rocks_oplogcf_all_memtable
+      - mongo074_rocks_snapshots
+      - mongo075_rocks_oplogcf_snapshots
+      - mongo076_rocks_live_versions
+      - mongo077_rocks_oplogcf_live_versions
+      - mongo078_rocks_block_cache
+      - mongo079_rocks_background_errors
+      - mongo080_rocks_oplogcf_background_errors
+      - mongo081_rocks_conflict_bytes_usage
+      - mongo082_rocks_uncommitted_keys
+      - mongo083_rocks_committed_keys
+      - mongo084_rocks_alive_txn
+      - mongo085_rocks_read_queue
+      - mongo086_rocks_commit_queue
+      - mongo087_rocks_ct_write_out
+      - mongo088_rocks_ct_write_available
+      - mongo089_rocks_ct_read_out
+      - mongo090_rocks_ct_read_available
+      - mongo091_active_session_count
+      - io_bandwidth_usage
+      - iops_usage
+SYS.APIG:
+  dim_metric_name:
+    api_id:
+      - req_count
+      - req_count_2xx
+      - req_count_4xx
+      - req_count_5xx
+      - req_count_error
+      - avg_latency
+      - max_latency
+      - input_throughput
+      - output_throughput
+SYS.CBR:
+  resource: "service"
+  dim_metric_name:
+    instance_id:
+      - vault_util
+      - used_vault_size
+SYS.WAF:
+  dim_metric_name:
+    waf_instance_id:
+      - attacks
+      - requests
+      - waf_http_2xx
+      - waf_http_3xx
+      - waf_http_4xx
+      - waf_http_5xx
+      - waf_fused_counts
+      - inbound_traffic
+      - outbound_traffic
+      - waf_process_time_0
+      - waf_process_time_10
+      - waf_process_time_20
+      - waf_process_time_50
+      - waf_process_time_100
+      - waf_process_time_1000
+      - qps_peak
+      - qps_mean
+      - waf_http_0
+      - upstream_code_2xx
+      - upstream_code_3xx
+      - upstream_code_4xx
+      - upstream_code_5xx
+      - upstream_code_0
+      - inbound_traffic_peak
+      - inbound_traffic_mean
+      - outbound_traffic_peak
+      - outbound_traffic_mean

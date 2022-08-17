@@ -1,22 +1,22 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type UpdateListenerRequest struct {
-	// 监听器ID
 
+	// 监听器ID。
 	ListenerId string `json:"listener_id"`
 
 	Body *UpdateListenerRequestBody `json:"body,omitempty"`
 }
 
 func (o UpdateListenerRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "UpdateListenerRequest struct{}"
 	}

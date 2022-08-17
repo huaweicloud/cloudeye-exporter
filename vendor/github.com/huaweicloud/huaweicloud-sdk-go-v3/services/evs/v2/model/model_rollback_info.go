@@ -1,19 +1,19 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 type RollbackInfo struct {
-	// 回滚的目标云硬盘UUID。
 
+	// 回滚的目标云硬盘UUID。
 	VolumeId string `json:"volume_id"`
 }
 
 func (o RollbackInfo) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "RollbackInfo struct{}"
 	}

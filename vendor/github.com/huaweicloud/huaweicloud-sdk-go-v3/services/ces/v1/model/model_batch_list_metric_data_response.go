@@ -1,21 +1,21 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type BatchListMetricDataResponse struct {
-	// 监控指标。
 
+	// 监控指标。
 	Metrics        *[]BatchMetricData `json:"metrics,omitempty"`
 	HttpStatusCode int                `json:"-"`
 }
 
 func (o BatchListMetricDataResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "BatchListMetricDataResponse struct{}"
 	}

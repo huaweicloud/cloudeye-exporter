@@ -1,17 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type ListAvailabilityZonesRequest struct {
+
+	// AZ组。
+	PublicBorderGroup *string `json:"public_border_group,omitempty"`
 }
 
 func (o ListAvailabilityZonesRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListAvailabilityZonesRequest struct{}"
 	}

@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // 可用分区的状态。
 type ZoneState struct {
-	// 可用分区是否可用。
 
+	// 可用分区是否可用。
 	Available *bool `json:"available,omitempty"`
 }
 
 func (o ZoneState) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ZoneState struct{}"
 	}

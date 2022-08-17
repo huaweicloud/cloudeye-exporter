@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type UpdateListenerResponse struct {
-	// 请求ID。  注：自动生成 。
 
+	// 请求ID。  注：自动生成 。
 	RequestId *string `json:"request_id,omitempty"`
 
 	Listener       *Listener `json:"listener,omitempty"`
@@ -17,7 +17,7 @@ type UpdateListenerResponse struct {
 }
 
 func (o UpdateListenerResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "UpdateListenerResponse struct{}"
 	}

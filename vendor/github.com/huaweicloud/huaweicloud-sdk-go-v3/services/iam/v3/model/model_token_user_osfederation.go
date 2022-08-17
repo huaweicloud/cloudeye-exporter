@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type TokenUserOsfederation struct {
-	// 用户组信息列表。
 
+	// 用户组信息列表。
 	Groups []OsfederationGroups `json:"groups"`
 
 	IdentityProvider *OsfederationIdentityprovider `json:"identity_provider"`
@@ -18,7 +18,7 @@ type TokenUserOsfederation struct {
 }
 
 func (o TokenUserOsfederation) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "TokenUserOsfederation struct{}"
 	}

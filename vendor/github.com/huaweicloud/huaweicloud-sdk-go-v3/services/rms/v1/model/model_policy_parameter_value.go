@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // 规则参数值
 type PolicyParameterValue struct {
-	// 规则参数值
 
+	// 规则参数值
 	Value *interface{} `json:"value,omitempty"`
 }
 
 func (o PolicyParameterValue) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "PolicyParameterValue struct{}"
 	}

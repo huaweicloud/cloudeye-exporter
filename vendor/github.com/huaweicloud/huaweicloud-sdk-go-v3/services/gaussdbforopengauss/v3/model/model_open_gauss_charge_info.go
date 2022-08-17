@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,13 +11,13 @@ import (
 
 // 计费类型信息，仅支持按需。
 type OpenGaussChargeInfo struct {
-	// 计费模式。仅支持postPaid，后付费，即按需付费。
 
+	// 计费模式。仅支持postPaid，后付费，即按需付费。
 	ChargeMode OpenGaussChargeInfoChargeMode `json:"charge_mode"`
 }
 
 func (o OpenGaussChargeInfo) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "OpenGaussChargeInfo struct{}"
 	}
@@ -41,8 +41,12 @@ func GetOpenGaussChargeInfoChargeModeEnum() OpenGaussChargeInfoChargeModeEnum {
 	}
 }
 
+func (c OpenGaussChargeInfoChargeMode) Value() string {
+	return c.value
+}
+
 func (c OpenGaussChargeInfoChargeMode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *OpenGaussChargeInfoChargeMode) UnmarshalJSON(b []byte) error {

@@ -1,23 +1,23 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // API的URL地址。
 type Link struct {
+
 	// API的URL地址。
-
 	Href string `json:"href"`
-	// self。
 
+	// self。
 	Rel string `json:"rel"`
 }
 
 func (o Link) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "Link struct{}"
 	}

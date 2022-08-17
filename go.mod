@@ -3,15 +3,13 @@ module github.com/huaweicloud/cloudeye-exporter
 go 1.16
 
 require (
-	github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575
-	github.com/huaweicloud/huaweicloud-sdk-go-v3 v0.0.65
+	github.com/cihub/seelog v0.0.0-20191126193922-f561c5e57575
+	github.com/huaweicloud/huaweicloud-sdk-go-v3 v0.0.99
 	github.com/prometheus/client_golang v1.12.2
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 replace (
-	github.com/go-kit/kit => github.com/go-kit/kit v0.9.0
 	github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
-	golang.org/x/crypto => golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
-	golang.org/x/text => golang.org/x/text v0.3.5
+	golang.org/x/crypto => golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 )

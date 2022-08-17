@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,16 +11,16 @@ import (
 
 // Request Object
 type CinderListQuotasRequest struct {
+
 	// 目标的项目ID。与project_id保持一致即可。
-
 	TargetProjectId string `json:"target_project_id"`
-	// 是否查询配额详细信息。当前只支持传true。
 
+	// 是否查询配额详细信息。当前只支持传true。
 	Usage CinderListQuotasRequestUsage `json:"usage"`
 }
 
 func (o CinderListQuotasRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "CinderListQuotasRequest struct{}"
 	}
@@ -39,13 +39,17 @@ type CinderListQuotasRequestUsageEnum struct {
 func GetCinderListQuotasRequestUsageEnum() CinderListQuotasRequestUsageEnum {
 	return CinderListQuotasRequestUsageEnum{
 		TRUE: CinderListQuotasRequestUsage{
-			value: "true",
+			value: "True",
 		},
 	}
 }
 
+func (c CinderListQuotasRequestUsage) Value() string {
+	return c.value
+}
+
 func (c CinderListQuotasRequestUsage) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *CinderListQuotasRequestUsage) UnmarshalJSON(b []byte) error {

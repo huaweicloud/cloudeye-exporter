@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type DeleteListenerRequest struct {
-	// 监听器ID。
 
+	// 监听器ID。
 	ListenerId string `json:"listener_id"`
 }
 
 func (o DeleteListenerRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "DeleteListenerRequest struct{}"
 	}

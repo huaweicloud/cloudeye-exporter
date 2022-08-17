@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type ServerId struct {
-	// 云服务器ID。
 
+	// 云服务器ID。
 	Id string `json:"id"`
 }
 
 func (o ServerId) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ServerId struct{}"
 	}

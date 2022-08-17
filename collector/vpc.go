@@ -33,7 +33,9 @@ type PublicIpProperties struct {
 
 var vpcInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getVpcResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type VPCInfo struct{}
+
+func (getter VPCInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
 	vpcInfo.Lock()

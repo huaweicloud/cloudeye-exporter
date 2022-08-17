@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type RuleRef struct {
-	// 规则ID。
 
+	// 规则ID。
 	Id string `json:"id"`
 }
 
 func (o RuleRef) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "RuleRef struct{}"
 	}

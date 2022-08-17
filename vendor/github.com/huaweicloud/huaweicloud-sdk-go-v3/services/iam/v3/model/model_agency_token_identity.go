@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,15 +11,15 @@ import (
 
 //
 type AgencyTokenIdentity struct {
-	// token的获取方式，该字段内容为[\"assume_role\"]。
 
+	// token的获取方式，该字段内容为[\"assume_role\"]。
 	Methods []AgencyTokenIdentityMethods `json:"methods"`
 
 	AssumeRole *AgencyTokenAssumerole `json:"assume_role"`
 }
 
 func (o AgencyTokenIdentity) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "AgencyTokenIdentity struct{}"
 	}
@@ -43,8 +43,12 @@ func GetAgencyTokenIdentityMethodsEnum() AgencyTokenIdentityMethodsEnum {
 	}
 }
 
+func (c AgencyTokenIdentityMethods) Value() string {
+	return c.value
+}
+
 func (c AgencyTokenIdentityMethods) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *AgencyTokenIdentityMethods) UnmarshalJSON(b []byte) error {

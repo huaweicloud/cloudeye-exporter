@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
@@ -13,8 +13,8 @@ type QuotaList struct {
 	Backups *QuotaDetailBackups `json:"backups"`
 
 	Gigabytes *QuotaDetailGigabytes `json:"gigabytes"`
-	// 项目ID。
 
+	// 项目ID。
 	Id string `json:"id"`
 
 	Snapshots *QuotaDetailSnapshots `json:"snapshots"`
@@ -49,7 +49,7 @@ type QuotaList struct {
 }
 
 func (o QuotaList) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "QuotaList struct{}"
 	}

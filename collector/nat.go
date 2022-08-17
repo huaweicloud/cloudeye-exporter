@@ -10,7 +10,9 @@ import (
 
 var natInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getNATResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
+type NATInfo struct{}
+
+func (getter NATInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]cesmodel.MetricInfoList, 0)
 	natInfo.Lock()

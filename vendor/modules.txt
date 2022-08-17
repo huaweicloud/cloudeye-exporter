@@ -2,7 +2,7 @@
 github.com/beorn7/perks/quantile
 # github.com/cespare/xxhash/v2 v2.1.2
 github.com/cespare/xxhash/v2
-# github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575
+# github.com/cihub/seelog v0.0.0-20191126193922-f561c5e57575
 ## explicit
 github.com/cihub/seelog
 github.com/cihub/seelog/archive
@@ -15,28 +15,38 @@ github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
-# github.com/huaweicloud/huaweicloud-sdk-go-v3 v0.0.65
+# github.com/huaweicloud/huaweicloud-sdk-go-v3 v0.0.99
 ## explicit
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/cache
-github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/env
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/global
-github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/iam
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/internal
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/provider
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/signer
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/config
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/exchange
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/httphandler
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/impl
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/invoker
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/invoker/retry
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/region
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/request
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/response
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdkerr
 github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdktime
+github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/apig/v2
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/apig/v2/model
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cbr/v1/model
 github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1
 github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/dds/v3
+github.com/huaweicloud/huaweicloud-sdk-go-v3/services/dds/v3/model
 github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ecs/v2
 github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ecs/v2/model
 github.com/huaweicloud/huaweicloud-sdk-go-v3/services/elb/v3
@@ -76,6 +86,8 @@ github.com/prometheus/common/model
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
+# golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 => golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
+golang.org/x/crypto/hkdf
 # golang.org/x/sys v0.0.0-20220114195835-da31bd327af9
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
@@ -111,10 +123,12 @@ google.golang.org/protobuf/types/descriptorpb
 google.golang.org/protobuf/types/known/anypb
 google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/timestamppb
+# gopkg.in/ini.v1 v1.66.6
+gopkg.in/ini.v1
 # gopkg.in/yaml.v2 v2.4.0
-## explicit
 gopkg.in/yaml.v2
-# github.com/go-kit/kit => github.com/go-kit/kit v0.9.0
+# gopkg.in/yaml.v3 v3.0.1
+## explicit
+gopkg.in/yaml.v3
 # github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
-# golang.org/x/crypto => golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
-# golang.org/x/text => golang.org/x/text v0.3.5
+# golang.org/x/crypto => golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e

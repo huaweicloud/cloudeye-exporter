@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,25 +11,25 @@ import (
 
 // 策略参数定义
 type PolicyParameterDefinition struct {
+
 	// 策略参数名字
-
 	Name *string `json:"name,omitempty"`
+
 	// 策略参数描述
-
 	Description *string `json:"description,omitempty"`
+
 	// 策略参数允许值列表
-
 	AllowedValues *[]interface{} `json:"allowed_values,omitempty"`
+
 	// 策略参数默认值
-
 	DefaultValue *string `json:"default_value,omitempty"`
-	// 策略参数类型
 
+	// 策略参数类型
 	Type *PolicyParameterDefinitionType `json:"type,omitempty"`
 }
 
 func (o PolicyParameterDefinition) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "PolicyParameterDefinition struct{}"
 	}
@@ -73,8 +73,12 @@ func GetPolicyParameterDefinitionTypeEnum() PolicyParameterDefinitionTypeEnum {
 	}
 }
 
+func (c PolicyParameterDefinitionType) Value() string {
+	return c.value
+}
+
 func (c PolicyParameterDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *PolicyParameterDefinitionType) UnmarshalJSON(b []byte) error {

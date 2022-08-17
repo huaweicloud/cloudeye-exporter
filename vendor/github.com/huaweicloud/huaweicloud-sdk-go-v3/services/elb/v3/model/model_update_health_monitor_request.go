@@ -1,22 +1,22 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type UpdateHealthMonitorRequest struct {
-	// 健康检查ID
 
+	// 健康检查ID
 	HealthmonitorId string `json:"healthmonitor_id"`
 
 	Body *UpdateHealthMonitorRequestBody `json:"body,omitempty"`
 }
 
 func (o UpdateHealthMonitorRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "UpdateHealthMonitorRequest struct{}"
 	}

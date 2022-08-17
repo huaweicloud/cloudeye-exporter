@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type ListAllProjectsPermissionsForAgencyResponse struct {
-	// 权限信息列表。
 
+	// 权限信息列表。
 	Roles *[]AgencyAllProjectRole `json:"roles,omitempty"`
 
 	Links          *LinksSelf `json:"links,omitempty"`
@@ -17,7 +17,7 @@ type ListAllProjectsPermissionsForAgencyResponse struct {
 }
 
 func (o ListAllProjectsPermissionsForAgencyResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListAllProjectsPermissionsForAgencyResponse struct{}"
 	}

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"errors"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
@@ -11,22 +11,22 @@ import (
 
 // Request Object
 type ShowResourceRelationsRequest struct {
+
 	// 资源ID
-
 	ResourceId string `json:"resource_id"`
+
 	// 资源关系的指向
-
 	Direction ShowResourceRelationsRequestDirection `json:"direction"`
+
 	// 最大的返回数量
-
 	Limit *int32 `json:"limit,omitempty"`
-	// 分页参数，通过上一个请求中返回的marker信息作为输入，获取当前页
 
+	// 分页参数，通过上一个请求中返回的marker信息作为输入，获取当前页
 	Marker *string `json:"marker,omitempty"`
 }
 
 func (o ShowResourceRelationsRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowResourceRelationsRequest struct{}"
 	}
@@ -54,8 +54,12 @@ func GetShowResourceRelationsRequestDirectionEnum() ShowResourceRelationsRequest
 	}
 }
 
+func (c ShowResourceRelationsRequestDirection) Value() string {
+	return c.value
+}
+
 func (c ShowResourceRelationsRequestDirection) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+	return utils.Marshal(c.value)
 }
 
 func (c *ShowResourceRelationsRequestDirection) UnmarshalJSON(b []byte) error {

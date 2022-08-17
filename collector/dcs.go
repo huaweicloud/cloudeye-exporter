@@ -17,7 +17,9 @@ type DcsInstancesInfo struct {
 
 var dcsInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getDcsResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type DCSInfo struct{}
+
+func (getter DCSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
 	dcsInfo.Lock()

@@ -1,21 +1,21 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type ListRegionsResponse struct {
-	// 区域信息项列表
 
+	// 区域信息项列表
 	Value          *[]Region `json:"value,omitempty"`
 	HttpStatusCode int       `json:"-"`
 }
 
 func (o ListRegionsResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListRegionsResponse struct{}"
 	}

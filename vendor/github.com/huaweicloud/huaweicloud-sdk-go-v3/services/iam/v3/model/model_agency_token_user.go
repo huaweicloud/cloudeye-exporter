@@ -1,25 +1,25 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type AgencyTokenUser struct {
+
 	// 委托方A账号名/委托名。
-
 	Name string `json:"name"`
-	// 委托ID。
 
+	// 委托ID。
 	Id string `json:"id"`
 
 	Domain *AgencyTokenUserDomain `json:"domain"`
 }
 
 func (o AgencyTokenUser) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "AgencyTokenUser struct{}"
 	}

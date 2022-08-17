@@ -1,23 +1,23 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type OsfederationGroups struct {
+
 	// 用户组ID。
-
 	Id string `json:"id"`
-	// 用户组名称。
 
+	// 用户组名称。
 	Name string `json:"name"`
 }
 
 func (o OsfederationGroups) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "OsfederationGroups struct{}"
 	}

@@ -1,21 +1,21 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type ListApiVersionsResponse struct {
-	// 版本列表
 
+	// 版本列表
 	Versions       *[]VersionDetail `json:"versions,omitempty"`
 	HttpStatusCode int              `json:"-"`
 }
 
 func (o ListApiVersionsResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListApiVersionsResponse struct{}"
 	}

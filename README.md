@@ -11,8 +11,8 @@ $ git clone https://github.com/huaweicloud/cloudeye-exporter
 
 ## (Option) Building The Discovery with Exact steps on clean Ubuntu 16.04 
 ```
-$ wget https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
-$ sudo tar -C /usr/local -xzf go1.12.5.linux-amd64.tar.gz
+$ wget https://dl.google.com/go/go1.16.3.linux-amd64.tar.gz
+$ sudo tar -C /usr/local -xzf go1.16.3.linux-amd64.tar.gz
 $ export PATH=$PATH:/usr/local/go/bin # You should put in your .profile or .bashrc
 $ go version # to verify it runs and version #
 

@@ -24,7 +24,9 @@ type NodeProperties struct {
 
 var gaussdbInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getGaussdbResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type GAUSSDBInfo struct{}
+
+func (getter GAUSSDBInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
 	gaussdbInfo.Lock()

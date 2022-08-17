@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // 监听器
 type ListenerRef struct {
-	// 监听器ID。
 
+	// 监听器ID。
 	Id string `json:"id"`
 }
 
 func (o ListenerRef) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ListenerRef struct{}"
 	}

@@ -17,7 +17,9 @@ type DrsInstanceInfo struct {
 
 var drsInfo serversInfo
 
-func (exporter *BaseHuaweiCloudExporter) getDrsResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
+type DRSInfo struct{}
+
+func (getter DRSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
 	drsInfo.Lock()

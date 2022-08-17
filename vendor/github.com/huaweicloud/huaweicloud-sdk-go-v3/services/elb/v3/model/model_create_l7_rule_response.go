@@ -1,15 +1,15 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Response Object
 type CreateL7RuleResponse struct {
-	// 请求ID。  注：自动生成 。
 
+	// 请求ID。  注：自动生成 。
 	RequestId *string `json:"request_id,omitempty"`
 
 	Rule           *L7Rule `json:"rule,omitempty"`
@@ -17,7 +17,7 @@ type CreateL7RuleResponse struct {
 }
 
 func (o CreateL7RuleResponse) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "CreateL7RuleResponse struct{}"
 	}

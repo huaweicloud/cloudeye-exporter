@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type MemberRef struct {
-	// 后端服务器ID。
 
+	// 后端服务器ID。
 	Id string `json:"id"`
 }
 
 func (o MemberRef) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "MemberRef struct{}"
 	}

@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 //
 type BatchDeleteServerNicOption struct {
-	// 网卡Port ID。
 
+	// 网卡Port ID。
 	Id string `json:"id"`
 }
 
 func (o BatchDeleteServerNicOption) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "BatchDeleteServerNicOption struct{}"
 	}

@@ -1,20 +1,20 @@
 package model
 
 import (
-	"encoding/json"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 
 	"strings"
 )
 
 // Request Object
 type ShowCertificateRequest struct {
-	// 证书ID。
 
+	// 证书ID。
 	CertificateId string `json:"certificate_id"`
 }
 
 func (o ShowCertificateRequest) String() string {
-	data, err := json.Marshal(o)
+	data, err := utils.Marshal(o)
 	if err != nil {
 		return "ShowCertificateRequest struct{}"
 	}
