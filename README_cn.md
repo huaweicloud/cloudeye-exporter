@@ -29,6 +29,17 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 |文档数据库服务|SYS.DDS|√|云服务|
 |API网关|SYS.APIG|×|云服务|
 |云备份|SYS.CBR|√|RMS/云服务|
+|数据湖探索|SYS.DLI|√|RMS&云服务|
+|弹性文件服务|SYS.SFS|×|云服务|
+|弹性文件服务 SFS Turbo|SYS.EFS|√|RMS|
+|虚拟专用网络|SYS.VPN|√|RMS|
+|云数据迁移|SYS.CDM|×|云服务|
+|数据仓库服务|SYS.DWS|√|云服务|
+|内容审核Moderation|SYS.MODERATION|×|-|
+|Anti-DDoS流量清洗|SYS.DDOS|√|RMS|
+|云数据库GaussDB(for Nosql)|SYS.NoSQL|×|云服务|
+|分布式消息服务|SYS.DMS|√|RMS|
+|分布式数据库中间件|SYS.DDMS|×|RMS&云服务|
 
 注：自定义标签时，key只能包含大写字母、小写字母以及中划线
 

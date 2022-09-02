@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
@@ -96,8 +95,10 @@ func getAllEsInstanceSFromRMS() ([]EsInstanceInfo, error) {
 	}
 	esInstances := make([]EsInstanceInfo, 0, len(resp))
 	for _, resource := range resp {
-		bandwidthProperties, err := fmtEsInstanceProperties(resource.Properties)
+		var esInstanceProperties EsInstanceProperties
+		err := fmtResourceProperties(resource.Properties, &esInstanceProperties)
 		if err != nil {
+			logs.Logger.Errorf("fmt es instance properties error: %s", err.Error())
 			continue
 		}
 		esInstances = append(esInstances, EsInstanceInfo{
@@ -107,24 +108,8 @@ func getAllEsInstanceSFromRMS() ([]EsInstanceInfo, error) {
 				EpId: *resource.EpId,
 				Tags: resource.Tags,
 			},
-			Properties: *bandwidthProperties,
+			Properties: esInstanceProperties,
 		})
 	}
 	return esInstances, nil
-}
-
-func fmtEsInstanceProperties(properties map[string]interface{}) (*EsInstanceProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal es instance properties error: %s", err.Error())
-		return nil, err
-	}
-	var esInstanceProperties EsInstanceProperties
-	err = json.Unmarshal(bytes, &esInstanceProperties)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to EsInstanceProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &esInstanceProperties, nil
 }

@@ -3,12 +3,18 @@ package collector
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"regexp"
 	"sort"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/config"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/impl"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 
 	"github.com/huaweicloud/cloudeye-exporter/logs"
@@ -57,6 +63,10 @@ func GetResourceKeyFromMetricInfo(metric model.MetricInfoList) string {
 }
 
 func GetResourceKeyFromMetricData(metric model.BatchMetricData) string {
+	// DMS实例其他维度不需要适配资源标签，只匹配实例信息
+	if *metric.Namespace == "SYS.DMS" {
+		return getDmsResourceKey(metric)
+	}
 	sort.Slice(*metric.Dimensions, func(i, j int) bool {
 		return (*metric.Dimensions)[i].Name < (*metric.Dimensions)[j].Name
 	})
@@ -65,6 +75,15 @@ func GetResourceKeyFromMetricData(metric model.BatchMetricData) string {
 		dimValuesList = append(dimValuesList, dim.Value)
 	}
 	return strings.Join(dimValuesList, ".")
+}
+
+func getDmsResourceKey(metric model.BatchMetricData) string {
+	for _, dim := range *metric.Dimensions {
+		if dim.Name == "kafka_instance_id" || dim.Name == "rabbitmq_instance_id" || dim.Name == "reliablemq_instance_id" {
+			return dim.Value
+		}
+	}
+	return ""
 }
 
 func getEndpoint(server, version string) string {
@@ -147,4 +166,35 @@ func buildDimensionMetrics(metricNames []string, namespace string, dimensions []
 		}
 	}
 	return filterMetrics
+}
+
+func getHcClient(endpoint string) *core.HcHttpClient {
+	return core.NewHcHttpClient(impl.NewDefaultHttpClient(config.DefaultHttpConfig().WithIgnoreSSLVerification(true))).
+		WithCredential(basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		WithEndpoint(endpoint)
+}
+
+func genDefaultReqDefWithOffsetAndLimit(path string, response interface{}) *def.HttpRequestDef {
+	reqDefBuilder := def.NewHttpRequestDefBuilder().WithMethod(http.MethodGet).WithPath(path).
+		WithResponse(response).WithContentType("application/json")
+
+	reqDefBuilder.WithRequestField(def.NewFieldDef().WithName("Offset").WithJsonTag("offset").WithLocationType(def.Query))
+	reqDefBuilder.WithRequestField(def.NewFieldDef().WithName("Limit").WithJsonTag("limit").WithLocationType(def.Query))
+	return reqDefBuilder.Build()
+}
+
+func getDefaultString(value *string) string {
+	if value != nil {
+		return *value
+	}
+	return ""
+}
+
+func fmtResourceProperties(properties map[string]interface{}, value interface{}) error {
+	bytes, err := json.Marshal(properties)
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(bytes, value)
 }

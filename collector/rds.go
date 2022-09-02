@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
@@ -74,8 +73,10 @@ func getAllRdsInstanceSFromRMS() ([]RdsInstanceInfo, error) {
 	}
 	rdsInstances := make([]RdsInstanceInfo, 0, len(resp))
 	for _, resource := range resp {
-		rdsInstanceProperties, err := fmtRdsInstanceProperties(resource.Properties)
+		var rdsInstanceProperties RdsInstanceProperties
+		err := fmtResourceProperties(resource.Properties, &rdsInstanceProperties)
 		if err != nil {
+			logs.Logger.Errorf("fmt rds properties error: %s", err.Error())
 			continue
 		}
 		rdsInstances = append(rdsInstances, RdsInstanceInfo{
@@ -85,24 +86,8 @@ func getAllRdsInstanceSFromRMS() ([]RdsInstanceInfo, error) {
 				EpId: *resource.EpId,
 				Tags: resource.Tags,
 			},
-			RdsInstanceProperties: *rdsInstanceProperties,
+			RdsInstanceProperties: rdsInstanceProperties,
 		})
 	}
 	return rdsInstances, nil
-}
-
-func fmtRdsInstanceProperties(properties map[string]interface{}) (*RdsInstanceProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal rds instance properties error: %s", err.Error())
-		return nil, err
-	}
-	var rdsInstanceProperties RdsInstanceProperties
-	err = json.Unmarshal(bytes, &rdsInstanceProperties)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to RdsInstanceProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &rdsInstanceProperties, nil
 }

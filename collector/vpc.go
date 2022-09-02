@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -106,8 +105,10 @@ func getAllBandwidthFromRMS() ([]Bandwidth, error) {
 	}
 	bandwidths := make([]Bandwidth, 0, len(resp))
 	for _, resource := range resp {
-		bandwidthProperties, err := fmtBandwidthProperties(resource.Properties)
+		var bandwidthProperties BandwidthProperties
+		err := fmtResourceProperties(resource.Properties, &bandwidthProperties)
 		if err != nil {
+			logs.Logger.Errorf("fmt bandwidth properties error: %s", err.Error())
 			continue
 		}
 		bandwidths = append(bandwidths, Bandwidth{
@@ -117,26 +118,10 @@ func getAllBandwidthFromRMS() ([]Bandwidth, error) {
 				EpId: *resource.EpId,
 				Tags: resource.Tags,
 			},
-			BandwidthProperties: *bandwidthProperties,
+			BandwidthProperties: bandwidthProperties,
 		})
 	}
 	return bandwidths, nil
-}
-
-func fmtBandwidthProperties(properties map[string]interface{}) (*BandwidthProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal vpc bandwidth properties error: %s", err.Error())
-		return nil, err
-	}
-	var bandwidthProperties BandwidthProperties
-	err = json.Unmarshal(bytes, &bandwidthProperties)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to BandwidthProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &bandwidthProperties, nil
 }
 
 func getAllPublicIpFromRMS() ([]PublicIp, error) {
@@ -147,8 +132,10 @@ func getAllPublicIpFromRMS() ([]PublicIp, error) {
 	}
 	publicips := make([]PublicIp, 0, len(resp))
 	for _, resource := range resp {
-		publicIpProperties, err := fmtPublicIpProperties(resource.Properties)
+		var publicIpProperties PublicIpProperties
+		err := fmtResourceProperties(resource.Properties, &publicIpProperties)
 		if err != nil {
+			logs.Logger.Errorf("fmt publicIp properties error: %s", err.Error())
 			continue
 		}
 		publicips = append(publicips, PublicIp{
@@ -157,24 +144,8 @@ func getAllPublicIpFromRMS() ([]PublicIp, error) {
 				Name: *resource.Name,
 				EpId: *resource.EpId,
 				Tags: resource.Tags},
-			PublicIpProperties: *publicIpProperties,
+			PublicIpProperties: publicIpProperties,
 		})
 	}
 	return publicips, nil
-}
-
-func fmtPublicIpProperties(properties map[string]interface{}) (*PublicIpProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal vpc publicIp properties error: %s", err.Error())
-		return nil, err
-	}
-	var publicIpProperties PublicIpProperties
-	err = json.Unmarshal(bytes, &publicIpProperties)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to PublicIpProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &publicIpProperties, nil
 }
