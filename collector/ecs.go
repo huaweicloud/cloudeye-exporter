@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"strings"
 	"time"
 
@@ -120,20 +119,21 @@ func getIPFromEcsInfo(addresses map[string][]ecsmodel.ServerAddress) string {
 func getAllServerFromRMS() ([]EcsInstancesInfo, error) {
 	resp, err := listResources("ecs", "cloudservers")
 	if err != nil {
-		logs.Logger.Error(err)
 		return nil, err
 	}
 	services := make([]EcsInstancesInfo, len(resp))
 	for index, resource := range resp {
-		properties, err := fmtEcsProperties(resource.Properties)
+		var properties EcsProperties
+		err := fmtResourceProperties(resource.Properties, &properties)
 		if err != nil {
+			logs.Logger.Errorf("fmt ecs properties error: %s", err.Error())
 			continue
 		}
 		services[index].ID = *resource.Id
 		services[index].Name = *resource.Name
 		services[index].EpId = *resource.EpId
 		services[index].Tags = resource.Tags
-		services[index].IP = getIPInfoFromProperties(properties)
+		services[index].IP = getIPInfoFromProperties(&properties)
 	}
 	return services, nil
 }
@@ -150,22 +150,6 @@ func getIPInfoFromProperties(properties *EcsProperties) string {
 		ips = append(ips, properties.Addresses[i].Addr)
 	}
 	return strings.Join(ips, ",")
-}
-
-func fmtEcsProperties(properties map[string]interface{}) (*EcsProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal ecs properties error: %s", err.Error())
-		return nil, err
-	}
-	var ecsProperties EcsProperties
-	err = json.Unmarshal(bytes, &ecsProperties)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to EcsProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &ecsProperties, nil
 }
 
 type AGTECSInfo struct{}

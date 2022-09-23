@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -60,30 +59,16 @@ func getAllFunctionGraphFromRMS() ([]functionInfo, error) {
 	}
 	functions := make([]functionInfo, 0, len(resp))
 	for _, resource := range resp {
-		properties, err := fmtFunctionProperties(resource.Properties)
+		var properties FunctionProperties
+		err := fmtResourceProperties(resource.Properties, &properties)
 		if err != nil {
+			logs.Logger.Errorf("fmt function properties error: %s", err.Error())
 			continue
 		}
 		functions = append(functions, functionInfo{
 			ResourceBaseInfo:   ResourceBaseInfo{*resource.Id, *resource.Name, *resource.EpId, resource.Tags},
-			FunctionProperties: *properties,
+			FunctionProperties: properties,
 		})
 	}
 	return functions, nil
-}
-
-func fmtFunctionProperties(properties map[string]interface{}) (*FunctionProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal function properties error: %s", err.Error())
-		return nil, err
-	}
-	var functionProperties FunctionProperties
-	err = json.Unmarshal(bytes, &functionProperties)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to FunctionProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &functionProperties, nil
 }

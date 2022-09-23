@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
@@ -66,8 +65,10 @@ func getAllGaussdbNodesFromRMS() ([]GaussdbNodeInfo, error) {
 	}
 	nodes := make([]GaussdbNodeInfo, 0, len(resp))
 	for _, resource := range resp {
-		properties, err := fmtGaussdbNodeProperties(resource.Properties)
+		var properties NodeProperties
+		err := fmtResourceProperties(resource.Properties, &properties)
 		if err != nil {
+			logs.Logger.Errorf("fmt gaussdb node properties error: %s", err.Error())
 			continue
 		}
 		nodes = append(nodes, GaussdbNodeInfo{
@@ -77,24 +78,8 @@ func getAllGaussdbNodesFromRMS() ([]GaussdbNodeInfo, error) {
 				EpId: *resource.EpId,
 				Tags: resource.Tags,
 			},
-			NodeProperties: *properties,
+			NodeProperties: properties,
 		})
 	}
 	return nodes, nil
-}
-
-func fmtGaussdbNodeProperties(properties map[string]interface{}) (*NodeProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal gaussdb node properties error: %s", err.Error())
-		return nil, err
-	}
-	var nodeproperties NodeProperties
-	err = json.Unmarshal(bytes, &nodeproperties)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to NodeProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &nodeproperties, nil
 }

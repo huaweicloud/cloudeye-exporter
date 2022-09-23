@@ -29,6 +29,16 @@ var (
 		"SYS.DDS":           DDSInfo{},
 		"SYS.APIG":          APIGInfo{},
 		"SYS.CBR":           CBRInfo{},
+		"SYS.DLI":           DLIInfo{},
+		"SYS.SFS":           SFSInfo{},
+		"SYS.EFS":           EFSInfo{},
+		"SYS.VPN":           VPNInfo{},
+		"SYS.CDM":           CDMInfo{},
+		"SYS.DWS":           DWSInfo{},
+		"SYS.DDOS":          DDOSInfo{},
+		"SYS.NoSQL":         NoSQLInfo{},
+		"SYS.DMS":           DMSInfo{},
+		"SYS.DDMS":          DDMSInfo{},
 	}
 )
 

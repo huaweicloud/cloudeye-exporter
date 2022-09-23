@@ -26,6 +26,7 @@
    + [弹性负载均衡 ELB](templates/elb_dashboard_template.json)
    + [关系型数据库 RDS](templates/rds_dashboard_template.json)
    + [Web应用防火墙 WAF](templates/waf_dashboard_template.json)
+   + [弹性公网IP和带宽 VPC](templates/vpc_dashboard_template.json)
 4. 效果展示：
    >ECS:
    > ![img.png](pic/ecs.jpg)

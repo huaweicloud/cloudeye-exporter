@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -127,11 +126,13 @@ func getAllVolumeFromRMS() ([]EvsInfo, error) {
 	}
 	var volumes []EvsInfo
 	for _, resource := range resp {
-		properties, err := fmtEvcProperties(resource.Properties)
+		var evsProperties RmsEvcProperties
+		err := fmtResourceProperties(resource.Properties, &evsProperties)
 		if err != nil {
+			logs.Logger.Errorf("fmt evs properties error: %s", err.Error())
 			continue
 		}
-		for _, attachment := range properties.Attachments {
+		for _, attachment := range evsProperties.Attachments {
 			volumes = append(volumes, EvsInfo{
 				ResourceBaseInfo: ResourceBaseInfo{
 					ID:   *resource.Id,
@@ -163,20 +164,4 @@ type RmsEvcProperties struct {
 type Attachment struct {
 	Device   string `json:"device"`
 	ServerId string `json:"serverId"`
-}
-
-func fmtEvcProperties(properties map[string]interface{}) (*RmsEvcProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal evs properties error: %s", err.Error())
-		return nil, err
-	}
-	var volumeDetail RmsEvcProperties
-	err = json.Unmarshal(bytes, &volumeDetail)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to RmsEvcProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &volumeDetail, nil
 }
