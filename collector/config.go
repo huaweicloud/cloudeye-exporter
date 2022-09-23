@@ -81,11 +81,11 @@ func SetDefaultConfigValues(config *CloudConfig) {
 	}
 
 	if config.Global.MaxRoutines == 0 {
-		config.Global.MaxRoutines = 20
+		config.Global.MaxRoutines = 5
 	}
 
 	if config.Global.ScrapeBatchSize == 0 {
-		config.Global.ScrapeBatchSize = 10
+		config.Global.ScrapeBatchSize = 300
 	}
 }
 

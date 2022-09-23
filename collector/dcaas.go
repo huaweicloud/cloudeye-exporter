@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -137,8 +136,10 @@ func getDcaasConnectsFromRMS() ([]ConnectInfo, error) {
 	}
 	connects := make([]ConnectInfo, 0, len(resp))
 	for _, resource := range resp {
-		connectProperties, err := fmtConnectProperties(resource.Properties)
+		var connectProperties ConnectProperties
+		err := fmtResourceProperties(resource.Properties, &connectProperties)
 		if err != nil {
+			logs.Logger.Errorf("fmt dcaas connect properties error: %s", err.Error())
 			continue
 		}
 		connects = append(connects, ConnectInfo{
@@ -147,26 +148,10 @@ func getDcaasConnectsFromRMS() ([]ConnectInfo, error) {
 				Name: *resource.Name,
 				EpId: *resource.EpId,
 				Tags: resource.Tags},
-			ConnectProperties: *connectProperties,
+			ConnectProperties: connectProperties,
 		})
 	}
 	return connects, nil
-}
-
-func fmtConnectProperties(properties map[string]interface{}) (*ConnectProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal dcaas connect properties error: %s", err.Error())
-		return nil, err
-	}
-	var connectDetail ConnectProperties
-	err = json.Unmarshal(bytes, &connectDetail)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to ConnectProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &connectDetail, nil
 }
 
 func getDcaasVifFromRMS() ([]VifInfo, error) {
@@ -177,8 +162,10 @@ func getDcaasVifFromRMS() ([]VifInfo, error) {
 	}
 	vifs := make([]VifInfo, 0, len(resp))
 	for _, resource := range resp {
-		vifProperties, err := fmtVifProperties(resource.Properties)
+		var vifProperties VifProperties
+		err := fmtResourceProperties(resource.Properties, &vifProperties)
 		if err != nil {
+			logs.Logger.Errorf("fmt vip properties error: %s", err.Error())
 			continue
 		}
 		vifs = append(vifs, VifInfo{
@@ -188,26 +175,10 @@ func getDcaasVifFromRMS() ([]VifInfo, error) {
 				EpId: *resource.EpId,
 				Tags: resource.Tags,
 			},
-			VifProperties: *vifProperties,
+			VifProperties: vifProperties,
 		})
 	}
 	return vifs, nil
-}
-
-func fmtVifProperties(properties map[string]interface{}) (*VifProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal dcaas vif properties error: %s", err.Error())
-		return nil, err
-	}
-	var vifProperties VifProperties
-	err = json.Unmarshal(bytes, &vifProperties)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to VifProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &vifProperties, nil
 }
 
 func getDcaasVgwFromRMS() ([]ResourceBaseInfo, error) {

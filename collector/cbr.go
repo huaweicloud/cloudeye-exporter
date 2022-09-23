@@ -91,7 +91,7 @@ func getAllCbrInstancesFromCBR() ([]ResourceBaseInfo, error) {
 		for _, vault := range *response.Vaults {
 			cbrInstances = append(cbrInstances, ResourceBaseInfo{
 				ID: vault.Id, Name: vault.Name,
-				EpId: *vault.EnterpriseProjectId, Tags: fmtTags(*vault.Tags),
+				EpId: *vault.EnterpriseProjectId, Tags: fmtTags(vault.Tags),
 			})
 		}
 		*request.Offset += limit

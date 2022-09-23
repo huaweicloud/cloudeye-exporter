@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -70,9 +69,10 @@ func getAllDrsJobsFromRMS() ([]DrsInstanceInfo, error) {
 
 	drsJobs := make([]DrsInstanceInfo, len(resources))
 	for index, resource := range resources {
-		drsProperties, err := fmtDrsProperties(resource.Properties)
+		var drsProperties map[string]string
+		err := fmtResourceProperties(resource.Properties, &drsProperties)
 		if err != nil {
-			// properties转化整label失败，打印日志，继续增加其他字段
+			// properties转化label失败，打印日志，继续增加其他字段
 			logs.Logger.Errorf("Failed to fmt drs properties, error: %s", err.Error())
 		}
 		drsJobs[index].ID = *resource.Id
@@ -82,20 +82,4 @@ func getAllDrsJobsFromRMS() ([]DrsInstanceInfo, error) {
 		drsJobs[index].DrsProperties = drsProperties
 	}
 	return drsJobs, nil
-}
-
-func fmtDrsProperties(properties map[string]interface{}) (map[string]string, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal rds instance properties error: %s", err.Error())
-		return nil, err
-	}
-	drsProperties := make(map[string]string)
-	err = json.Unmarshal(bytes, &drsProperties)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to RdsInstanceProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return drsProperties, nil
 }

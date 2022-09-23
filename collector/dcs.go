@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -122,8 +121,10 @@ func getRedisInstancesFromRMS() ([]DcsInstancesInfo, error) {
 	}
 	instances := make([]DcsInstancesInfo, 0, len(resp))
 	for _, resource := range resp {
-		properties, err := fmtDcsInstanceProperties(resource.Properties)
+		var properties RmsDcsInstanceProperties
+		err := fmtResourceProperties(resource.Properties, &properties)
 		if err != nil {
+			logs.Logger.Errorf("fmt dcs instance properties error: %s", err.Error())
 			continue
 		}
 		instances = append(instances, DcsInstancesInfo{
@@ -131,7 +132,7 @@ func getRedisInstancesFromRMS() ([]DcsInstancesInfo, error) {
 				Name: *resource.Name,
 				EpId: *resource.EpId,
 				Tags: resource.Tags},
-			RmsDcsInstanceProperties: *properties,
+			RmsDcsInstanceProperties: properties,
 		})
 	}
 	return instances, nil
@@ -145,8 +146,10 @@ func getMemcachedInstancesFromRMS() ([]DcsInstancesInfo, error) {
 	}
 	instances := make([]DcsInstancesInfo, 0, len(resp))
 	for _, resource := range resp {
-		properties, err := fmtDcsInstanceProperties(resource.Properties)
+		var properties RmsDcsInstanceProperties
+		err := fmtResourceProperties(resource.Properties, &properties)
 		if err != nil {
+			logs.Logger.Errorf("fmt dcs instance properties error: %s", err.Error())
 			continue
 		}
 		instances = append(instances, DcsInstancesInfo{
@@ -154,7 +157,7 @@ func getMemcachedInstancesFromRMS() ([]DcsInstancesInfo, error) {
 				Name: *resource.Name,
 				EpId: *resource.EpId,
 				Tags: resource.Tags},
-			RmsDcsInstanceProperties: *properties,
+			RmsDcsInstanceProperties: properties,
 		})
 	}
 	return instances, nil
@@ -173,13 +176,15 @@ func getDcsNodesFromRMS() ([]DcsNodeInfo, error) {
 	}
 	nodes := make([]DcsNodeInfo, 0, len(resp))
 	for _, resource := range resp {
-		nodeProperties, err := fmtDcsNodeProperties(resource.Properties)
+		var nodeProperties RmsDcsNodeProperties
+		err := fmtResourceProperties(resource.Properties, &nodeProperties)
 		if err != nil {
+			logs.Logger.Errorf("fmt dcs node properties error: %s", err.Error())
 			continue
 		}
 		nodes = append(nodes, DcsNodeInfo{
 			Tags:                 resource.Tags,
-			RmsDcsNodeProperties: *nodeProperties,
+			RmsDcsNodeProperties: nodeProperties,
 		})
 	}
 	return nodes, nil
@@ -195,42 +200,10 @@ type RmsDcsNodeProperties struct {
 	Dimensions  []model.MetricsDimension `json:"dimensions"`
 }
 
-func fmtDcsNodeProperties(properties map[string]interface{}) (*RmsDcsNodeProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal dcs node properties error: %s", err.Error())
-		return nil, err
-	}
-	var nodeDetail RmsDcsNodeProperties
-	err = json.Unmarshal(bytes, &nodeDetail)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to RmsDcsNodeProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &nodeDetail, nil
-}
-
 type RmsDcsInstanceProperties struct {
 	Engine        string `json:"engine"`
 	IP            string `json:"ip"`
 	Port          int    `json:"port"`
 	CacheMode     string `json:"cache_mode"`
 	EngineVersion string `json:"engine_version"`
-}
-
-func fmtDcsInstanceProperties(properties map[string]interface{}) (*RmsDcsInstanceProperties, error) {
-	bytes, err := json.Marshal(properties)
-	if err != nil {
-		logs.Logger.Errorf("Marshal dcs instance properties error: %s", err.Error())
-		return nil, err
-	}
-	var instanceDetail RmsDcsInstanceProperties
-	err = json.Unmarshal(bytes, &instanceDetail)
-	if err != nil {
-		logs.Logger.Errorf("Unmarshal to RmsDcsInstanceProperties error: %s", err.Error())
-		return nil, err
-	}
-
-	return &instanceDetail, nil
 }

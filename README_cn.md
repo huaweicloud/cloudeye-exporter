@@ -29,6 +29,17 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 |文档数据库服务|SYS.DDS|√|云服务|
 |API网关|SYS.APIG|×|云服务|
 |云备份|SYS.CBR|√|RMS/云服务|
+|数据湖探索|SYS.DLI|√|RMS&云服务|
+|弹性文件服务|SYS.SFS|×|云服务|
+|弹性文件服务 SFS Turbo|SYS.EFS|√|RMS|
+|虚拟专用网络|SYS.VPN|√|RMS|
+|云数据迁移|SYS.CDM|×|云服务|
+|数据仓库服务|SYS.DWS|√|云服务|
+|内容审核Moderation|SYS.MODERATION|×|-|
+|Anti-DDoS流量清洗|SYS.DDOS|√|RMS|
+|云数据库GaussDB(for Nosql)|SYS.NoSQL|×|云服务|
+|分布式消息服务|SYS.DMS|√|RMS|
+|分布式数据库中间件|SYS.DDMS|×|RMS&云服务|
 
 注：自定义标签时，key只能包含大写字母、小写字母以及中划线
 
@@ -41,16 +52,22 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 
 ## 安装配置cloudeye-exporter
 1. 在ubuntu vm上安装cloudeye-exporter
+   
+   登录vm机器，查看插件Releases版本 (https://github.com/huaweicloud/cloudeye-exporter/releases) ，获取插件下载地址，下载解压安装。
 ```
-git clone https://github.com/huaweicloud/cloudeye-exporter
+# 参考命令：
+mkdir cloudeye-exporter
 cd cloudeye-exporter
+wget https://github.com/huaweicloud/cloudeye-exporter/releases/download/v2.0.1/cloudeye-exporter.v2.0.1.tar.gz
+tar -xzvf cloudeye-exporter.v2.0.1.tar.gz
 ```
 2. 编辑clouds.yml文件配置公有云信息
 ```
 global:
   port: ":8087"
+  scrape_batch_size: 300
 auth:
-auth_url: "https://iam.cn-north-1.myhwclouds.com/v3"
+auth_url: "https://iam.cn-north-1.myhuaweicloud.com/v3"
 project_name: "cn-north-1"
 access_key: ""
 secret_key: ""

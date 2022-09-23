@@ -45,7 +45,7 @@ global:
   prefix: "huaweicloud"
   port: ":8087"
   metric_path: "/metrics"
-  scrape_batch_size: 10
+  scrape_batch_size: 300
 
 auth:
   auth_url: "https://iam.xxx.yyy.com/v3"
