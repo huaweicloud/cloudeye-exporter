@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -63,9 +64,13 @@ func main() {
 
 	http.HandleFunc(collector.CloudConf.Global.MetricPath, handler)
 	http.HandleFunc(collector.CloudConf.Global.EpsInfoPath, epHandler)
-
+	server := &http.Server{
+		Addr:         collector.CloudConf.Global.Port,
+		ReadTimeout:  30 * time.Second,
+		WriteTimeout: 60 * time.Second,
+	}
 	logs.Logger.Info("Start server at ", collector.CloudConf.Global.Port)
-	if err := http.ListenAndServe(collector.CloudConf.Global.Port, nil); err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		logs.Logger.Errorf("Error occur when start server %s", err.Error())
 		logs.FlushLogAndExit(1)
 	}

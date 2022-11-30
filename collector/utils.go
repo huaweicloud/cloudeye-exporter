@@ -26,7 +26,7 @@ var tagRegexp *regexp.Regexp
 
 func init() {
 	var err error
-	tagRegexp, err = regexp.Compile("^[A-Za-z_]+$")
+	tagRegexp, err = regexp.Compile("^([a-z]|[A-Z]){1}([a-z]|[A-Z]|_)*$")
 	if err != nil {
 		logs.Logger.Error("init tag regexp error: %s", err.Error())
 	}
@@ -67,6 +67,9 @@ func GetResourceKeyFromMetricData(metric model.BatchMetricData) string {
 	if *metric.Namespace == "SYS.DMS" {
 		return getDmsResourceKey(metric)
 	}
+	if *metric.Namespace == "AGT.ECS" || *metric.Namespace == "SERVICE.BMS"{
+		return getServerResourceKey(metric)
+	}
 	sort.Slice(*metric.Dimensions, func(i, j int) bool {
 		return (*metric.Dimensions)[i].Name < (*metric.Dimensions)[j].Name
 	})
@@ -75,6 +78,15 @@ func GetResourceKeyFromMetricData(metric model.BatchMetricData) string {
 		dimValuesList = append(dimValuesList, dim.Value)
 	}
 	return strings.Join(dimValuesList, ".")
+}
+
+func getServerResourceKey(metric model.BatchMetricData) string {
+	for _, dim := range *metric.Dimensions {
+		if dim.Name == "instance_id" {
+			return dim.Value
+		}
+	}
+	return ""
 }
 
 func getDmsResourceKey(metric model.BatchMetricData) string {

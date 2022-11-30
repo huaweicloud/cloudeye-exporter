@@ -101,9 +101,6 @@ func buildDcsNodesInfo(sysConfigMap map[string][]string, filterMetrics *[]model.
 				Value: []string{nodes[index].NodeType, nodes[index].GroupName, nodes[index].ResSubnetIp,
 					nodes[index].PrivateIp, nodes[index].PrivatePort},
 			}
-			keys, values := getTags(nodes[index].Tags)
-			info.Name = append(info.Name, keys...)
-			info.Value = append(info.Value, values...)
 			if label, exist := resourceInfos[nodes[index].InstanceId]; exist {
 				info.Name = append(info.Name, label.Name...)
 				info.Value = append(info.Value, label.Value...)

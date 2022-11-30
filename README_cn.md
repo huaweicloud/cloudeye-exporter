@@ -1,4 +1,4 @@
-
+﻿
 # 华为云 Exporter
 
 [华为云](https://www.huaweicloud.com/)云监控的 Prometheus Exporter.
@@ -40,6 +40,12 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 |云数据库GaussDB(for Nosql)|SYS.NoSQL|×|云服务|
 |分布式消息服务|SYS.DMS|√|RMS|
 |分布式数据库中间件|SYS.DDMS|×|RMS&云服务|
+|API专享版网关|SYS.APIC|×|云服务|
+|裸金属服务器|SYS.BMS/SERVICE.BMS|√|RMS|
+|ModelArts|SYS.ModelArts|√|RMS|
+|VPC终端节点|SYS.VPCEP |√|RMS|
+|图引擎服务GES|SYS.GES|√|RMS|
+|数据库安全服务DBSS|SYS.DBSS |√|RMS|
 
 注：自定义标签时，key只能包含大写字母、小写字母以及中划线
 
@@ -58,8 +64,8 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 # 参考命令：
 mkdir cloudeye-exporter
 cd cloudeye-exporter
-wget https://github.com/huaweicloud/cloudeye-exporter/releases/download/v2.0.1/cloudeye-exporter.v2.0.1.tar.gz
-tar -xzvf cloudeye-exporter.v2.0.1.tar.gz
+wget https://github.com/huaweicloud/cloudeye-exporter/releases/download/v2.0.2/cloudeye-exporter.v2.0.2.tar.gz
+tar -xzvf cloudeye-exporter.v2.0.2.tar.gz
 ```
 2. 编辑clouds.yml文件配置公有云信息
 ```

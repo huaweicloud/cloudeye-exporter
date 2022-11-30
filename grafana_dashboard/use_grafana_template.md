@@ -14,6 +14,20 @@
    >> Configuration—》Data source—》Add data source —》Prometheus —》填写Prometheus地址 —》保存&测试
    >> ![config_prometheus.gif](pic/config_prometheus.gif)
 3. 配置相关云服务监控视图
+
+   如果需要直接使用以下模板，需要修改prometheus配置，增加获取企业项目信息的任务，配置参考如下：
+   ```
+   $ vi prometheus.yml
+   global:
+     scrape_interval: 1m # Set the scrape interval to every 1 minute seconds. Default is every 1 minute.
+     scrape_timeout: 1m
+   scrape_configs:
+     # 如果开启了企业项目，则配置该任务获取企业项目信息，用于模板
+     - job_name: 'huaweicloud-eps'
+       metrics_path: "/eps-info"
+       static_configs:
+       - targets: ['192.168.0.xx:8087']
+   ```
    ><font size=6>+</font> —》Import —》输入json模板文件—》load
    >> ![import.png](pic/import.jpg)
    >> ![img.png](pic/load.jpg)

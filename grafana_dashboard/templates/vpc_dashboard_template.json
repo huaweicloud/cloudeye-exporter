@@ -1,27 +1,14 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "$$hashKey": "object:2875",
-        "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
-        "type": "dashboard"
-      }
-    ]
-  },
+  "__inputs": [
+    {
+      "name": "prometheus-cloudeye-exporter",
+      "label": "prometheus-cloudeye-exporter",
+      "description": "prometheus plugin that obtains data from cloudeye exporter for grafana",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
+    }
+  ],
   "description": "【华为云VPC监控指标说明】https://support.huaweicloud.com/intl/zh-cn/usermanual-vpc/vpc010012.html",
   "editable": true,
   "fiscalYearStartMonth": 0,
@@ -68,10 +55,7 @@
     },
     {
       "columns": [],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "description": "",
       "fontSize": "80%",
       "gridPos": {
@@ -279,10 +263,6 @@
       ],
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_downstream_bandwidth{epId=~\"$EPS\",publicIpAddress=~\"\"}) by (name,bandwidth_id)",
@@ -295,10 +275,6 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_downstream_bandwidth_usage{epId=~\"$EPS\",publicIpAddress=~\"\"}) by (name,bandwidth_id)",
@@ -310,10 +286,6 @@
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_down_stream{epId=~\"$EPS\",publicIpAddress=~\"\"}) by (name,bandwidth_id)",
@@ -325,10 +297,6 @@
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_upstream_bandwidth{epId=~\"$EPS\",publicIpAddress=~\"\"}) by (name,bandwidth_id)",
@@ -340,10 +308,6 @@
           "refId": "D"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_upstream_bandwidth_usage{epId=~\"$EPS\",publicIpAddress=~\"\"}) by (name,bandwidth_id)",
@@ -355,10 +319,6 @@
           "refId": "E"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_up_stream{epId=~\"$EPS\",publicIpAddress=~\"\"}) by (name,bandwidth_id)",
@@ -407,10 +367,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -464,10 +421,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_downstream_bandwidth{epId=~\"$EPS\",publicIpAddress=~\"\"}",
@@ -535,10 +488,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -592,10 +542,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_downstream_bandwidth_usage{epId=~\"$EPS\",publicIpAddress=~\"\"}",
@@ -663,10 +609,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -720,10 +663,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_down_stream{epId=~\"$EPS\",publicIpAddress=~\"\"}",
@@ -791,10 +730,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -848,10 +784,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_upstream_bandwidth{epId=~\"$EPS\",publicIpAddress=~\"\"}",
@@ -919,10 +851,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -976,10 +905,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_upstream_bandwidth_usage{epId=~\"$EPS\",publicIpAddress=~\"\"}",
@@ -1047,10 +972,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -1104,10 +1026,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_up_stream{epId=~\"$EPS\",publicIpAddress=~\"\"}",
@@ -1172,10 +1090,7 @@
     },
     {
       "columns": [],
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "description": "",
       "fontSize": "80%",
       "gridPos": {
@@ -1379,10 +1294,6 @@
       ],
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_downstream_bandwidth{epId=~\"$EPS\",publicIpAddress!=\"\"}) by (name,publicip_id)",
@@ -1395,10 +1306,6 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_downstream_bandwidth_usage{epId=~\"$EPS\",publicIpAddress!=\"\"}) by (name,publicip_id)",
@@ -1410,10 +1317,6 @@
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_down_stream{epId=~\"$EPS\",publicIpAddress!=\"\"}) by (name,publicip_id)",
@@ -1425,10 +1328,6 @@
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_upstream_bandwidth{epId=~\"$EPS\",publicIpAddress!=\"\"}) by (name,publicip_id)",
@@ -1440,10 +1339,6 @@
           "refId": "D"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_upstream_bandwidth_usage{epId=~\"$EPS\",publicIpAddress!=\"\"}) by (name,publicip_id)",
@@ -1455,10 +1350,6 @@
           "refId": "E"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_vpc_up_stream{epId=~\"$EPS\",publicIpAddress!=\"\"}) by (name,publicip_id)",
@@ -1476,10 +1367,7 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1511,10 +1399,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -1568,10 +1453,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_downstream_bandwidth{epId=~\"$EPS\",publicIpAddress!=\"\"}",
@@ -1639,10 +1520,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -1696,10 +1574,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_downstream_bandwidth_usage{epId=~\"$EPS\",publicIpAddress!=\"\"}",
@@ -1767,10 +1641,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -1824,10 +1695,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_down_stream{epId=~\"$EPS\",publicIpAddress!=\"\"}",
@@ -1895,10 +1762,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -1952,10 +1816,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_upstream_bandwidth{epId=~\"$EPS\",publicIpAddress!=\"\"}",
@@ -2023,10 +1883,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -2080,10 +1937,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_upstream_bandwidth_usage{epId=~\"$EPS\",publicIpAddress!=\"\"}",
@@ -2151,10 +2004,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "jGi-ccm4z"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -2208,10 +2058,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "jGi-ccm4z"
-          },
           "editorMode": "code",
           "exemplar": true,
           "expr": "huaweicloud_sys_vpc_up_stream{epId=~\"$EPS\",publicIpAddress!=\"\"}",
@@ -2270,13 +2116,10 @@
       {
         "current": {
           "selected": true,
-          "text": "不良人3",
-          "value": "365a33b9-63f0-490c-8460-39cbf1728839"
+          "text": "default",
+          "value": "0"
         },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "jGi-ccm4z"
-        },
+        "datasource": "${prometheus-cloudeye-exporter}",
         "definition": "huaweicloud_epinfo",
         "hide": 0,
         "includeAll": false,
