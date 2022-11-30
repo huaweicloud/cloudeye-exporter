@@ -1,24 +1,14 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "$$hashKey": "object:2875",
-        "builtIn": 1,
-        "datasource": "-- Grafana --",
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
-        "type": "dashboard"
-      }
-    ]
-  },
+  "__inputs": [
+    {
+      "name": "prometheus-cloudeye-exporter",
+      "label": "prometheus-cloudeye-exporter",
+      "description": "prometheus plugin that obtains data from cloudeye exporter for grafana",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
+    }
+  ],
   "description": "【华为云WAF监控指标说明】https://support.huaweicloud.com/usermanual-waf/waf_01_0372.html",
   "editable": true,
   "gnetId": 8919,
@@ -39,10 +29,7 @@
   "panels": [
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "iSZco1a7k"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -74,7 +61,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -134,10 +121,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_requests{name=~\"$waf_name\"}",
           "format": "time_series",
@@ -198,7 +181,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "editable": true,
@@ -255,10 +238,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_inbound_traffic{name=~\"$waf_name\"}",
           "format": "time_series",
@@ -272,10 +251,6 @@
           "target": ""
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "0 - huaweicloud_sys_waf_outbound_traffic{name=~\"$waf_name\"}",
           "format": "time_series",
@@ -333,7 +308,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 1,
       "description": "",
       "fieldConfig": {
@@ -385,10 +360,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_inbound_traffic_peak{waf_instance_id=~\"$waf_instance_id\"}",
           "format": "time_series",
@@ -399,10 +370,6 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "0 - huaweicloud_sys_waf_outbound_traffic_peak{waf_instance_id=~\"$waf_instance_id\"}",
           "format": "time_series",
@@ -414,10 +381,6 @@
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_inbound_traffic_mean{waf_instance_id=~\"$waf_instance_id\"}",
           "format": "time_series",
@@ -429,10 +392,6 @@
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "0 - huaweicloud_sys_waf_outbound_traffic_mean{waf_instance_id=~\"$waf_instance_id\"}",
           "format": "time_series",
@@ -501,7 +460,6 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -559,12 +517,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_waf_http_2xx{name=~\"$waf_name\"}",
           "format": "time_series",
@@ -635,7 +590,6 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -693,12 +647,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_waf_http_3xx{name=~\"$waf_name\"}",
           "format": "time_series",
@@ -769,7 +720,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -829,10 +780,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_waf_http_4xx{name=~\"$waf_name\"}",
           "format": "time_series",
@@ -903,7 +850,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -963,10 +910,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_waf_http_5xx{name=~\"$waf_name\"}",
           "format": "time_series",
@@ -1033,7 +976,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "fieldConfig": {
         "defaults": {
@@ -1095,10 +1038,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_qps_peak{name=~\"$waf_name\"}",
           "format": "time_series",
@@ -1167,7 +1106,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 2,
       "fieldConfig": {
         "defaults": {
@@ -1229,10 +1168,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_waf_qps_mean{name=~\"$waf_name\"}",
           "format": "time_series",
@@ -1291,9 +1226,7 @@
   "schemaVersion": 27,
   "style": "dark",
   "tags": [
-    "Prometheus",
-    "node_exporter",
-    "StarsL.cn"
+    "Prometheus"
   ],
   "templating": {
     "list": [
@@ -1308,7 +1241,7 @@
             "$__all"
           ]
         },
-        "datasource": null,
+        "datasource": "${prometheus-cloudeye-exporter}",
         "definition": "label_values(huaweicloud_sys_waf_requests{},name)",
         "description": null,
         "error": null,

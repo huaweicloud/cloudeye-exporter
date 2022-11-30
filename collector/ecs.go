@@ -26,7 +26,7 @@ func (getter ECSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInf
 		var servers []EcsInstancesInfo
 		var err error
 		if getResourceFromRMS("SYS.ECS") {
-			servers, err = getAllServerFromRMS()
+			servers, err = getAllServerFromRMS("ecs", "cloudservers")
 		} else {
 			servers, err = getAllServer()
 		}
@@ -116,8 +116,8 @@ func getIPFromEcsInfo(addresses map[string][]ecsmodel.ServerAddress) string {
 	return strings.Join(ips, ",")
 }
 
-func getAllServerFromRMS() ([]EcsInstancesInfo, error) {
-	resp, err := listResources("ecs", "cloudservers")
+func getAllServerFromRMS(provider, resourceType string) ([]EcsInstancesInfo, error) {
+	resp, err := listResources(provider, resourceType)
 	if err != nil {
 		return nil, err
 	}

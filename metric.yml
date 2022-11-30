@@ -1859,3 +1859,109 @@ SYS.DWS:
       - dws021_avg_disk_sec_per_write
       - dws022_avg_disk_queue_length
       - dws_023_avg_diskio_util
+SYS.APIC:
+  dim_metric_name:
+    instance_id:
+      - requests
+      - error_4xx
+      - error_5xx
+      - throttled_calls
+      - avg_latency
+      - max_latency
+    instance_id,api_id:
+      - req_count
+      - req_count_2xx
+      - req_count_4xx
+      - req_count_5xx
+      - req_count_error
+      - avg_latency
+      - max_latency
+      - input_throughput
+      - output_throughput
+SYS.BMS:
+  dim_metric_name:
+    instance_id:
+      - cpu_entire_status
+      - power_entire_status
+      - power_status
+      - memory_entire_status
+      - harddisk_entire_status
+      - harddisk_status
+      - raid_status
+      - eth_status
+      - network_bms_connections
+      - network_bms_bandwidth_in
+      - network_bms_bandwidth_out
+      - network_bms_pps_in
+      - network_bms_pps_out
+      - network_bms_newconnections
+SYS.VPCEP:
+  dim_metric_name:
+    ep_instance_id:
+      - vpcep_bps
+      - vpcep_pps
+      - vpcep_drop_num
+      - vpcep_connections
+SYS.ModelArts:
+  dim_metric_name:
+    service_id:
+      - successfully_called_times
+      - failed_called_times
+      - total_called_times
+      - req_count_2xx
+      - req_count_4xx
+      - req_count_5xx
+      - avg_latency
+    service_id,model_id:
+      - cpu_usage
+      - mem_usage
+      - gpu_util
+      - gpu_mem_usage
+      - successfully_called_times
+      - failed_called_times
+      - total_called_times
+      - disk_read_rate
+      - disk_write_rate
+      - send_bytes_rate
+      - recv_bytes_rate
+SYS.GES:
+  dim_metric_name:
+    instance_id:
+      - ges001_vertex_util
+      - ges002_edge_util
+      - ges003_average_import_rate
+      - ges004_request_count
+      - ges005_average_response_time
+      - ges006_min_response_time
+      - ges007_max_response_time
+      - ges008_read_task_pending_queue_size
+      - ges009_read_task_pending_max_time
+      - ges010_pending_max_time_read_task_type
+      - ges011_read_task_running_queue_size
+      - ges012_read_task_running_max_time
+      - ges013_running_max_time_read_task_type
+      - ges014_write_task_pending_queue_size
+      - ges015_write_task_pending_max_time
+      - ges016_pending_max_time_write_task_type
+      - ges017_write_task_running_queue_size
+      - ges018_write_task_running_max_time
+      - ges019_running_max_time_write_task_type
+      - ges020_computer_resource_usage
+      - ges021_memory_usage
+      - ges022_iops
+      - ges023_bytes_in
+      - ges024_bytes_out
+      - ges025_disk_usage
+      - ges026_disk_total_size
+      - ges027_disk_used_size
+      - ges028_disk_read_throughput
+      - ges029_disk_write_throughput
+      - ges030_avg_disk_sec_per_read
+      - ges031_avg_disk_sec_per_write
+      - ges032_avg_disk_queue_length
+SYS.DBSS:
+  dim_metric_name:
+    audit_id:
+      - cpu_util
+      - mem_util
+      - disk_util

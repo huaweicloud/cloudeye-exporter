@@ -39,6 +39,13 @@ var (
 		"SYS.NoSQL":         NoSQLInfo{},
 		"SYS.DMS":           DMSInfo{},
 		"SYS.DDMS":          DDMSInfo{},
+		"SYS.APIC":          APICInfo{},
+		"SYS.BMS":           BMSInfo{},
+		"SERVICE.BMS":       SERVICEBMSInfo{},
+		"SYS.VPCEP":         VPCEPInfo{},
+		"SYS.ModelArts":     ModelArtsInfo{},
+		"SYS.GES":           GESInfo{},
+		"SYS.DBSS":          DBSSInfo{},
 	}
 )
 

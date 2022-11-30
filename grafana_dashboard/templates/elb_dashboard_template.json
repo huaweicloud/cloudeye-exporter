@@ -1,24 +1,14 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "$$hashKey": "object:2875",
-        "builtIn": 1,
-        "datasource": "-- Grafana --",
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
-        "type": "dashboard"
-      }
-    ]
-  },
+  "__inputs": [
+    {
+      "name": "prometheus-cloudeye-exporter",
+      "label": "prometheus-cloudeye-exporter",
+      "description": "prometheus plugin that obtains data from cloudeye exporter for grafana",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
+    }
+  ],
   "description": "【华为云ELB监控指标说明】https://support.huaweicloud.com/usermanual-elb/elb_ug_jk_0001.html",
   "editable": true,
   "fiscalYearStartMonth": 0,
@@ -51,10 +41,7 @@
   "panels": [
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "iSZco1a7k"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -327,12 +314,9 @@
           "unit": "short"
         }
       ],
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": false,
           "expr": "huaweicloud_sys_elb_m1_cps{epId=~\"$EPS\"} -0",
           "format": "table",
@@ -344,10 +328,6 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": false,
           "expr": "huaweicloud_sys_elb_m2_act_conn{epId=~\"$EPS\"} - 0",
           "format": "table",
@@ -358,10 +338,6 @@
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": false,
           "expr": "huaweicloud_sys_elb_m3_inact_conn{epId=~\"$EPS\"} - 0",
           "format": "table",
@@ -372,10 +348,6 @@
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": false,
           "expr": "huaweicloud_sys_elb_m4_ncps{epId=~\"$EPS\"} - 0",
           "format": "table",
@@ -386,10 +358,6 @@
           "refId": "D"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_elb_m7_in_Bps{epId=~\"$EPS\"}) by (listener_name)",
           "format": "table",
@@ -400,10 +368,6 @@
           "refId": "E"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_elb_m8_out_Bps{epId=~\"$EPS\"}) by (listener_name)",
           "format": "table",
@@ -414,10 +378,6 @@
           "refId": "F"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_elb_m15_l7_upstream_4xx{epId=~\"$EPS\"}) by (listener_name)",
           "format": "table",
@@ -428,10 +388,6 @@
           "refId": "G"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": false,
           "expr": "avg(huaweicloud_sys_elb_m16_l7_upstream_5xx{epId=~\"$EPS\"}) by (listener_name)",
           "format": "table",
@@ -448,10 +404,7 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "iSZco1a7k"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -533,12 +486,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_m2_act_conn{vip_address=~\"$hostIP\",name=~\"$hostname\",listener_name=~\"$listener\"}",
           "format": "time_series",
@@ -655,12 +605,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_m3_inact_conn{vip_address=~\"$hostIP\",name=~\"$hostname\",listener_name=~\"$listener\"}",
           "format": "time_series",
@@ -772,12 +719,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_m1_cps{vip_address=~\"$hostIP\",name=~\"$hostname\",listener_name=~\"$listener\"}",
           "format": "time_series",
@@ -889,12 +833,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_l4_con_usage{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "format": "time_series",
@@ -907,10 +848,6 @@
           "step": 4
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_l7_con_usage{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "hide": false,
@@ -1021,12 +958,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_m4_ncps{vip_address=~\"$hostIP\",name=~\"$hostname\",listener_name=~\"$listener\"}",
           "format": "time_series",
@@ -1139,12 +1073,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_l4_ncps_usage{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "format": "time_series",
@@ -1157,10 +1088,6 @@
           "step": 4
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_l7_ncps_usage{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "format": "time_series",
@@ -1218,10 +1145,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "iSZco1a7k"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 0,
       "editable": true,
       "error": false,
@@ -1277,10 +1201,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_m7_in_Bps{vip_address=~\"$hostIP\",name=~\"$hostname\",listener_name=~\"$listener\"}",
           "format": "time_series",
@@ -1294,10 +1214,6 @@
           "target": ""
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "0 - huaweicloud_sys_elb_m8_out_Bps{vip_address=~\"$hostIP\",name=~\"$hostname\",listener_name=~\"$listener\"}",
           "format": "time_series",
@@ -1352,10 +1268,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "iSZco1a7k"
-      },
+      "datasource": "${prometheus-cloudeye-exporter}",
       "decimals": 0,
       "description": "",
       "fieldConfig": {
@@ -1407,10 +1320,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_l4_in_bps_usage{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "format": "time_series",
@@ -1421,10 +1330,6 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "0 - huaweicloud_sys_elb_l4_out_bps_usage{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "format": "time_series",
@@ -1436,10 +1341,6 @@
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_l7_in_bps_usage{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "format": "time_series",
@@ -1451,10 +1352,6 @@
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "iSZco1a7k"
-          },
           "exemplar": true,
           "expr": "0 - huaweicloud_sys_elb_l7_out_bps_usage{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "format": "time_series",
@@ -1558,12 +1455,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_ma_normal_servers{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "format": "time_series",
@@ -1676,12 +1570,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_m9_abnormal_servers{vip_address=~\"$hostIP\",name=~\"$hostname\"}",
           "format": "time_series",
@@ -1782,12 +1673,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_m15_l7_upstream_4xx{vip_address=~\"$hostIP\",name=~\"$hostname\",listener_name=~\"$listener\"}",
           "format": "time_series",
@@ -1889,12 +1777,9 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "datasource": "${prometheus-cloudeye-exporter}",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "YgIyj--nk"
-          },
           "exemplar": true,
           "expr": "huaweicloud_sys_elb_m16_l7_upstream_5xx{vip_address=~\"$hostIP\",name=~\"$hostname\",listener_name=~\"$listener\"}",
           "format": "time_series",
@@ -1946,9 +1831,7 @@
   "schemaVersion": 34,
   "style": "dark",
   "tags": [
-    "Prometheus",
-    "node_exporter",
-    "StarsL.cn"
+    "Prometheus"
   ],
   "templating": {
     "list": [
@@ -1958,6 +1841,7 @@
           "text": "基础架构部-运维组",
           "value": "0d6fdb17-8e8d-411c-a072-cca611ee664b"
         },
+        "datasource": "${prometheus-cloudeye-exporter}",
         "definition": "huaweicloud_epinfo",
         "hide": 0,
         "includeAll": false,
@@ -1985,6 +1869,7 @@
             "$__all"
           ]
         },
+        "datasource": "${prometheus-cloudeye-exporter}",
         "definition": "label_values(huaweicloud_sys_elb_m2_act_conn{epId=~\"$EPS\"},vip_address)",
         "hide": 0,
         "includeAll": true,
@@ -2012,6 +1897,7 @@
             "$__all"
           ]
         },
+        "datasource": "${prometheus-cloudeye-exporter}",
         "definition": "label_values(huaweicloud_sys_elb_m2_act_conn{epId=~\"$EPS\",vip_address=~\"$hostIP\"},name)",
         "hide": 0,
         "includeAll": true,
@@ -2035,6 +1921,7 @@
           "text": "108",
           "value": "108"
         },
+        "datasource": "${prometheus-cloudeye-exporter}",
         "definition": "query_result(count(huaweicloud_agt_ecs_net_tcp_established{epId=~\"$EPS\"}))",
         "hide": 2,
         "includeAll": false,
@@ -2062,6 +1949,7 @@
             "$__all"
           ]
         },
+        "datasource": "${prometheus-cloudeye-exporter}",
         "definition": "label_values(huaweicloud_sys_elb_m2_act_conn{name=~\"$hostname\", vip_address=~\"$hostIP\"},listener_name)",
         "hide": 0,
         "includeAll": true,
