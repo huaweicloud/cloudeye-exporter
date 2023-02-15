@@ -4,8 +4,8 @@ go 1.14
 
 require (
 	github.com/huaweicloud/golangsdk v0.0.0-20200703083934-0708c52f1c75
-	github.com/prometheus/client_golang v1.7.1
-	github.com/prometheus/common v0.17.0
+	github.com/prometheus/client_golang v1.11.1
+	github.com/prometheus/common v0.26.0
 	gopkg.in/yaml.v2 v2.3.0
 )
 
