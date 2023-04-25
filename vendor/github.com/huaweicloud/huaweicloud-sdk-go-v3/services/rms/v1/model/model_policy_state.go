@@ -27,6 +27,9 @@ type PolicyState struct {
 	// 资源类型
 	ResourceType *string `json:"resource_type,omitempty"`
 
+	// 触发器类型，可选值：resource, period
+	TriggerType *string `json:"trigger_type,omitempty"`
+
 	// 合规状态
 	ComplianceState *string `json:"compliance_state,omitempty"`
 

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// OBS设置对象
+// OBS设置对象。跨帐号授予OBS桶转储文件的权限请参考《用户指南- 资源记录器- 开启/配置/修改资源记录器》中的“跨帐号授权”内容。
 type TrackerObsChannelConfigBody struct {
 
 	// OBS桶名称

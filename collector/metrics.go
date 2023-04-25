@@ -5,12 +5,15 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/config"
 	ces "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
+	cesv2 "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v2"
+	cesv2model "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v2/model"
 
 	"github.com/huaweicloud/cloudeye-exporter/logs"
 )
 
 var (
 	host string
+	agentDimensions = make(map[string]string, 0)
 )
 
 func getCESClient() *ces.CesClient {
@@ -62,4 +65,40 @@ func listAllMetrics(namespace string) ([]model.MetricInfoList, error) {
 	}
 
 	return metricData, nil
+}
+
+func getCESClientV2() *cesv2.CesClient {
+	return cesv2.NewCesClient(ces.CesClientBuilder().WithCredential(
+		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		WithHttpConfig(config.DefaultHttpConfig().WithIgnoreSSLVerification(true)).
+		WithEndpoint(getEndpoint("ces", "v2")).Build())
+}
+
+func getAgentOriginValue(value string) string {
+	originValue, ok := agentDimensions[value]
+	if ok {
+		return originValue
+	}
+	return value
+}
+
+func loadAgentDimensions(instanceID string) {
+	dimName := cesv2model.GetListAgentDimensionInfoRequestDimNameEnum()
+	dimNames := []cesv2model.ListAgentDimensionInfoRequestDimName{dimName.DISK,
+		dimName.MOUNT_POINT, dimName.GPU, dimName.PROC, dimName.RAID}
+	for _, name := range dimNames {
+		request := &cesv2model.ListAgentDimensionInfoRequest{
+			ContentType: "application/json",
+			InstanceId:  instanceID,
+			DimName:     name,
+		}
+		response, err := getCESClientV2().ListAgentDimensionInfo(request)
+		if err != nil {
+			logs.Logger.Errorf("Failed to list agentDimensions: %s", err.Error())
+			return
+		}
+		for _, dimension := range *response.Dimensions {
+			agentDimensions[*dimension.Value] = *dimension.OriginValue
+		}
+	}
 }

@@ -8,6 +8,7 @@ package signer
 import (
 	"crypto/hmac"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"net/url"
 	"reflect"
@@ -83,7 +84,10 @@ func CanonicalURI(r *request.DefaultHttpRequest) string {
 func CanonicalQueryString(r *request.DefaultHttpRequest) string {
 	var query = make(map[string][]string, 0)
 	for key, value := range r.GetQueryParams() {
-		valueWithType := value.(reflect.Value)
+		valueWithType, ok := value.(reflect.Value)
+		if !ok {
+			continue
+		}
 
 		if valueWithType.Kind() == reflect.Slice {
 			params := r.CanonicalSliceQueryParamsToMulti(valueWithType)
@@ -196,11 +200,11 @@ func SignStringToSign(stringToSign string, signingKey []byte) (string, error) {
 // HexEncodeSHA256Hash returns hexcode of sha256
 func HexEncodeSHA256Hash(body []byte) (string, error) {
 	hash := sha256.New()
-	if body == nil {
-		body = []byte("")
-	}
 	_, err := hash.Write(body)
-	return fmt.Sprintf("%x", hash.Sum(nil)), err
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%x", hash.Sum(nil)), nil
 }
 
 // Get the finalized value for the "Authorization" header. The signature parameter is the output from SignStringToSign
@@ -210,6 +214,13 @@ func AuthHeaderValue(signature, accessKey string, signedHeaders []string) string
 
 // SignRequest set Authorization header
 func Sign(r *request.DefaultHttpRequest, ak string, sk string) (map[string]string, error) {
+	if ak == "" {
+		return nil, errors.New("ak is required in credentials")
+	}
+	if sk == "" {
+		return nil, errors.New("sk is required in credentials")
+	}
+
 	var err error
 	var t time.Time
 	var headerParams = make(map[string]string)

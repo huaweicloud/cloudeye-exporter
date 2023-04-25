@@ -54,7 +54,7 @@ type BackupResp struct {
 	// 资源大小，单位为GB
 	ResourceSize int32 `json:"resource_size"`
 
-	// 资源类型
+	// 资源类型: 云服务器: OS::Nova::Server, 云硬盘: OS::Cinder::Volume, 云桌面：OS::Workspace::DesktopV2
 	ResourceType BackupRespResourceType `json:"resource_type"`
 
 	// 备份状态
@@ -74,6 +74,9 @@ type BackupResp struct {
 
 	// 备份提供商ID，用于区分备份对象。当前取值包含  0daac4c5-6707-4851-97ba-169e36266b66，该值代表备份对象为云服务器。d1603440-187d-4516-af25-121250c7cc97，该值代表备份对象为云硬盘。3f3c3220-245c-4805-b811-758870015881， 该值代表备份对象为SFS Turbo。a13639de-00be-4e94-af30-26912d75e4a2，该值代表备份对象为混合云VMware备份。
 	ProviderId string `json:"provider_id"`
+
+	// 子副本列表
+	Children *[]BackupResp `json:"children,omitempty"`
 }
 
 func (o BackupResp) String() string {
@@ -132,8 +135,9 @@ type BackupRespResourceType struct {
 }
 
 type BackupRespResourceTypeEnum struct {
-	OSNOVASERVER   BackupRespResourceType
-	OSCINDERVOLUME BackupRespResourceType
+	OSNOVASERVER          BackupRespResourceType
+	OSCINDERVOLUME        BackupRespResourceType
+	OSWORKSPACEDESKTOP_V2 BackupRespResourceType
 }
 
 func GetBackupRespResourceTypeEnum() BackupRespResourceTypeEnum {
@@ -143,6 +147,9 @@ func GetBackupRespResourceTypeEnum() BackupRespResourceTypeEnum {
 		},
 		OSCINDERVOLUME: BackupRespResourceType{
 			value: "OS::Cinder::Volume",
+		},
+		OSWORKSPACEDESKTOP_V2: BackupRespResourceType{
+			value: "OS::Workspace::DesktopV2",
 		},
 	}
 }

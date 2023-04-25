@@ -25,6 +25,7 @@ func (getter BMSInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.Metric
 		sysConfigMap := getMetricConfigMap("SYS.BMS")
 		if metricNames, ok := sysConfigMap["instance_id"]; ok {
 			for _, instance := range services {
+				loadAgentDimensions(instance.ID)
 				metrics := buildSingleDimensionMetrics(metricNames, "SYS.BMS", "instance_id", instance.ID)
 				filterMetrics = append(filterMetrics, metrics...)
 				info := labelInfo{

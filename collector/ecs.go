@@ -38,6 +38,7 @@ func (getter ECSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInf
 		sysConfigMap := getMetricConfigMap("SYS.ECS")
 		for _, server := range servers {
 			if metricNames, ok := sysConfigMap["instance_id"]; ok {
+				loadAgentDimensions(server.ID)
 				metrics := buildSingleDimensionMetrics(metricNames, "SYS.ECS", "instance_id", server.ID)
 				filterMetrics = append(filterMetrics, metrics...)
 				info := labelInfo{

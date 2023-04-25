@@ -27,6 +27,9 @@ type PolicyDefinition struct {
 	// 策略规则
 	PolicyRule *interface{} `json:"policy_rule,omitempty"`
 
+	// 触发器类型，可选值：resource, period
+	TriggerType *string `json:"trigger_type,omitempty"`
+
 	// 关键词列表
 	Keywords *[]string `json:"keywords,omitempty"`
 

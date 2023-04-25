@@ -18,7 +18,7 @@ type ListServersDetailsRequest struct {
 	// IPv4地址过滤结果，匹配规则为模糊匹配。
 	Ip *string `json:"ip,omitempty"`
 
-	// 查询返回云服务器当前页面的大小。每页最多返回1000台云服务器的信息。
+	// 查询返回云服务器当前页面的大小。每页默认值是25，最多返回1000台云服务器的信息。
 	Limit *int32 `json:"limit,omitempty"`
 
 	// 云服务器名称，匹配规则为模糊匹配。
@@ -27,7 +27,7 @@ type ListServersDetailsRequest struct {
 	// 查询tag字段中不包含该值的云服务器。
 	NotTags *string `json:"not-tags,omitempty"`
 
-	// 页码。 当前页面数，默认为1。  取值大于等于0，取值为0时返回第1页。
+	// 页码。 当前页面数，默认为1，取值范围大于等于0。 当取值为0时，系统默认返回第1页，与取值为1时相同。 建议设置该参数大于等于1。
 	Offset *int32 `json:"offset,omitempty"`
 
 	// 批量创建弹性云服务器时，指定返回的ID，用于查询本次批量创建的弹性云服务器。
@@ -41,6 +41,9 @@ type ListServersDetailsRequest struct {
 
 	// IPv4地址过滤结果，匹配规则为精确匹配。
 	IpEq *string `json:"ip_eq,omitempty"`
+
+	// 云服务器ID，格式为UUID，匹配规则为精确匹配  示例: server_id=id1,id2
+	ServerId *string `json:"server_id,omitempty"`
 }
 
 func (o ListServersDetailsRequest) String() string {

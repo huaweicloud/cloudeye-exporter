@@ -5,6 +5,18 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/rocketmq/v2/model"
 )
 
+type BatchCreateOrDeleteRocketmqTagInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchCreateOrDeleteRocketmqTagInvoker) Invoke() (*model.BatchCreateOrDeleteRocketmqTagResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchCreateOrDeleteRocketmqTagResponse), nil
+	}
+}
+
 type BatchDeleteInstancesInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -38,6 +50,18 @@ func (i *CreateConsumerGroupOrBatchDeleteConsumerGroupInvoker) Invoke() (*model.
 		return nil, err
 	} else {
 		return result.(*model.CreateConsumerGroupOrBatchDeleteConsumerGroupResponse), nil
+	}
+}
+
+type CreateInstanceByEngineInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateInstanceByEngineInvoker) Invoke() (*model.CreateInstanceByEngineResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateInstanceByEngineResponse), nil
 	}
 }
 
@@ -269,6 +293,30 @@ func (i *ShowInstanceInvoker) Invoke() (*model.ShowInstanceResponse, error) {
 	}
 }
 
+type ShowRocketmqProjectTagsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowRocketmqProjectTagsInvoker) Invoke() (*model.ShowRocketmqProjectTagsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowRocketmqProjectTagsResponse), nil
+	}
+}
+
+type ShowRocketmqTagsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowRocketmqTagsInvoker) Invoke() (*model.ShowRocketmqTagsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowRocketmqTagsResponse), nil
+	}
+}
+
 type ShowUserInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -350,6 +398,18 @@ func (i *ListConsumerGroupOfTopicInvoker) Invoke() (*model.ListConsumerGroupOfTo
 		return nil, err
 	} else {
 		return result.(*model.ListConsumerGroupOfTopicResponse), nil
+	}
+}
+
+type ListRocketInstanceTopicsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListRocketInstanceTopicsInvoker) Invoke() (*model.ListRocketInstanceTopicsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListRocketInstanceTopicsResponse), nil
 	}
 }
 

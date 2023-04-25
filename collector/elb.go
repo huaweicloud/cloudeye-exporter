@@ -98,7 +98,9 @@ func (getter ELBInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.Metric
 	if elbInfo.LabelInfo == nil || time.Now().Unix() > elbInfo.TTL {
 		getResourceMap()
 		sysConfigMap := getMetricConfigMap("SYS.ELB")
-		for _, loadBalancer := range listLoadBalancers() {
+		loadBalancers := listLoadBalancers()
+		for index := range loadBalancers {
+			loadBalancer := loadBalancers[index]
 			if loadBalancerMetricNames, ok := sysConfigMap["lbaas_instance_id"]; ok {
 				metrics := buildSingleDimensionMetrics(loadBalancerMetricNames, "SYS.ELB", "lbaas_instance_id", loadBalancer.Id)
 				filterMetrics = append(filterMetrics, metrics...)

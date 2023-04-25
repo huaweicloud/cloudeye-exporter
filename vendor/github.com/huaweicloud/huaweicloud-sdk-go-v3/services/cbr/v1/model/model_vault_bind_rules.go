@@ -8,8 +8,8 @@ import (
 
 type VaultBindRules struct {
 
-	// 按tags过滤自动绑定的资源
-	Tags *[]Tag `json:"tags,omitempty"`
+	// 按tags过滤自动绑定的资源  最小长度：1  最大长度：5
+	Tags *[]BindRulesTags `json:"tags,omitempty"`
 }
 
 func (o VaultBindRules) String() string {

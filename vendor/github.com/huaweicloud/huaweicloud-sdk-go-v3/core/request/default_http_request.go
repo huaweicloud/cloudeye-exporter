@@ -23,8 +23,11 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/converter"
+	"go.mongodb.org/mongo-driver/bson"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -108,9 +111,21 @@ func (httpRequest *DefaultHttpRequest) GetBodyToBytes() (*bytes.Buffer, error) {
 		if v.Kind() == reflect.String {
 			buf.WriteString(v.Interface().(string))
 		} else {
-			encoder := json.NewEncoder(buf)
-			encoder.SetEscapeHTML(false)
-			err := encoder.Encode(httpRequest.body)
+			var err error
+			if httpRequest.headerParams["Content-Type"] == "application/xml" {
+				encoder := xml.NewEncoder(buf)
+				err = encoder.Encode(httpRequest.body)
+			} else if httpRequest.headerParams["Content-Type"] == "application/bson" {
+				buffer, err := bson.Marshal(httpRequest.body)
+				if err != nil {
+					return nil, err
+				}
+				buf.Write(buffer)
+			} else {
+				encoder := json.NewEncoder(buf)
+				encoder.SetEscapeHTML(false)
+				err = encoder.Encode(httpRequest.body)
+			}
 			if err != nil {
 				return nil, err
 			}
@@ -179,8 +194,17 @@ func (httpRequest *DefaultHttpRequest) covertFormBody() (*http.Request, error) {
 	bodyBuffer := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuffer)
 
+	sortedKeys := make([]string, 0, len(httpRequest.GetFormPrams()))
 	for k, v := range httpRequest.GetFormPrams() {
-		if err := v.Write(bodyWriter, k); err != nil {
+		if _, ok := v.(*def.FilePart); ok {
+			sortedKeys = append(sortedKeys, k)
+		} else {
+			sortedKeys = append([]string{k}, sortedKeys...)
+		}
+	}
+
+	for _, k := range sortedKeys {
+		if err := httpRequest.GetFormPrams()[k].Write(bodyWriter, k); err != nil {
 			return nil, err
 		}
 	}
@@ -242,7 +266,10 @@ func (httpRequest *DefaultHttpRequest) fillQueryParams(req *http.Request) {
 
 	q := req.URL.Query()
 	for key, value := range httpRequest.GetQueryParams() {
-		valueWithType := value.(reflect.Value)
+		valueWithType, ok := value.(reflect.Value)
+		if !ok {
+			continue
+		}
 
 		if valueWithType.Kind() == reflect.Slice {
 			params := httpRequest.CanonicalSliceQueryParamsToMulti(valueWithType)
@@ -273,12 +300,18 @@ func (httpRequest *DefaultHttpRequest) CanonicalSliceQueryParamsToMulti(value re
 
 	for i := 0; i < value.Len(); i++ {
 		if value.Index(i).Kind() == reflect.Struct {
-			v, e := json.Marshal(value.Interface())
-			if e == nil {
-				if strings.HasPrefix(string(v), "\"") {
-					params = append(params, strings.Trim(string(v), "\""))
-				} else {
-					params = append(params, string(v))
+			methodByName := value.Index(i).MethodByName("Value")
+			if methodByName.IsValid() {
+				value := converter.ConvertInterfaceToString(methodByName.Call([]reflect.Value{})[0].Interface())
+				params = append(params, value)
+			} else {
+				v, e := json.Marshal(value.Interface())
+				if e == nil {
+					if strings.HasPrefix(string(v), "\"") {
+						params = append(params, strings.Trim(string(v), "\""))
+					} else {
+						params = append(params, string(v))
+					}
 				}
 			}
 		} else {
@@ -335,97 +368,4 @@ func (httpRequest *DefaultHttpRequest) fillPath(req *http.Request) {
 	if "" != httpRequest.GetPath() {
 		req.URL.Path = httpRequest.GetPath()
 	}
-}
-
-type HttpRequestBuilder struct {
-	httpRequest *DefaultHttpRequest
-}
-
-func NewHttpRequestBuilder() *HttpRequestBuilder {
-	httpRequest := &DefaultHttpRequest{
-		queryParams:          make(map[string]interface{}),
-		headerParams:         make(map[string]string),
-		pathParams:           make(map[string]string),
-		autoFilledPathParams: make(map[string]string),
-		formParams:           make(map[string]def.FormData),
-	}
-	httpRequestBuilder := &HttpRequestBuilder{
-		httpRequest: httpRequest,
-	}
-	return httpRequestBuilder
-}
-
-func (builder *HttpRequestBuilder) WithEndpoint(endpoint string) *HttpRequestBuilder {
-	builder.httpRequest.endpoint = endpoint
-	return builder
-}
-
-func (builder *HttpRequestBuilder) WithPath(path string) *HttpRequestBuilder {
-	builder.httpRequest.path = path
-	return builder
-}
-
-func (builder *HttpRequestBuilder) WithMethod(method string) *HttpRequestBuilder {
-	builder.httpRequest.method = method
-	return builder
-}
-
-func (builder *HttpRequestBuilder) AddQueryParam(key string, value interface{}) *HttpRequestBuilder {
-	builder.httpRequest.queryParams[key] = value
-	return builder
-}
-
-func (builder *HttpRequestBuilder) AddPathParam(key string, value string) *HttpRequestBuilder {
-	builder.httpRequest.pathParams[key] = value
-	return builder
-}
-
-func (builder *HttpRequestBuilder) AddAutoFilledPathParam(key string, value string) *HttpRequestBuilder {
-	builder.httpRequest.autoFilledPathParams[key] = value
-	return builder
-}
-
-func (builder *HttpRequestBuilder) AddHeaderParam(key string, value string) *HttpRequestBuilder {
-	builder.httpRequest.headerParams[key] = value
-	return builder
-}
-
-func (builder *HttpRequestBuilder) AddFormParam(key string, value def.FormData) *HttpRequestBuilder {
-	builder.httpRequest.formParams[key] = value
-	return builder
-}
-
-func (builder *HttpRequestBuilder) WithBody(kind string, body interface{}) *HttpRequestBuilder {
-	if kind == "multipart" {
-		v := reflect.ValueOf(body)
-		if v.Kind() == reflect.Ptr {
-			v = v.Elem()
-		}
-
-		t := reflect.TypeOf(body)
-		if t.Kind() == reflect.Ptr {
-			t = t.Elem()
-		}
-
-		fieldNum := t.NumField()
-		for i := 0; i < fieldNum; i++ {
-			jsonTag := t.Field(i).Tag.Get("json")
-			if jsonTag != "" {
-				if v.FieldByName(t.Field(i).Name).IsNil() && strings.Contains(jsonTag, "omitempty") {
-					continue
-				}
-				builder.AddFormParam(strings.Split(jsonTag, ",")[0], v.FieldByName(t.Field(i).Name).Interface().(def.FormData))
-			} else {
-				builder.AddFormParam(t.Field(i).Name, v.FieldByName(t.Field(i).Name).Interface().(def.FormData))
-			}
-		}
-	} else {
-		builder.httpRequest.body = body
-	}
-
-	return builder
-}
-
-func (builder *HttpRequestBuilder) Build() *DefaultHttpRequest {
-	return builder.httpRequest.fillParamsInPath()
 }

@@ -15,10 +15,10 @@ type Configs struct {
 	Name string `json:"name"`
 
 	// 配置ID
-	Id int32 `json:"id"`
+	Id *int32 `json:"id,omitempty"`
 
 	// 配置类型
-	Type string `json:"type"`
+	Type *string `json:"type,omitempty"`
 }
 
 func (o Configs) String() string {
