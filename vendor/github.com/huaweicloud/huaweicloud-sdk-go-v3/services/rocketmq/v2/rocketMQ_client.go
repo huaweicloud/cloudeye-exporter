@@ -19,12 +19,32 @@ func RocketMQClientBuilder() *http_client.HcHttpClientBuilder {
 	return builder
 }
 
+// BatchCreateOrDeleteRocketmqTag 批量添加或删除实例标签
+//
+// 批量添加或删除实例标签。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *RocketMQClient) BatchCreateOrDeleteRocketmqTag(request *model.BatchCreateOrDeleteRocketmqTagRequest) (*model.BatchCreateOrDeleteRocketmqTagResponse, error) {
+	requestDef := GenReqDefForBatchCreateOrDeleteRocketmqTag()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.BatchCreateOrDeleteRocketmqTagResponse), nil
+	}
+}
+
+// BatchCreateOrDeleteRocketmqTagInvoker 批量添加或删除实例标签
+func (c *RocketMQClient) BatchCreateOrDeleteRocketmqTagInvoker(request *model.BatchCreateOrDeleteRocketmqTagRequest) *BatchCreateOrDeleteRocketmqTagInvoker {
+	requestDef := GenReqDefForBatchCreateOrDeleteRocketmqTag()
+	return &BatchCreateOrDeleteRocketmqTagInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
 // BatchDeleteInstances 批量删除实例
 //
-// 批量删除实例。**实例删除后，实例中原有的数据将被删除，且没有备份，请谨慎操。**
+// 批量删除实例。**实例删除后，实例中原有的数据将被删除，且没有备份，请谨慎操作。**
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) BatchDeleteInstances(request *model.BatchDeleteInstancesRequest) (*model.BatchDeleteInstancesResponse, error) {
 	requestDef := GenReqDefForBatchDeleteInstances()
 
@@ -45,8 +65,7 @@ func (c *RocketMQClient) BatchDeleteInstancesInvoker(request *model.BatchDeleteI
 //
 // 批量修改消费组。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) BatchUpdateConsumerGroup(request *model.BatchUpdateConsumerGroupRequest) (*model.BatchUpdateConsumerGroupResponse, error) {
 	requestDef := GenReqDefForBatchUpdateConsumerGroup()
 
@@ -67,8 +86,7 @@ func (c *RocketMQClient) BatchUpdateConsumerGroupInvoker(request *model.BatchUpd
 //
 // 创建消费组或批量删除消费组。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) CreateConsumerGroupOrBatchDeleteConsumerGroup(request *model.CreateConsumerGroupOrBatchDeleteConsumerGroupRequest) (*model.CreateConsumerGroupOrBatchDeleteConsumerGroupResponse, error) {
 	requestDef := GenReqDefForCreateConsumerGroupOrBatchDeleteConsumerGroup()
 
@@ -85,12 +103,32 @@ func (c *RocketMQClient) CreateConsumerGroupOrBatchDeleteConsumerGroupInvoker(re
 	return &CreateConsumerGroupOrBatchDeleteConsumerGroupInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// CreateInstanceByEngine 创建实例
+//
+// 该接口支持创建按需和包周期两种计费方式的实例。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *RocketMQClient) CreateInstanceByEngine(request *model.CreateInstanceByEngineRequest) (*model.CreateInstanceByEngineResponse, error) {
+	requestDef := GenReqDefForCreateInstanceByEngine()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.CreateInstanceByEngineResponse), nil
+	}
+}
+
+// CreateInstanceByEngineInvoker 创建实例
+func (c *RocketMQClient) CreateInstanceByEngineInvoker(request *model.CreateInstanceByEngineRequest) *CreateInstanceByEngineInvoker {
+	requestDef := GenReqDefForCreateInstanceByEngine()
+	return &CreateInstanceByEngineInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
 // CreatePostPaidInstance 创建实例（按需）
 //
 // 创建实例，该接口创建的实例为按需计费的方式。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) CreatePostPaidInstance(request *model.CreatePostPaidInstanceRequest) (*model.CreatePostPaidInstanceResponse, error) {
 	requestDef := GenReqDefForCreatePostPaidInstance()
 
@@ -111,8 +149,7 @@ func (c *RocketMQClient) CreatePostPaidInstanceInvoker(request *model.CreatePost
 //
 // 创建用户。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) CreateUser(request *model.CreateUserRequest) (*model.CreateUserResponse, error) {
 	requestDef := GenReqDefForCreateUser()
 
@@ -133,8 +170,7 @@ func (c *RocketMQClient) CreateUserInvoker(request *model.CreateUserRequest) *Cr
 //
 // 删除指定消费组。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) DeleteConsumerGroup(request *model.DeleteConsumerGroupRequest) (*model.DeleteConsumerGroupResponse, error) {
 	requestDef := GenReqDefForDeleteConsumerGroup()
 
@@ -155,8 +191,7 @@ func (c *RocketMQClient) DeleteConsumerGroupInvoker(request *model.DeleteConsume
 //
 // 删除指定的实例，释放该实例的所有资源。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) DeleteInstance(request *model.DeleteInstanceRequest) (*model.DeleteInstanceResponse, error) {
 	requestDef := GenReqDefForDeleteInstance()
 
@@ -177,8 +212,7 @@ func (c *RocketMQClient) DeleteInstanceInvoker(request *model.DeleteInstanceRequ
 //
 // 删除用户。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) DeleteUser(request *model.DeleteUserRequest) (*model.DeleteUserResponse, error) {
 	requestDef := GenReqDefForDeleteUser()
 
@@ -199,8 +233,7 @@ func (c *RocketMQClient) DeleteUserInvoker(request *model.DeleteUserRequest) *De
 //
 // 导出死信消息。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ExportDlqMessage(request *model.ExportDlqMessageRequest) (*model.ExportDlqMessageResponse, error) {
 	requestDef := GenReqDefForExportDlqMessage()
 
@@ -221,8 +254,7 @@ func (c *RocketMQClient) ExportDlqMessageInvoker(request *model.ExportDlqMessage
 //
 // 在创建实例时，需要配置实例所在的可用区ID，可通过该接口查询可用区的ID。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListAvailableZones(request *model.ListAvailableZonesRequest) (*model.ListAvailableZonesResponse, error) {
 	requestDef := GenReqDefForListAvailableZones()
 
@@ -243,8 +275,7 @@ func (c *RocketMQClient) ListAvailableZonesInvoker(request *model.ListAvailableZ
 //
 // 查询代理列表。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListBrokers(request *model.ListBrokersRequest) (*model.ListBrokersResponse, error) {
 	requestDef := GenReqDefForListBrokers()
 
@@ -265,8 +296,7 @@ func (c *RocketMQClient) ListBrokersInvoker(request *model.ListBrokersRequest) *
 //
 // 查询消费组的授权用户列表。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListConsumeGroupAccessPolicy(request *model.ListConsumeGroupAccessPolicyRequest) (*model.ListConsumeGroupAccessPolicyResponse, error) {
 	requestDef := GenReqDefForListConsumeGroupAccessPolicy()
 
@@ -287,8 +317,7 @@ func (c *RocketMQClient) ListConsumeGroupAccessPolicyInvoker(request *model.List
 //
 // 查询消费组列表。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListInstanceConsumerGroups(request *model.ListInstanceConsumerGroupsRequest) (*model.ListInstanceConsumerGroupsResponse, error) {
 	requestDef := GenReqDefForListInstanceConsumerGroups()
 
@@ -309,8 +338,7 @@ func (c *RocketMQClient) ListInstanceConsumerGroupsInvoker(request *model.ListIn
 //
 // 查询租户的实例列表，支持按照条件查询。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListInstances(request *model.ListInstancesRequest) (*model.ListInstancesResponse, error) {
 	requestDef := GenReqDefForListInstances()
 
@@ -331,8 +359,7 @@ func (c *RocketMQClient) ListInstancesInvoker(request *model.ListInstancesReques
 //
 // 查询消息轨迹。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListMessageTrace(request *model.ListMessageTraceRequest) (*model.ListMessageTraceResponse, error) {
 	requestDef := GenReqDefForListMessageTrace()
 
@@ -353,8 +380,7 @@ func (c *RocketMQClient) ListMessageTraceInvoker(request *model.ListMessageTrace
 //
 // 查询消息。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListMessages(request *model.ListMessagesRequest) (*model.ListMessagesResponse, error) {
 	requestDef := GenReqDefForListMessages()
 
@@ -375,8 +401,7 @@ func (c *RocketMQClient) ListMessagesInvoker(request *model.ListMessagesRequest)
 //
 // 查询主题的授权用户列表。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListTopicAccessPolicy(request *model.ListTopicAccessPolicyRequest) (*model.ListTopicAccessPolicyResponse, error) {
 	requestDef := GenReqDefForListTopicAccessPolicy()
 
@@ -397,8 +422,7 @@ func (c *RocketMQClient) ListTopicAccessPolicyInvoker(request *model.ListTopicAc
 //
 // 查询用户列表。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListUser(request *model.ListUserRequest) (*model.ListUserResponse, error) {
 	requestDef := GenReqDefForListUser()
 
@@ -419,8 +443,7 @@ func (c *RocketMQClient) ListUserInvoker(request *model.ListUserRequest) *ListUs
 //
 // 重置消费进度。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ResetConsumeOffset(request *model.ResetConsumeOffsetRequest) (*model.ResetConsumeOffsetResponse, error) {
 	requestDef := GenReqDefForResetConsumeOffset()
 
@@ -441,8 +464,7 @@ func (c *RocketMQClient) ResetConsumeOffsetInvoker(request *model.ResetConsumeOf
 //
 // 查询消费列表或详情。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ShowConsumerListOrDetails(request *model.ShowConsumerListOrDetailsRequest) (*model.ShowConsumerListOrDetailsResponse, error) {
 	requestDef := GenReqDefForShowConsumerListOrDetails()
 
@@ -463,8 +485,7 @@ func (c *RocketMQClient) ShowConsumerListOrDetailsInvoker(request *model.ShowCon
 //
 // 查询指定消费组详情。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ShowGroup(request *model.ShowGroupRequest) (*model.ShowGroupResponse, error) {
 	requestDef := GenReqDefForShowGroup()
 
@@ -485,8 +506,7 @@ func (c *RocketMQClient) ShowGroupInvoker(request *model.ShowGroupRequest) *Show
 //
 // 查询指定实例的详细信息。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ShowInstance(request *model.ShowInstanceRequest) (*model.ShowInstanceResponse, error) {
 	requestDef := GenReqDefForShowInstance()
 
@@ -503,12 +523,53 @@ func (c *RocketMQClient) ShowInstanceInvoker(request *model.ShowInstanceRequest)
 	return &ShowInstanceInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// ShowRocketmqProjectTags 查询项目标签
+//
+// 查询项目标签。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *RocketMQClient) ShowRocketmqProjectTags(request *model.ShowRocketmqProjectTagsRequest) (*model.ShowRocketmqProjectTagsResponse, error) {
+	requestDef := GenReqDefForShowRocketmqProjectTags()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ShowRocketmqProjectTagsResponse), nil
+	}
+}
+
+// ShowRocketmqProjectTagsInvoker 查询项目标签
+func (c *RocketMQClient) ShowRocketmqProjectTagsInvoker(request *model.ShowRocketmqProjectTagsRequest) *ShowRocketmqProjectTagsInvoker {
+	requestDef := GenReqDefForShowRocketmqProjectTags()
+	return &ShowRocketmqProjectTagsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ShowRocketmqTags 查询实例标签
+//
+// 查询实例标签。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *RocketMQClient) ShowRocketmqTags(request *model.ShowRocketmqTagsRequest) (*model.ShowRocketmqTagsResponse, error) {
+	requestDef := GenReqDefForShowRocketmqTags()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ShowRocketmqTagsResponse), nil
+	}
+}
+
+// ShowRocketmqTagsInvoker 查询实例标签
+func (c *RocketMQClient) ShowRocketmqTagsInvoker(request *model.ShowRocketmqTagsRequest) *ShowRocketmqTagsInvoker {
+	requestDef := GenReqDefForShowRocketmqTags()
+	return &ShowRocketmqTagsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
 // ShowUser 查询用户详情
 //
 // 查询用户详情。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ShowUser(request *model.ShowUserRequest) (*model.ShowUserResponse, error) {
 	requestDef := GenReqDefForShowUser()
 
@@ -529,8 +590,7 @@ func (c *RocketMQClient) ShowUserInvoker(request *model.ShowUserRequest) *ShowUs
 //
 // 修改指定消费组参数。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) UpdateConsumerGroup(request *model.UpdateConsumerGroupRequest) (*model.UpdateConsumerGroupResponse, error) {
 	requestDef := GenReqDefForUpdateConsumerGroup()
 
@@ -551,8 +611,7 @@ func (c *RocketMQClient) UpdateConsumerGroupInvoker(request *model.UpdateConsume
 //
 // 修改实例的名称和描述信息。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) UpdateInstance(request *model.UpdateInstanceRequest) (*model.UpdateInstanceResponse, error) {
 	requestDef := GenReqDefForUpdateInstance()
 
@@ -573,8 +632,7 @@ func (c *RocketMQClient) UpdateInstanceInvoker(request *model.UpdateInstanceRequ
 //
 // 修改用户参数。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) UpdateUser(request *model.UpdateUserRequest) (*model.UpdateUserResponse, error) {
 	requestDef := GenReqDefForUpdateUser()
 
@@ -595,8 +653,7 @@ func (c *RocketMQClient) UpdateUserInvoker(request *model.UpdateUserRequest) *Up
 //
 // 创建主题或批量删除主题。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) CreateTopicOrBatchDeleteTopic(request *model.CreateTopicOrBatchDeleteTopicRequest) (*model.CreateTopicOrBatchDeleteTopicResponse, error) {
 	requestDef := GenReqDefForCreateTopicOrBatchDeleteTopic()
 
@@ -617,8 +674,7 @@ func (c *RocketMQClient) CreateTopicOrBatchDeleteTopicInvoker(request *model.Cre
 //
 // 删除指定主题。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) DeleteTopic(request *model.DeleteTopicRequest) (*model.DeleteTopicResponse, error) {
 	requestDef := GenReqDefForDeleteTopic()
 
@@ -639,8 +695,7 @@ func (c *RocketMQClient) DeleteTopicInvoker(request *model.DeleteTopicRequest) *
 //
 // 查询主题消费组列表。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ListConsumerGroupOfTopic(request *model.ListConsumerGroupOfTopicRequest) (*model.ListConsumerGroupOfTopicResponse, error) {
 	requestDef := GenReqDefForListConsumerGroupOfTopic()
 
@@ -657,12 +712,32 @@ func (c *RocketMQClient) ListConsumerGroupOfTopicInvoker(request *model.ListCons
 	return &ListConsumerGroupOfTopicInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// ListRocketInstanceTopics 查询主题列表
+//
+// 该接口用于查询指定RocketMQ实例的Topic列表。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *RocketMQClient) ListRocketInstanceTopics(request *model.ListRocketInstanceTopicsRequest) (*model.ListRocketInstanceTopicsResponse, error) {
+	requestDef := GenReqDefForListRocketInstanceTopics()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ListRocketInstanceTopicsResponse), nil
+	}
+}
+
+// ListRocketInstanceTopicsInvoker 查询主题列表
+func (c *RocketMQClient) ListRocketInstanceTopicsInvoker(request *model.ListRocketInstanceTopicsRequest) *ListRocketInstanceTopicsInvoker {
+	requestDef := GenReqDefForListRocketInstanceTopics()
+	return &ListRocketInstanceTopicsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
 // ShowOneTopic 查询单个主题
 //
 // 查询单个主题。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ShowOneTopic(request *model.ShowOneTopicRequest) (*model.ShowOneTopicResponse, error) {
 	requestDef := GenReqDefForShowOneTopic()
 
@@ -683,8 +758,7 @@ func (c *RocketMQClient) ShowOneTopicInvoker(request *model.ShowOneTopicRequest)
 //
 // 查询主题的消息数。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) ShowTopicStatus(request *model.ShowTopicStatusRequest) (*model.ShowTopicStatusResponse, error) {
 	requestDef := GenReqDefForShowTopicStatus()
 
@@ -705,8 +779,7 @@ func (c *RocketMQClient) ShowTopicStatusInvoker(request *model.ShowTopicStatusRe
 //
 // 修改主题。
 //
-// 详细说明请参考华为云API Explorer。
-// Please refer to Huawei cloud API Explorer for details.
+// Please refer to HUAWEI cloud API Explorer for details.
 func (c *RocketMQClient) UpdateTopic(request *model.UpdateTopicRequest) (*model.UpdateTopicResponse, error) {
 	requestDef := GenReqDefForUpdateTopic()
 

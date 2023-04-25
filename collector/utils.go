@@ -67,7 +67,7 @@ func GetResourceKeyFromMetricData(metric model.BatchMetricData) string {
 	if *metric.Namespace == "SYS.DMS" {
 		return getDmsResourceKey(metric)
 	}
-	if *metric.Namespace == "AGT.ECS" || *metric.Namespace == "SERVICE.BMS"{
+	if *metric.Namespace == "AGT.ECS" || *metric.Namespace == "SERVICE.BMS" {
 		return getServerResourceKey(metric)
 	}
 	sort.Slice(*metric.Dimensions, func(i, j int) bool {
@@ -183,7 +183,7 @@ func buildDimensionMetrics(metricNames []string, namespace string, dimensions []
 func getHcClient(endpoint string) *core.HcHttpClient {
 	return core.NewHcHttpClient(impl.NewDefaultHttpClient(config.DefaultHttpConfig().WithIgnoreSSLVerification(true))).
 		WithCredential(basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
-		WithEndpoint(endpoint)
+		WithEndpoints([]string{endpoint})
 }
 
 func genDefaultReqDefWithOffsetAndLimit(path string, response interface{}) *def.HttpRequestDef {

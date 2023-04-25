@@ -46,6 +46,7 @@ var (
 		"SYS.ModelArts":     ModelArtsInfo{},
 		"SYS.GES":           GESInfo{},
 		"SYS.DBSS":          DBSSInfo{},
+		"SYS.CC":            CCInfo{},
 	}
 )
 

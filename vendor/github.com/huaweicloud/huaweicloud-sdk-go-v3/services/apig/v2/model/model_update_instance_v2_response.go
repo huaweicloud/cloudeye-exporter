@@ -42,10 +42,10 @@ type UpdateInstanceV2Response struct {
 	// 实例绑定的弹性IP地址
 	EipAddress *string `json:"eip_address,omitempty"`
 
-	// 实例计费方式： - 0：按需计费 - 1：包周期计费
+	// 实例计费方式： - 0：按需计费 - 1：[包周期计费](tag:hws,hws_hk)[暂未使用](tag:cmcc,ctc,DT,g42,hk_g42,hk_sbc,hk_tm,hws_eu,hws_ocb,OCB,sbc,tm)
 	ChargingMode *UpdateInstanceV2ResponseChargingMode `json:"charging_mode,omitempty"`
 
-	// 包周期计费订单编号
+	// [包周期计费订单编号](tag:hws,hws_hk)[计费订单编号参数暂未使用](tag:cmcc,ctc,DT,g42,hk_g42,hk_sbc,hk_tm,hws_eu,hws_ocb,OCB,sbc,tm)
 	CbcMetadata *string `json:"cbc_metadata,omitempty"`
 
 	// 实例使用的负载均衡器类型 - lvs Linux虚拟服务器 - elb 弹性负载均衡，elb仅部分region支持
@@ -72,6 +72,9 @@ type UpdateInstanceV2Response struct {
 	// 实例入口，虚拟私有云访问地址
 	IngressIp *string `json:"ingress_ip,omitempty"`
 
+	// 实例入口，虚拟私有云访问地址 (IPv6)
+	IngressIpV6 *string `json:"ingress_ip_v6,omitempty"`
+
 	// 实例所属用户ID
 	UserId *string `json:"user_id,omitempty"`
 
@@ -86,6 +89,9 @@ type UpdateInstanceV2Response struct {
 
 	// 出公网带宽
 	BandwidthSize *int32 `json:"bandwidth_size,omitempty"`
+
+	// 出公网带宽计费模式
+	BandwidthChargingMode *string `json:"bandwidth_charging_mode,omitempty"`
 
 	// 可用区
 	AvailableZoneIds *string `json:"available_zone_ids,omitempty"`
@@ -116,8 +122,14 @@ type UpdateInstanceV2Response struct {
 	Publicips *[]IpDetails `json:"publicips,omitempty"`
 
 	// 私网入口地址列表
-	Privateips     *[]IpDetails `json:"privateips,omitempty"`
-	HttpStatusCode int          `json:"-"`
+	Privateips *[]IpDetails `json:"privateips,omitempty"`
+
+	// 实例是否可释放 - true：可释放 - false：不可释放
+	IsReleasable *bool `json:"is_releasable,omitempty"`
+
+	// 入公网带宽计费模式
+	IngressBandwidthChargingMode *string `json:"ingress_bandwidth_charging_mode,omitempty"`
+	HttpStatusCode               int     `json:"-"`
 }
 
 func (o UpdateInstanceV2Response) String() string {

@@ -377,6 +377,18 @@ func (i *ListServerTagsInvoker) Invoke() (*model.ListServerTagsResponse, error) 
 	}
 }
 
+type ListServersByTagInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListServersByTagInvoker) Invoke() (*model.ListServersByTagResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListServersByTagResponse), nil
+	}
+}
+
 type ListServersDetailsInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -554,6 +566,18 @@ func (i *RegisterServerAutoRecoveryInvoker) Invoke() (*model.RegisterServerAutoR
 		return nil, err
 	} else {
 		return result.(*model.RegisterServerAutoRecoveryResponse), nil
+	}
+}
+
+type RegisterServerMonitorInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *RegisterServerMonitorInvoker) Invoke() (*model.RegisterServerMonitorResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.RegisterServerMonitorResponse), nil
 	}
 }
 
@@ -746,6 +770,18 @@ func (i *UpdateServerAutoTerminateTimeInvoker) Invoke() (*model.UpdateServerAuto
 		return nil, err
 	} else {
 		return result.(*model.UpdateServerAutoTerminateTimeResponse), nil
+	}
+}
+
+type UpdateServerBlockDeviceInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateServerBlockDeviceInvoker) Invoke() (*model.UpdateServerBlockDeviceResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateServerBlockDeviceResponse), nil
 	}
 }
 

@@ -20,6 +20,21 @@ type BackupPolicy struct {
 
 	// 差异备份间隔时间配置。每次自动差异备份的间隔时间。  取值范围：15、30、60、180、360、720、1440。单位：分钟。  取值示例：30
 	DifferentialPeriod string `json:"differential_period"`
+
+	// 备份限速  取值范围：0 ~ 1024
+	RateLimit *int32 `json:"rate_limit,omitempty"`
+
+	// 控制差量备份时读取磁盘上表文件差量修改页面的预取页面个数。当差量修改页面非常集中时（如数据导入场景），可以适当调大该值；当差量修改页面非常分散时（如随机更新），可以适当调小该值。  取值范围：1 ~ 8192
+	PrefetchBlock *int32 `json:"prefetch_block,omitempty"`
+
+	// 废弃。
+	FilesplitSize *int32 `json:"filesplit_size,omitempty"`
+
+	// 全量、差量备份时产生的备份文件会根据分片大小进行拆分，可设置范围为0~1024GB，设置需为4的倍数，默认4GB，0GB表示不限制大小。  取值范围：0 ~ 1024
+	FileSplitSize *int32 `json:"file_split_size,omitempty"`
+
+	// 是否启用备机备份。  取值范围：true|false
+	EnableStandbyBackup *bool `json:"enable_standby_backup,omitempty"`
 }
 
 func (o BackupPolicy) String() string {

@@ -1965,3 +1965,16 @@ SYS.DBSS:
       - cpu_util
       - mem_util
       - disk_util
+SYS.CC:
+  dim_metric_name:
+    cloud_connect_id,bwp_id,region_bandwidth_id:
+      - network_incoming_bits_rate
+      - network_outgoing_bits_rate
+      - network_incoming_bytes
+      - network_outgoing_bytes
+      - network_incoming_packets_rate
+      - network_outgoing_packets_rate
+      - network_incoming_packets
+      - network_outgoing_packets
+      - latency
+      - packet_loss_rate

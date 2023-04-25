@@ -107,11 +107,32 @@ func getDimLabel(metric model.BatchMetricData) labelInfo {
 	var label labelInfo
 	for _, dim := range *metric.Dimensions {
 		label.Name = append(label.Name, strings.ReplaceAll(dim.Name, "-", "_"))
-		label.Value = append(label.Value, dim.Value)
+		label.Value = append(label.Value, getDimValue(*metric.Namespace, dim.Name, dim.Value))
 	}
 	label.Name = append(label.Name, "unit")
 	label.Value = append(label.Value, *metric.Unit)
 	return label
+}
+
+func getDimValue(namespaces, dimName, dimValue string) string {
+	if !isContainsInStringArr(namespaces, []string{"AGT.ECS", "SERVICE.BMS"}) {
+		return dimValue
+	}
+
+	if !isContainsInStringArr(dimName, []string{"mount_point", "disk", "proc", "gpu", "raid"}) {
+		return dimValue
+	}
+
+	return getAgentOriginValue(dimValue)
+}
+
+func isContainsInStringArr(target string, array []string) bool {
+	for index := range array {
+		if target == array[index] {
+			return true
+		}
+	}
+	return false
 }
 
 func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Context, ch chan<- prometheus.Metric, namespace string) {

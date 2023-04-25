@@ -14,10 +14,10 @@ type InstanceCreateReq struct {
 	// 实例描述
 	Description *string `json:"description,omitempty"`
 
-	// '维护时间窗开始时间。时间格式为 xx:00:00，xx取值为02,06,10,14,18,22。'  '在这个时间段内，运维人员可以对该实例的节点进行维护操作。维护期间，业务可以正常使用，可能会发生闪断。维护操作通常几个月一次。'
+	// 维护时间窗开始时间。时间格式为 xx:00:00，xx取值为02,06,10,14,18,22。  在这个时间段内，运维人员可以对该实例的节点进行维护操作。维护期间，业务可以正常使用，可能会发生闪断。维护操作通常几个月一次。
 	MaintainBegin *string `json:"maintain_begin,omitempty"`
 
-	// '维护时间窗结束时间。时间格式为 xx:00:00，与维护时间窗开始时间相差4个小时。'  '在这个时间段内，运维人员可以对该实例的节点进行维护操作。维护期间，业务可以正常使用，可能会发生闪断。维护操作通常几个月一次'。
+	// 维护时间窗结束时间。时间格式为 xx:00:00，与维护时间窗开始时间相差4个小时。  在这个时间段内，运维人员可以对该实例的节点进行维护操作。维护期间，业务可以正常使用，可能会发生闪断。维护操作通常几个月一次。
 	MaintainEnd *string `json:"maintain_end,omitempty"`
 
 	// 实例名称
@@ -38,7 +38,7 @@ type InstanceCreateReq struct {
 	// 指定实例所属的安全组。  获取方法如下： - 方法1：登录虚拟私有云服务的控制台界面，在安全组的详情页面查找安全组ID。 - 方法2：通过虚拟私有云服务的API接口查询，具体方法请参见《虚拟私有云服务API参考》的“查询安全组列表”章节。
 	SecurityGroupId *string `json:"security_group_id,omitempty"`
 
-	// 弹性公网IP ID。  实例需要开启公网访问时需要填写，绑定后使用者可以通过该入口从公网访问APIG实例中的API等资源  获取方法：登录虚拟私有云服务的控制台界面，在弹性公网IP的详情页面查找弹性公网IP ID。
+	// 弹性公网IP ID。  实例需要开启公网访问，且loadbalancer_provider为lvs时需要填写，绑定后使用者可以通过该入口从公网访问APIG实例中的API等资源  获取方法：登录虚拟私有云服务的控制台界面，在弹性公网IP的详情页面查找弹性公网IP ID。
 	EipId *string `json:"eip_id,omitempty"`
 
 	// 企业项目ID，企业帐号必填。  获取方法如下： - 方法1：登录企业项目管理界面，在项目管理详情页面查找项目ID。 - 方法2：通过企业项目管理的API接口查询，具体方法请参见《企业管理API参考》的“查询企业项目列表”章节。
@@ -50,11 +50,26 @@ type InstanceCreateReq struct {
 	// 出公网带宽  实例需要开启出公网功能时需要填写，绑定后使用者可以利用该出口访问公网上的互联网资源
 	BandwidthSize *int32 `json:"bandwidth_size,omitempty"`
 
+	// 出公网带宽计费类型，实例需要开启出公网功能时需要填写： - bandwidth：按带宽计费 - traffic：按流量计费
+	BandwidthChargingMode *InstanceCreateReqBandwidthChargingMode `json:"bandwidth_charging_mode,omitempty"`
+
 	// 公网访问是否支持IPv6。  当前仅部分region部分可用区支持IPv6
 	Ipv6Enable *bool `json:"ipv6_enable,omitempty"`
 
 	// 实例使用的负载均衡器类型 - lvs Linux虚拟服务器 - elb 弹性负载均衡，elb仅部分region支持
 	LoadbalancerProvider *InstanceCreateReqLoadbalancerProvider `json:"loadbalancer_provider,omitempty"`
+
+	// 标签列表。  一个实例默认最多支持创建20个标签
+	Tags *[]TmsKeyValue `json:"tags,omitempty"`
+
+	// 终端节点服务的名称。  长度不超过16个字符，允许输入大小写字母、数字、下划线、中划线。  如果您不填写该参数，系统生成的终端节点服务的名称为{region}.apig.{service_id}。 如果您填写该参数，系统生成的终端节点服务的名称为{region}.{vpcep_service_name}.{service_id}。 实例创建完成后，可以在实例管理->终端节点管理页面修改该名称。
+	VpcepServiceName *string `json:"vpcep_service_name,omitempty"`
+
+	// 入公网带宽  实例需要开启入公网功能，且loadbalancer_provider为elb时需要填写，绑定后使用者可以通过该入口从公网访问APIG实例中的API等资源
+	IngressBandwidthSize *int32 `json:"ingress_bandwidth_size,omitempty"`
+
+	// 入公网带宽计费类型，实例需要开启入公网功能，且loadbalancer_provider为elb时需要填写： - bandwidth：按带宽计费 - traffic：按流量计费
+	IngressBandwidthChargingMode *InstanceCreateReqIngressBandwidthChargingMode `json:"ingress_bandwidth_charging_mode,omitempty"`
 }
 
 func (o InstanceCreateReq) String() string {
@@ -132,6 +147,48 @@ func (c *InstanceCreateReqSpecId) UnmarshalJSON(b []byte) error {
 	}
 }
 
+type InstanceCreateReqBandwidthChargingMode struct {
+	value string
+}
+
+type InstanceCreateReqBandwidthChargingModeEnum struct {
+	BANDWIDTH InstanceCreateReqBandwidthChargingMode
+	TRAFFIC   InstanceCreateReqBandwidthChargingMode
+}
+
+func GetInstanceCreateReqBandwidthChargingModeEnum() InstanceCreateReqBandwidthChargingModeEnum {
+	return InstanceCreateReqBandwidthChargingModeEnum{
+		BANDWIDTH: InstanceCreateReqBandwidthChargingMode{
+			value: "bandwidth",
+		},
+		TRAFFIC: InstanceCreateReqBandwidthChargingMode{
+			value: "traffic",
+		},
+	}
+}
+
+func (c InstanceCreateReqBandwidthChargingMode) Value() string {
+	return c.value
+}
+
+func (c InstanceCreateReqBandwidthChargingMode) MarshalJSON() ([]byte, error) {
+	return utils.Marshal(c.value)
+}
+
+func (c *InstanceCreateReqBandwidthChargingMode) UnmarshalJSON(b []byte) error {
+	myConverter := converter.StringConverterFactory("string")
+	if myConverter != nil {
+		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+		if err == nil {
+			c.value = val.(string)
+			return nil
+		}
+		return err
+	} else {
+		return errors.New("convert enum data to string error")
+	}
+}
+
 type InstanceCreateReqLoadbalancerProvider struct {
 	value string
 }
@@ -161,6 +218,48 @@ func (c InstanceCreateReqLoadbalancerProvider) MarshalJSON() ([]byte, error) {
 }
 
 func (c *InstanceCreateReqLoadbalancerProvider) UnmarshalJSON(b []byte) error {
+	myConverter := converter.StringConverterFactory("string")
+	if myConverter != nil {
+		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+		if err == nil {
+			c.value = val.(string)
+			return nil
+		}
+		return err
+	} else {
+		return errors.New("convert enum data to string error")
+	}
+}
+
+type InstanceCreateReqIngressBandwidthChargingMode struct {
+	value string
+}
+
+type InstanceCreateReqIngressBandwidthChargingModeEnum struct {
+	BANDWIDTH InstanceCreateReqIngressBandwidthChargingMode
+	TRAFFIC   InstanceCreateReqIngressBandwidthChargingMode
+}
+
+func GetInstanceCreateReqIngressBandwidthChargingModeEnum() InstanceCreateReqIngressBandwidthChargingModeEnum {
+	return InstanceCreateReqIngressBandwidthChargingModeEnum{
+		BANDWIDTH: InstanceCreateReqIngressBandwidthChargingMode{
+			value: "bandwidth",
+		},
+		TRAFFIC: InstanceCreateReqIngressBandwidthChargingMode{
+			value: "traffic",
+		},
+	}
+}
+
+func (c InstanceCreateReqIngressBandwidthChargingMode) Value() string {
+	return c.value
+}
+
+func (c InstanceCreateReqIngressBandwidthChargingMode) MarshalJSON() ([]byte, error) {
+	return utils.Marshal(c.value)
+}
+
+func (c *InstanceCreateReqIngressBandwidthChargingMode) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
 	if myConverter != nil {
 		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))

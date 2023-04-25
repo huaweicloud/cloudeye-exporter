@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/cihub/seelog"
 )
@@ -15,6 +16,8 @@ type LoggerConstructor struct {
 }
 
 func InitLog() {
+	// 注册自定义格式化控制器（防日志注入）
+	registerCustomFormatter()
 	data, err := ioutil.ReadFile("./logs.conf")
 	if err != nil {
 		log.Fatalf("Failed to read log config file, error: %s", err.Error())
@@ -82,4 +85,25 @@ func (lc *LoggerConstructor) Critical(params ...interface{}) {
 func FlushLogAndExit(code int) {
 	Logger.Flush()
 	os.Exit(code)
+}
+
+func registerCustomFormatter() {
+	registerErr := seelog.RegisterCustomFormatter("CleanMsg", createCleanMsgFormatter)
+	if registerErr != nil {
+		log.Printf("Register msg formatter error: %s", registerErr.Error())
+	}
+}
+
+func createCleanMsgFormatter(params string) seelog.FormatterFunc {
+	return func(message string, level seelog.LogLevel, context seelog.LogContextInterface) interface{} {
+		// 清除message中的常见日志注入字符
+		message = strings.Replace(message, "\b", "", -1)
+		message = strings.Replace(message, "\n", "", -1)
+		message = strings.Replace(message, "\t", "", -1)
+		message = strings.Replace(message, "\u000b", "", -1)
+		message = strings.Replace(message, "\f", "", -1)
+		message = strings.Replace(message, "\r", "", -1)
+		message = strings.Replace(message, "\u007f", "", -1)
+		return message
+	}
 }

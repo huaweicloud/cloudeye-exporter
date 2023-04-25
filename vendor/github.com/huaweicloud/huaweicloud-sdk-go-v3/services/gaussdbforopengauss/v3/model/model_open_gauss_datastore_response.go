@@ -33,11 +33,15 @@ type OpenGaussDatastoreResponseType struct {
 }
 
 type OpenGaussDatastoreResponseTypeEnum struct {
+	GAUSS_DB                OpenGaussDatastoreResponseType
 	GAUSS_DB_FOR_OPEN_GAUSS OpenGaussDatastoreResponseType
 }
 
 func GetOpenGaussDatastoreResponseTypeEnum() OpenGaussDatastoreResponseTypeEnum {
 	return OpenGaussDatastoreResponseTypeEnum{
+		GAUSS_DB: OpenGaussDatastoreResponseType{
+			value: "GaussDB",
+		},
 		GAUSS_DB_FOR_OPEN_GAUSS: OpenGaussDatastoreResponseType{
 			value: "GaussDB(for openGauss)",
 		},
