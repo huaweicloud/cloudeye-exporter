@@ -1,0 +1,10 @@
+business:
+  - level: "error"
+    type: "FILE"
+    filename: "./server.log"
+    time_format: "2006-01-02 15:04:05 Z07:00"
+    max_size: 20480000
+    max_backups: 20
+    max_age: 30
+    enabled: true
+    commpress: true

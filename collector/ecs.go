@@ -13,7 +13,10 @@ import (
 	"github.com/huaweicloud/cloudeye-exporter/logs"
 )
 
-var ecsInfo serversInfo
+var (
+	ecsInfo    serversInfo
+	agtEcsInfo serversInfo
+)
 
 type ECSInfo struct{}
 
@@ -156,7 +159,30 @@ func getIPInfoFromProperties(properties *EcsProperties) string {
 type AGTECSInfo struct{}
 
 func (getter AGTECSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
-	ecsInfo.Lock()
-	defer ecsInfo.Unlock()
-	return ecsInfo.LabelInfo, nil
+	agtEcsInfo.Lock()
+	defer agtEcsInfo.Unlock()
+	if agtEcsInfo.LabelInfo == nil {
+		agtEcsInfo.FilterMetrics = getECSAGTMetrics()
+		agtEcsInfo.LabelInfo = ecsInfo.LabelInfo
+		agtEcsInfo.TTL = time.Now().Add(TTL).Unix()
+	}
+	if time.Now().Unix() > agtEcsInfo.TTL {
+		go func() {
+			metrics := getECSAGTMetrics()
+			agtEcsInfo.Lock()
+			defer agtEcsInfo.Unlock()
+			agtEcsInfo.FilterMetrics = metrics
+			agtEcsInfo.LabelInfo = ecsInfo.LabelInfo
+			agtEcsInfo.TTL = time.Now().Add(TTL).Unix()
+		}()
+	}
+	return agtEcsInfo.LabelInfo, agtEcsInfo.FilterMetrics
+}
+
+func getECSAGTMetrics() []model.MetricInfoList {
+	allMetrics, err := listAllMetrics("AGT.ECS")
+	if err != nil {
+		logs.Logger.Errorf("[%s] Get all metrics of AGT.ECS error: %s", err.Error())
+	}
+	return allMetrics
 }

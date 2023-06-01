@@ -151,6 +151,14 @@ func getDimsNameKey(dims []model.MetricsDimension) string {
 	return strings.Join(dimsNamesList, ",")
 }
 
+func getDimsValueKey(dims []model.MetricsDimension) string {
+	dimsValuesList := make([]string, 0, len(dims))
+	for _, dim := range dims {
+		dimsValuesList = append(dimsValuesList, dim.Value)
+	}
+	return strings.Join(dimsValuesList, ",")
+}
+
 func buildSingleDimensionMetrics(metricNames []string, namespace, dimName, dimValue string) []model.MetricInfoList {
 	filterMetrics := make([]model.MetricInfoList, len(metricNames))
 	for index := range metricNames {

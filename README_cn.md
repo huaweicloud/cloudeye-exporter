@@ -64,8 +64,8 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 # 参考命令：
 mkdir cloudeye-exporter
 cd cloudeye-exporter
-wget https://github.com/huaweicloud/cloudeye-exporter/releases/download/v2.0.1/cloudeye-exporter.v2.0.1.tar.gz
-tar -xzvf cloudeye-exporter.v2.0.1.tar.gz
+wget https://github.com/huaweicloud/cloudeye-exporter/releases/download/v2.0.4/cloudeye-exporter.v2.0.4.tar.gz
+tar -xzvf cloudeye-exporter.v2.0.4.tar.gz
 ```
 2. 编辑clouds.yml文件配置公有云信息
 ```

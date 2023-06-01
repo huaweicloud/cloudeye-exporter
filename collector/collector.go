@@ -69,6 +69,11 @@ func (exporter *BaseHuaweiCloudExporter) listMetrics(namespace string) ([]model.
 
 func (exporter *BaseHuaweiCloudExporter) setProData(ctx context.Context, ch chan<- prometheus.Metric,
 	dataList []model.BatchMetricData, allResourcesInfo map[string]labelInfo) {
+	defer func() {
+		if err := recover(); err != nil {
+			logs.Logger.Errorf("[%s] SetProData error: %+v", exporter.txnKey, err)
+		}
+	}()
 	for _, metric := range dataList {
 		exporter.debugMetricInfo(metric)
 		data, err := getLatestData(metric.Datapoints)
@@ -154,8 +159,13 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Co
 	var wg sync.WaitGroup
 	count := 0
 	tmpMetrics := make([]model.MetricInfo, 0, exporter.ScrapeBatchSize)
-
+	metricsMap := make(map[string]bool, 0)
 	for _, metric := range allMetrics {
+		dimsValueKey := fmt.Sprintf("%s,%s", getDimsValueKey(metric.Dimensions), metric.MetricName)
+		if _, ok := metricsMap[dimsValueKey]; ok {
+			continue
+		}
+		metricsMap[dimsValueKey] = true
 		count++
 		tmpMetrics = append(tmpMetrics, transMetric(metric))
 		if (len(tmpMetrics) == exporter.ScrapeBatchSize) || (count == len(allMetrics)) {

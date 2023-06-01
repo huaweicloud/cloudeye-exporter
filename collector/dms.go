@@ -23,24 +23,42 @@ var dmsInfo serversInfo
 type DMSInfo struct{}
 
 func (getter DMSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
-	resourceInfos := map[string]labelInfo{}
 	dmsInfo.Lock()
 	defer dmsInfo.Unlock()
-	if dmsInfo.LabelInfo == nil || time.Now().Unix() > dmsInfo.TTL {
-		for _, instance := range getDMSInstanceFromRMS() {
-			info := labelInfo{
-				Name:  []string{"instanceName", "epId"},
-				Value: []string{instance.Name, instance.EpId},
-			}
-			keys, values := getTags(instance.Tags)
-			info.Name = append(info.Name, keys...)
-			info.Value = append(info.Value, values...)
-			resourceInfos[instance.ID] = info
-		}
-		dmsInfo.LabelInfo = resourceInfos
+	if dmsInfo.LabelInfo == nil {
+		dmsInfo.LabelInfo, dmsInfo.FilterMetrics = getDMSResourceAndMetrics()
 		dmsInfo.TTL = time.Now().Add(TTL).Unix()
 	}
+	if time.Now().Unix() > dmsInfo.TTL {
+		go func() {
+			label, metrics := getDMSResourceAndMetrics()
+			dmsInfo.Lock()
+			defer dmsInfo.Unlock()
+			dmsInfo.LabelInfo = label
+			dmsInfo.FilterMetrics = metrics
+			dmsInfo.TTL = time.Now().Add(TTL).Unix()
+		}()
+	}
 	return dmsInfo.LabelInfo, dmsInfo.FilterMetrics
+}
+
+func getDMSResourceAndMetrics() (map[string]labelInfo, []model.MetricInfoList) {
+	resourceInfos := map[string]labelInfo{}
+	for _, instance := range getDMSInstanceFromRMS() {
+		info := labelInfo{
+			Name:  []string{"instanceName", "epId"},
+			Value: []string{instance.Name, instance.EpId},
+		}
+		keys, values := getTags(instance.Tags)
+		info.Name = append(info.Name, keys...)
+		info.Value = append(info.Value, values...)
+		resourceInfos[instance.ID] = info
+	}
+	allMetrics, err := listAllMetrics("SYS.DMS")
+	if err != nil {
+		logs.Logger.Errorf("[%s] Get all metrics of SYS.DMS error: %s", err.Error())
+	}
+	return resourceInfos, allMetrics
 }
 
 func getDMSInstanceFromRMS() []ResourceBaseInfo {

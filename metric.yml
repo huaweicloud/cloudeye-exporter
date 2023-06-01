@@ -1878,6 +1878,11 @@ SYS.APIC:
       - max_latency
       - input_throughput
       - output_throughput
+    instance_id,node_ip:
+      - node_system_load
+      - node_qps
+      - node_cpu_usage
+      - node_memory_usage
 SYS.BMS:
   dim_metric_name:
     instance_id:
