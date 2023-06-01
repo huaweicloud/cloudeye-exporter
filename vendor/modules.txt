@@ -2,13 +2,6 @@
 github.com/beorn7/perks/quantile
 # github.com/cespare/xxhash/v2 v2.1.2
 github.com/cespare/xxhash/v2
-# github.com/cihub/seelog v0.0.0-20191126193922-f561c5e57575
-## explicit
-github.com/cihub/seelog
-github.com/cihub/seelog/archive
-github.com/cihub/seelog/archive/gzip
-github.com/cihub/seelog/archive/tar
-github.com/cihub/seelog/archive/zip
 # github.com/golang/protobuf v1.5.2
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
@@ -109,6 +102,19 @@ go.mongodb.org/mongo-driver/bson/bsonrw
 go.mongodb.org/mongo-driver/bson/bsontype
 go.mongodb.org/mongo-driver/bson/primitive
 go.mongodb.org/mongo-driver/x/bsonx/bsoncore
+# go.uber.org/atomic v1.7.0
+go.uber.org/atomic
+# go.uber.org/multierr v1.6.0
+go.uber.org/multierr
+# go.uber.org/zap v1.24.0
+## explicit
+go.uber.org/zap
+go.uber.org/zap/buffer
+go.uber.org/zap/internal
+go.uber.org/zap/internal/bufferpool
+go.uber.org/zap/internal/color
+go.uber.org/zap/internal/exit
+go.uber.org/zap/zapcore
 # golang.org/x/crypto v0.7.0 => golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 golang.org/x/crypto/hkdf
 # golang.org/x/sys v0.0.0-20220114195835-da31bd327af9
@@ -148,6 +154,9 @@ google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/timestamppb
 # gopkg.in/ini.v1 v1.66.6
 gopkg.in/ini.v1
+# gopkg.in/natefinch/lumberjack.v2 v2.2.1
+## explicit
+gopkg.in/natefinch/lumberjack.v2
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3

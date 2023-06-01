@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"strings"
 	"time"
 
 	"github.com/huaweicloud/cloudeye-exporter/logs"
@@ -41,6 +42,7 @@ func (getter APICInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.Metri
 			}
 			resourceInfos[GetResourceKeyFromMetricInfo(metrics[0])] = info
 			buildApisInfo(*instance.Id, resourceInfos, &filterMetrics, info)
+			buildNodeInfo(*instance.Id, resourceInfos, &filterMetrics, info)
 		}
 		apicInfo.LabelInfo = resourceInfos
 		apicInfo.FilterMetrics = filterMetrics
@@ -73,6 +75,47 @@ func buildApisInfo(instanceId string, resourceInfos map[string]labelInfo, filter
 		appInfo.Value = append(appInfo.Value, instanceInfo.Value...)
 		resourceInfos[GetResourceKeyFromMetricInfo(metrics[0])] = appInfo
 	}
+}
+
+func buildNodeInfo(instanceId string, resourceInfos map[string]labelInfo, filterMetrics *[]cesmodel.MetricInfoList, instanceInfo labelInfo) {
+	sysConfigMap := getMetricConfigMap("SYS.APIC")
+	apiMetricNames, ok := sysConfigMap["instance_id,node_ip"]
+	if !ok {
+		logs.Logger.Warnf("Metric config is empty of SYS.APIC, dim_metric_name is instance_id,node_ip")
+		return
+	}
+	instance, err := showDetailsOfInstanceV2(instanceId)
+	if err != nil {
+		logs.Logger.Errorf("Get all apis of apic instances: %s", err.Error())
+		return
+	}
+	nodeIps := make([]string, len(*instance.NodeIps.Livedata)+len(*instance.NodeIps.Shubao))
+	nodeIps = append(nodeIps, *instance.NodeIps.Livedata...)
+	nodeIps = append(nodeIps, *instance.NodeIps.Shubao...)
+
+	for _, nodeIP := range *instance.NodeIps.Livedata {
+		metrics := buildDimensionMetrics(apiMetricNames, "SYS.APIC",
+			[]cesmodel.MetricsDimension{{Name: "instance_id", Value: instanceId}, {Name: "node_ip", Value: strings.ReplaceAll(nodeIP, ".", "_")}})
+		*filterMetrics = append(*filterMetrics, metrics...)
+		resourceInfos[GetResourceKeyFromMetricInfo(metrics[0])] = getNodeInfo(nodeIP, "livedata", instanceInfo)
+	}
+
+	for _, nodeIP := range *instance.NodeIps.Shubao {
+		metrics := buildDimensionMetrics(apiMetricNames, "SYS.APIC",
+			[]cesmodel.MetricsDimension{{Name: "instance_id", Value: instanceId}, {Name: "node_ip", Value: strings.ReplaceAll(nodeIP, ".", "_")}})
+		*filterMetrics = append(*filterMetrics, metrics...)
+		resourceInfos[GetResourceKeyFromMetricInfo(metrics[0])] = getNodeInfo(nodeIP, "shubao", instanceInfo)
+	}
+}
+
+func getNodeInfo(nodeIP, nodeType string, instanceInfo labelInfo) labelInfo {
+	appInfo := labelInfo{
+		Name:  []string{"nodeIP", "nodeType"},
+		Value: []string{nodeIP, nodeType},
+	}
+	appInfo.Name = append(appInfo.Name, instanceInfo.Name...)
+	appInfo.Value = append(appInfo.Value, instanceInfo.Value...)
+	return appInfo
 }
 
 func getAllAPICInstances() ([]model.RespInstanceBase, error) {
@@ -115,6 +158,16 @@ func getApisOfInstances(instanceID string) ([]model.ApiInfoPerPage, error) {
 	}
 
 	return apis, nil
+}
+
+func showDetailsOfInstanceV2(instanceID string) (*model.ShowDetailsOfInstanceV2Response, error) {
+	request := &model.ShowDetailsOfInstanceV2Request{InstanceId: instanceID}
+	response, err := getAPICSClient().ShowDetailsOfInstanceV2(request)
+	if err != nil {
+		logs.Logger.Errorf("Failed to get instance info[%s], error: %s", instanceID, err.Error())
+		return nil, err
+	}
+	return response, nil
 }
 
 func getAPICSClient() *apig.ApigClient {

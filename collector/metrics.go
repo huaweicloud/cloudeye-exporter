@@ -1,6 +1,8 @@
 package collector
 
 import (
+	"sync"
+
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/config"
 	ces "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1"
@@ -12,8 +14,8 @@ import (
 )
 
 var (
-	host string
-	agentDimensions = make(map[string]string, 0)
+	host            string
+	agentDimensions = sync.Map{}
 )
 
 func getCESClient() *ces.CesClient {
@@ -75,11 +77,17 @@ func getCESClientV2() *cesv2.CesClient {
 }
 
 func getAgentOriginValue(value string) string {
-	originValue, ok := agentDimensions[value]
-	if ok {
-		return originValue
+	originValue, ok := agentDimensions.Load(value)
+	if !ok {
+		return value
 	}
-	return value
+
+	originV, ok := originValue.(string)
+	if !ok {
+		return value
+	}
+
+	return originV
 }
 
 func loadAgentDimensions(instanceID string) {
@@ -98,7 +106,7 @@ func loadAgentDimensions(instanceID string) {
 			return
 		}
 		for _, dimension := range *response.Dimensions {
-			agentDimensions[*dimension.Value] = *dimension.OriginValue
+			agentDimensions.Store(*dimension.Value, *dimension.OriginValue)
 		}
 	}
 }
