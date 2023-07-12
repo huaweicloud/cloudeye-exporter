@@ -46,19 +46,5 @@ func (getter DDOSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricIn
 }
 
 func getAllDDosInstancesFromRMS() ([]ResourceBaseInfo, error) {
-	resp, err := listResources("aad", "instances")
-	if err != nil {
-		logs.Logger.Errorf("Failed to list resource of aad.instances, error: %s", err.Error())
-		return nil, err
-	}
-	instances := make([]ResourceBaseInfo, 0, len(resp))
-	for _, resource := range resp {
-		instances = append(instances, ResourceBaseInfo{
-			ID:   *resource.Id,
-			Name: *resource.Name,
-			EpId: *resource.EpId,
-			Tags: resource.Tags,
-		})
-	}
-	return instances, nil
+	return getResourcesBaseInfoFromRMS("aad", "instances")
 }

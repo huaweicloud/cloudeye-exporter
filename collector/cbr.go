@@ -57,21 +57,7 @@ func (getter CBRInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInf
 }
 
 func getAllCbrInstancesFromRMS() ([]ResourceBaseInfo, error) {
-	resp, err := listResources("cbr", "vault")
-	if err != nil {
-		logs.Logger.Errorf("Failed to list resource of cbr.vault, error: %s", err.Error())
-		return nil, err
-	}
-	cbrInstances := make([]ResourceBaseInfo, 0, len(resp))
-	for _, resource := range resp {
-		cbrInstances = append(cbrInstances, ResourceBaseInfo{
-			ID:   *resource.Id,
-			Name: *resource.Name,
-			EpId: *resource.EpId,
-			Tags: resource.Tags,
-		})
-	}
-	return cbrInstances, nil
+	return getResourcesBaseInfoFromRMS("cbr", "vault")
 }
 
 func getAllCbrInstancesFromCBR() ([]ResourceBaseInfo, error) {

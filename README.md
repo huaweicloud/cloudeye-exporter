@@ -2,6 +2,8 @@
 
 Prometheus cloudeye exporter for [Huaweicloud](https://www.huaweicloud.com/).
 
+Note: The plug-in is applicable only to the Huaweicloud regions.
+
 [中文](./README_cn.md)
 
 ## Download
@@ -39,7 +41,7 @@ Usage of ./cloudeye-exporter:
 ```
 
 ## Example of config file(clouds.yml)
-The "URL" value can be get from [Identity and Access Management (IAM) endpoint list](https://developer.huaweicloud.com/en-us/endpoint).
+The "URL" value can be get from [Identity and Access Management (IAM) endpoint list](https://developer.huaweicloud.com/endpoint?IAM).
 ```
 global:
   prefix: "huaweicloud"
@@ -48,7 +50,7 @@ global:
   scrape_batch_size: 300
 
 auth:
-  auth_url: "https://iam.xxx.yyy.com/v3"
+  auth_url: "https://iam.{region_id}.myhuaweicloud.com/v3"
   project_name: "{project_name}"
   access_key: "{access_key}"
   secret_key: "{secret_key}"

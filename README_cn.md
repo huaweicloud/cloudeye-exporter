@@ -3,6 +3,7 @@
 
 [华为云](https://www.huaweicloud.com/)云监控的 Prometheus Exporter.
 
+注意：该插件仅适用于华为云局点。
 
 ## 介绍
 Prometheus是用于展示大型测量数据的开源可视化工具，在工业监控、气象监控、家居自动化和过程管理等领域也有着较广泛的用户基础。将华为云Cloudeye服务接入 prometheus后，您可以利用 prometheus更好地监控和分析来自 Cloudeye服务的数据。
@@ -46,6 +47,9 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 |VPC终端节点|SYS.VPCEP |√|RMS|
 |图引擎服务GES|SYS.GES|√|RMS|
 |数据库安全服务DBSS|SYS.DBSS |√|RMS|
+|MapReduce服务|SYS.MRS |√|RMS/云服务|
+|湖仓构建服务|SYS.LakeFormation |√|RMS/云服务|
+|智能数据湖运营平台|SYS.DAYU |√|云服务|
 
 注：自定义标签时，key只能包含大写字母、小写字母以及中划线
 
@@ -64,8 +68,8 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 # 参考命令：
 mkdir cloudeye-exporter
 cd cloudeye-exporter
-wget https://github.com/huaweicloud/cloudeye-exporter/releases/download/v2.0.4/cloudeye-exporter.v2.0.4.tar.gz
-tar -xzvf cloudeye-exporter.v2.0.4.tar.gz
+wget https://github.com/huaweicloud/cloudeye-exporter/releases/download/v2.0.5/cloudeye-exporter.v2.0.5.tar.gz
+tar -xzvf cloudeye-exporter.v2.0.5.tar.gz
 ```
 2. 编辑clouds.yml文件配置公有云信息
 ```
@@ -73,11 +77,11 @@ global:
   port: ":8087"
   scrape_batch_size: 300
 auth:
-auth_url: "https://iam.cn-north-1.myhuaweicloud.com/v3"
-project_name: "cn-north-1"
-access_key: ""
-secret_key: ""
-region: "cn-north-1"
+  auth_url: "https://iam.{region_id}.myhuaweicloud.com/v3"
+  project_name: "cn-north-1"
+  access_key: ""
+  secret_key: ""
+  region: "cn-north-1"
 ```
 注：默认的监控端口为8087.
 

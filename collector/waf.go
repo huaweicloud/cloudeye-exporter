@@ -47,19 +47,5 @@ func (getter WAFInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInf
 }
 
 func getAllWafInstancesFromRMS() ([]ResourceBaseInfo, error) {
-	resp, err := listResources("waf", "instance")
-	if err != nil {
-		logs.Logger.Errorf("Failed to list resource of waf.instance, error: %s", err.Error())
-		return nil, err
-	}
-	wafInstances := make([]ResourceBaseInfo, 0, len(resp))
-	for _, resource := range resp {
-		wafInstances = append(wafInstances, ResourceBaseInfo{
-			ID:   *resource.Id,
-			Name: *resource.Name,
-			EpId: *resource.EpId,
-			Tags: resource.Tags,
-		})
-	}
-	return wafInstances, nil
+	return getResourcesBaseInfoFromRMS("waf", "instance")
 }

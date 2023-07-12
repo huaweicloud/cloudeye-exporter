@@ -70,6 +70,9 @@ func GetResourceKeyFromMetricData(metric model.BatchMetricData) string {
 	if *metric.Namespace == "AGT.ECS" || *metric.Namespace == "SERVICE.BMS" {
 		return getServerResourceKey(metric)
 	}
+	if *metric.Namespace == "SYS.MRS" {
+		return getMrsResourceKey(metric)
+	}
 	sort.Slice(*metric.Dimensions, func(i, j int) bool {
 		return (*metric.Dimensions)[i].Name < (*metric.Dimensions)[j].Name
 	})
@@ -98,6 +101,15 @@ func getDmsResourceKey(metric model.BatchMetricData) string {
 	return ""
 }
 
+func getMrsResourceKey(metric model.BatchMetricData) string {
+	for _, dim := range *metric.Dimensions {
+		if dim.Name == "cluster_id" {
+			return dim.Value
+		}
+	}
+	return ""
+}
+
 func getEndpoint(server, version string) string {
 	return fmt.Sprintf("https://%s/%s", strings.Replace(host, "iam", server, 1), version)
 }
@@ -116,15 +128,17 @@ func getTags(tags map[string]string) ([]string, []string) {
 	return keys, values
 }
 
+type Tag struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
 func fmtTags(tagInfo interface{}) map[string]string {
 	bytes, err := json.Marshal(tagInfo)
 	if err != nil {
 		return nil
 	}
-	var tags []struct {
-		Key   string `json:"key,omitempty"`
-		Value string `json:"value,omitempty"`
-	}
+	var tags []Tag
 	err = json.Unmarshal(bytes, &tags)
 	if err != nil {
 		return nil
@@ -217,4 +231,20 @@ func fmtResourceProperties(properties map[string]interface{}, value interface{})
 	}
 
 	return json.Unmarshal(bytes, value)
+}
+
+func getResourcesBaseInfoFromRMS(provider, resourceType string) ([]ResourceBaseInfo, error) {
+	resp, err := listResources(provider, resourceType)
+	if err != nil {
+		logs.Logger.Errorf("Failed to list resource of %s.%s, error: %s", provider, resourceType, err.Error())
+		return nil, err
+	}
+	services := make([]ResourceBaseInfo, len(resp))
+	for index, resource := range resp {
+		services[index].ID = *resource.Id
+		services[index].Name = *resource.Name
+		services[index].EpId = *resource.EpId
+		services[index].Tags = resource.Tags
+	}
+	return services, nil
 }

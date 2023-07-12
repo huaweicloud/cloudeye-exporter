@@ -4,8 +4,6 @@ import (
 	"time"
 
 	cesmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
-
-	"github.com/huaweicloud/cloudeye-exporter/logs"
 )
 
 var asInfo serversInfo
@@ -42,17 +40,5 @@ func (getter ASInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.MetricI
 }
 
 func getAllASFromRMS() ([]ResourceBaseInfo, error) {
-	resp, err := listResources("as", "scalingGroups")
-	if err != nil {
-		logs.Logger.Errorf("Failed to list resource of as.scalingGroups, error: %s", err.Error())
-		return nil, err
-	}
-	scalingGroups := make([]ResourceBaseInfo, len(resp))
-	for index, resource := range resp {
-		scalingGroups[index].ID = *resource.Id
-		scalingGroups[index].Name = *resource.Name
-		scalingGroups[index].EpId = *resource.EpId
-		scalingGroups[index].Tags = resource.Tags
-	}
-	return scalingGroups, nil
+	return getResourcesBaseInfoFromRMS("as", "scalingGroups")
 }

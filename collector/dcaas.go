@@ -182,17 +182,5 @@ func getDcaasVifFromRMS() ([]VifInfo, error) {
 }
 
 func getDcaasVgwFromRMS() ([]ResourceBaseInfo, error) {
-	resp, err := listResources("dcaas", "vgw")
-	if err != nil {
-		logs.Logger.Errorf("Failed to list resource of dcaas.vgw, error: %s", err.Error())
-		return nil, err
-	}
-	vgws := make([]ResourceBaseInfo, len(resp))
-	for index, resource := range resp {
-		vgws[index].ID = *resource.Id
-		vgws[index].Name = *resource.Name
-		vgws[index].EpId = *resource.EpId
-		vgws[index].Tags = resource.Tags
-	}
-	return vgws, nil
+	return getResourcesBaseInfoFromRMS("dcaas", "vgw")
 }

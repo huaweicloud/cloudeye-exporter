@@ -1983,3 +1983,34 @@ SYS.CC:
       - network_outgoing_packets
       - latency
       - packet_loss_rate
+SYS.LakeFormation:
+  resource: "service"
+  dim_metric_name:
+    instance_id:
+      - max_latency
+      - avg_latency
+      - req_count
+      - req_count_2xx
+      - req_count_4xx
+      - req_count_5xx
+      - req_count_error
+      - output_throughput
+      - input_throughput
+# MRS服务不支持指标过滤，查询全量指标
+SYS.MRS:
+  resource: "service"
+
+SYS.DAYU:
+  dim_metric_name:
+    stream_id:
+      - dis11_stream_record_retention_time
+      - dis01_stream_put_bytes_rate
+      - dis02_stream_get_bytes_rate
+      - dis03_stream_put_records
+      - dis04_stream_get_records
+      - dis05_stream_put_requests_succeed
+      - dis06_stream_get_requests_succeed
+      - dis07_stream_put_req_average_latency
+      - dis08_stream_get_req_average_latency
+      - dis09_stream_traffic_control_put_records
+      - dis10_stream_traffic_control_get_records
