@@ -6,7 +6,6 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/config"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
-	rmsmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/rms/v1/model"
 	rocketmq "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/rocketmq/v2"
 	rocketmqmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/rocketmq/v2/model"
 
@@ -62,27 +61,20 @@ func getDMSResourceAndMetrics() (map[string]labelInfo, []model.MetricInfoList) {
 }
 
 func getDMSInstanceFromRMS() []ResourceBaseInfo {
-	var resources []rmsmodel.ResourceEntity
-	kafkaResp, err := listResources("dms", "kafkas")
+	instances := make([]ResourceBaseInfo, 0)
+
+	kafkaResp, err := getResourcesBaseInfoFromRMS("dms", "kafkas")
 	if err != nil {
 		logs.Logger.Errorf("Get all dms kafkas : %s", err.Error())
 	} else {
-		resources = append(resources, kafkaResp...)
+		instances = append(instances, kafkaResp...)
 	}
 
-	rabbitResp, err := listResources("dms", "rabbitmqs")
+	rabbitResp, err := getResourcesBaseInfoFromRMS("dms", "rabbitmqs")
 	if err != nil {
 		logs.Logger.Errorf("Get all dms rabbitmqs: %s", err.Error())
 	} else {
-		resources = append(resources, rabbitResp...)
-	}
-
-	instances := make([]ResourceBaseInfo, len(resources))
-	for index, resource := range resources {
-		instances[index].ID = *resource.Id
-		instances[index].Name = *resource.Name
-		instances[index].EpId = *resource.EpId
-		instances[index].Tags = resource.Tags
+		instances = append(instances, rabbitResp...)
 	}
 
 	rocketMqs, err := getRocketMQInstances()

@@ -4,8 +4,6 @@ import (
 	"time"
 
 	cesmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
-
-	"github.com/huaweicloud/cloudeye-exporter/logs"
 )
 
 var natInfo serversInfo
@@ -42,17 +40,5 @@ func (getter NATInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.Metric
 }
 
 func getAllNatFromRMS() ([]ResourceBaseInfo, error) {
-	resp, err := listResources("nat", "natGateways")
-	if err != nil {
-		logs.Logger.Errorf("Failed to list resource of nat.natGateways, error: %s", err.Error())
-		return nil, err
-	}
-	natGateways := make([]ResourceBaseInfo, len(resp))
-	for index, resource := range resp {
-		natGateways[index].ID = *resource.Id
-		natGateways[index].Name = *resource.Name
-		natGateways[index].EpId = *resource.EpId
-		natGateways[index].Tags = resource.Tags
-	}
-	return natGateways, nil
+	return getResourcesBaseInfoFromRMS("nat", "natGateways")
 }

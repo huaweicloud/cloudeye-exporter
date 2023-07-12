@@ -47,6 +47,9 @@ var (
 		"SYS.GES":           GESInfo{},
 		"SYS.DBSS":          DBSSInfo{},
 		"SYS.CC":            CCInfo{},
+		"SYS.LakeFormation": LakeFormationInfo{},
+		"SYS.MRS":           MRSInfo{},
+		"SYS.DAYU":          DayuInfo{},
 	}
 )
 

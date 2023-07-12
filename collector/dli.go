@@ -85,18 +85,7 @@ func buildFlinkJobsInfo(sysConfigMap map[string][]string, filterMetrics *[]model
 }
 
 func getQueuesFromRMS() ([]ResourceBaseInfo, error) {
-	resp, err := listResources("dli", "queues")
-	if err != nil {
-		return nil, err
-	}
-	instances := make([]ResourceBaseInfo, len(resp))
-	for index, resource := range resp {
-		instances[index].ID = *resource.Id
-		instances[index].Name = *resource.Name
-		instances[index].EpId = *resource.EpId
-		instances[index].Tags = resource.Tags
-	}
-	return instances, nil
+	return getResourcesBaseInfoFromRMS("dli", "queues")
 }
 
 type ListFlinkJobsRequest struct {
