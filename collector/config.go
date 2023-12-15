@@ -41,6 +41,9 @@ type CloudConfig struct {
 }
 
 var CloudConf CloudConfig
+var SecurityMod bool
+var TmpAK string
+var TmpSK string
 
 func InitCloudConf(file string) error {
 	data, err := ioutil.ReadFile(file)
@@ -142,12 +145,18 @@ func InitConfig() error {
 	conf.IdentityEndpoint = CloudConf.Auth.AuthURL
 	conf.ProjectName = CloudConf.Auth.ProjectName
 	conf.ProjectID = CloudConf.Auth.ProjectID
-	conf.AccessKey = CloudConf.Auth.AccessKey
-	conf.SecretKey = CloudConf.Auth.SecretKey
 	conf.DomainName = CloudConf.Auth.DomainName
 	conf.Username = CloudConf.Auth.UserName
 	conf.Region = CloudConf.Auth.Region
 	conf.Password = CloudConf.Auth.Password
+	if SecurityMod {
+		conf.AccessKey = TmpAK
+		conf.SecretKey = TmpSK
+	} else {
+		conf.AccessKey = CloudConf.Auth.AccessKey
+		conf.SecretKey = CloudConf.Auth.SecretKey
+	}
+
 	if conf.ProjectID == "" && conf.ProjectName == "" {
 		logs.Logger.Error("Init config error: ProjectID or ProjectName must setting.")
 		return errors.New("init config error: ProjectID or ProjectName must setting")

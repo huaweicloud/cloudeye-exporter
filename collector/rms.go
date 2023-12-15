@@ -12,11 +12,11 @@ func getRMSClient() *v1.RmsClient {
 		WithCredential(global.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).Build()).Build())
 }
 
-func listResources(provider, rourceType string) ([]model.ResourceEntity, error) {
+func listResources(provider, resourceType string) ([]model.ResourceEntity, error) {
 	limit := int32(200)
 	req := &model.ListResourcesRequest{
 		Provider: provider,
-		Type:     rourceType,
+		Type:     resourceType,
 		RegionId: &conf.Region,
 		Limit:    &limit,
 	}

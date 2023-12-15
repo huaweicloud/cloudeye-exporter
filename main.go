@@ -16,6 +16,8 @@ import (
 
 var (
 	clientConfig = flag.String("config", "./clouds.yml", "Path to the cloud configuration file")
+	securityMod  = flag.Bool("s", false, "Get ak sk from command line")
+	ak, sk       string
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -48,9 +50,24 @@ func epHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getAkSkFromCommandLine() {
+	if *securityMod {
+		collector.SecurityMod = *securityMod
+		fmt.Print("Please input ak&sk split with space: (eg: {example_ak example_sk})")
+		_, err := fmt.Scanln(&ak, &sk)
+		if err != nil {
+			logs.Logger.Error("Read ak sk error: ", err.Error())
+			return
+		}
+		collector.TmpAK = ak
+		collector.TmpSK = sk
+	}
+}
+
 func main() {
 	flag.Parse()
 	logs.InitLog()
+	getAkSkFromCommandLine()
 	err := collector.InitCloudConf(*clientConfig)
 	if err != nil {
 		logs.Logger.Error("Init Cloud Config From File error: ", err.Error())

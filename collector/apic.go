@@ -69,7 +69,7 @@ func buildApisInfo(instanceId string, resourceInfos map[string]labelInfo, filter
 		*filterMetrics = append(*filterMetrics, metrics...)
 		appInfo := labelInfo{
 			Name:  []string{"appName", "groupName", "groupId", "reqMethod", "reqUri"},
-			Value: []string{api.Name, getDefaultString(api.GroupName), getDefaultString(api.GroupName), api.ReqMethod.Value(), api.ReqUri},
+			Value: []string{api.Name, getDefaultString(api.GroupName), api.GroupId, api.ReqMethod.Value(), api.ReqUri},
 		}
 		appInfo.Name = append(appInfo.Name, instanceInfo.Name...)
 		appInfo.Value = append(appInfo.Value, instanceInfo.Value...)

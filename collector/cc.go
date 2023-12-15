@@ -7,7 +7,7 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/global"
 	cc "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cc/v3"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cc/v3/model"
-	region "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cc/v3/region"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cc/v3/region"
 	cesmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 
 	"github.com/huaweicloud/cloudeye-exporter/logs"
@@ -142,7 +142,7 @@ func listBandwidthPackages() (map[string]model.BandwidthPackage, error) {
 	for {
 		response, err := client.ListBandwidthPackages(request)
 		if err != nil {
-			fmt.Println(err.Error())
+			logs.Logger.Errorf("Failed to list BandwidthPackages, error: %s", err.Error())
 			return bandwidthPackages, err
 		}
 		for _, bandwidthPackage := range *response.BandwidthPackages {
@@ -168,7 +168,7 @@ func listInterRegionBandwidths() ([]model.InterRegionBandwidth, error) {
 	for {
 		response, err := client.ListInterRegionBandwidths(request)
 		if err != nil {
-			fmt.Println(err.Error())
+			logs.Logger.Errorf("Failed to list InterRegionBandwidths, error: %s", err.Error())
 			return resources, err
 		}
 		resources = append(resources, *response.InterRegionBandwidths...)
