@@ -18,6 +18,8 @@ type RdsInstanceProperties struct {
 	Port          string `json:"port"`
 	DataVip       string `json:"dataVip"`
 	EngineName    string `json:"engineName"`
+	CPU           string `json:"cpu"`
+	MEM           string `json:"mem"`
 }
 
 var rdsInfo serversInfo
@@ -47,8 +49,10 @@ func (getter RDSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInf
 					metrics := buildSingleDimensionMetrics(metricNames, "SYS.RDS", dimName, instance.ID)
 					filterMetrics = append(filterMetrics, metrics...)
 					info := labelInfo{
-						Name:  []string{"name", "epId", "engineVersion", "nodeNum", "port", "dataVip", "engineName"},
-						Value: []string{instance.Name, instance.EpId, instance.EngineVersion, instance.NodeNum, instance.Port, instance.DataVip, instance.EngineName},
+						Name: []string{"name", "epId", "engineVersion", "nodeNum", "port", "dataVip", "engineName",
+							"cpu", "mem"},
+						Value: []string{instance.Name, instance.EpId, instance.EngineVersion, instance.NodeNum,
+							instance.Port, instance.DataVip, instance.EngineName, instance.CPU, instance.MEM},
 					}
 					keys, values := getTags(instance.Tags)
 					info.Name = append(info.Name, keys...)

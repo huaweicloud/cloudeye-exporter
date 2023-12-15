@@ -60,9 +60,11 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 | ECS | Ubuntu 18.04 |
 | Ubuntu private ip | 192.168.0.xx |
 
+账号要求具有IAM，CES，RMS，EPS服务的可读权限,另外获取哪些服务的监控数据就需要有哪些服务的只读权限
+
 ## 安装配置cloudeye-exporter
 1. 在ubuntu vm上安装cloudeye-exporter
-   
+
    登录vm机器，查看插件Releases版本 (https://github.com/huaweicloud/cloudeye-exporter/releases) ，获取插件下载地址，下载解压安装。
 ```
 # 参考命令：
@@ -72,22 +74,41 @@ wget https://github.com/huaweicloud/cloudeye-exporter/releases/download/v2.0.5/c
 tar -xzvf cloudeye-exporter.v2.0.5.tar.gz
 ```
 2. 编辑clouds.yml文件配置公有云信息
+
+   区域ID以及auth_url可点击下面链接查看
+ *  [地区和终端节点（中国站）](https://developer.huaweicloud.com/endpoint?IAM)
+ *  [地区和终端节点（国际站）](https://developer.huaweicloud.com/intl/en-us/endpoint?IAM)
 ```
 global:
-  port: ":8087"
+  port: ":8087" # 监听端口 :8087代表在全部网络接口上开启监听8087端口，限定内部访问也可以指定IP例如：192.168.1.100:8087
   scrape_batch_size: 300
 auth:
   auth_url: "https://iam.{region_id}.myhuaweicloud.com/v3"
-  project_name: "cn-north-1"
-  access_key: ""
+  project_name: "cn-north-1" # 华为云项目名称，可以在“华为云->统一身份认证服务->项目”中查看
+  access_key: "" # IAM用户访问密钥 您可参考3.1章节使用命令行输入加密后的ak sk，避免在配置文件中明文配置AK SK
   secret_key: ""
-  region: "cn-north-1"
+  region: "cn-north-1" # 区域ID
 ```
 注：默认的监控端口为8087.
 
-3. 启动cloudeye-exporter
+3. 启动cloudeye-exporter，默认读取当前目录下的clouds.yml文件，也可使用-config参数指定clouds.yml文件路径
 ```
-./cloudeye-exporter
+./cloudeye-exporter -config=clouds.yml
+```
+
+3.1 出于安全考虑cloudeye-exporter提供了 -s参数, 可以通过命令行交互的方式输入ak sk避免明文配置在clouds.yml文件中引起泄露
+```shell
+./cloudeye-exporter -s true
+```
+下面是shell脚本启动的样例，建议在脚本中配置加密后的ak&sk，并通过您自己的解密方法对ak sk进行解密后通过huaweiCloud_AK和huaweiCloud_SK参数传入cloudeye-exporter
+```shell
+#!/bin/bash
+## 为了防止您的ak&sk泄露，不建议在脚本中配置明文的ak sk
+huaweiCloud_AK=your_decrypt_function("加密的AK")
+huaweiCloud_SK=your_decrypt_function("加密的SK")
+$(./cloudeye-exporter -s true<<EOF
+$huaweiCloud_AK $huaweiCloud_SK
+EOF)
 ```
 
 ## 安装配置prometheus接入cloudeye
@@ -103,14 +124,14 @@ $ cd prometheus-2.14.0.linux-amd64
    ```
    $ vi prometheus.yml
    global:
-     scrape_interval: 1m # Set the scrape interval to every 1 minute seconds. Default is every 1 minute.
-     scrape_timeout: 1m
+     scrape_interval: 1m # 设置prometheus从exporter查询数据的间隔时间，prometheus配置文件中默认为15s，建议设置为1m
+     scrape_timeout: 1m # 设置从exporter查询数据的超时时间，prometheus配置文件中默认为15s，建议设置为1m
    scrape_configs:
      - job_name: 'huaweicloud'
        static_configs:
-       - targets: ['192.168.0.xx:8087']
+       - targets: ['192.168.0.xx:8087'] # exporter节点地址:监听端口
        params:
-         services: ['SYS.VPC,SYS.RDS']
+         services: ['SYS.VPC,SYS.RDS'] # 当前任务需要查询的服务命名空间，建议每个服务配置单独job
    ```
 3. 启动prometheus监控华为云服务
 ```
