@@ -118,8 +118,6 @@ SYS.DCS:
       - command_avg_rt
       - connections_usage
       - cpu_avg_usage
-      - setex
-      - scan
       - storage_usage
       - used_storage
     dcs_instance_id,dcs_cluster_redis_node:
@@ -2033,3 +2031,19 @@ SYS.DAYU:
       - dis08_stream_get_req_average_latency
       - dis09_stream_traffic_control_put_records
       - dis10_stream_traffic_control_get_records
+SYS.CFW:
+  resource: "rms"
+  dim_metric_name:
+    fw_instance_id:
+      - internet_protection_bandwidth_usage
+      - used_protection_bandwidth
+      - internet_protection_bandwidth_usage_rate
+      - vpc_protection_bandwidth_usage_rate
+      - internet_protection_pps
+      - vpc_protection_pps
+      - ips_hit_count
+      - ips_deny_count
+      - acl_hit_count
+      - acl_deny_count
+      - protection_bandwidth_usage
+      - vpc_protection_bandwidth_usage

@@ -45,6 +45,11 @@ func GetMonitoringCollector(namespaces []string) *BaseHuaweiCloudExporter {
 	return exporter
 }
 
+type PrometheusMetricMap = struct {
+	sync.RWMutex
+	MetricMap map[string]bool // key:txnKey value: metric map for deduplicate label key:label
+}
+
 // Describe simply sends the two Descs in the struct to the channel.
 func (exporter *BaseHuaweiCloudExporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- prometheus.NewDesc("dummy", "dummy", nil, nil)
@@ -68,7 +73,7 @@ func (exporter *BaseHuaweiCloudExporter) listMetrics(namespace string) ([]model.
 }
 
 func (exporter *BaseHuaweiCloudExporter) setProData(ctx context.Context, ch chan<- prometheus.Metric,
-	dataList []model.BatchMetricData, allResourcesInfo map[string]labelInfo) {
+	dataList []model.BatchMetricData, allResourcesInfo map[string]labelInfo, metricMap *PrometheusMetricMap) {
 	defer func() {
 		if err := recover(); err != nil {
 			logs.Logger.Errorf("[%s] SetProData error: %+v", exporter.txnKey, err)
@@ -93,10 +98,23 @@ func (exporter *BaseHuaweiCloudExporter) setProData(ctx context.Context, ch chan
 				exporter.txnKey, err.Error(), fqName, label)
 			continue
 		}
+		dimArray := make([]string, 0, len(*metric.Dimensions))
+		for _, dimension := range *metric.Dimensions {
+			dimArray = append(dimArray, dimension.Name)
+		}
+		dimNameStr := strings.Join(dimArray, ",")
+		if isAgentMetric(*metric.Namespace) && isMetricLabelConflict(fqName, label, metricMap) {
+			logs.Logger.Warnf("[%s] Metric label conflict, namespace: %s , dimension: %s, metric name: %s", exporter.txnKey, *metric.Namespace, dimNameStr, metric.MetricName)
+			continue
+		}
 		if err := sendMetricData(ctx, ch, proMetric); err != nil {
 			logs.Logger.Errorf("[%s] Context has canceled, no need to send metric data, metric name: %s", exporter.txnKey, fqName)
 		}
 	}
+}
+
+func isAgentMetric(namespace string) bool {
+	return namespace == "AGT.ECS" || namespace == "SERVICE.BMS"
 }
 
 func getLabel(metric model.BatchMetricData, info map[string]labelInfo) labelInfo {
@@ -140,7 +158,7 @@ func isContainsInStringArr(target string, array []string) bool {
 	return false
 }
 
-func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Context, ch chan<- prometheus.Metric, namespace string) {
+func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Context, ch chan<- prometheus.Metric, namespace string, proMap *PrometheusMetricMap) {
 	defer func() {
 		if err := recover(); err != nil {
 			logs.Logger.Errorf("[%s] recover error: %+v", exporter.txnKey, err)
@@ -181,7 +199,7 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Co
 				if err != nil {
 					return
 				}
-				exporter.setProData(ctx, ch, *dataList, allResourcesInfo)
+				exporter.setProData(ctx, ch, *dataList, allResourcesInfo, proMap)
 			}(tmpMetrics)
 			tmpMetrics = make([]model.MetricInfo, 0, exporter.ScrapeBatchSize)
 		}
@@ -215,11 +233,15 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 
 	logs.Logger.Debugf("[%s] Start to collect data", exporter.txnKey)
 	var wg sync.WaitGroup
+	proMap := PrometheusMetricMap{
+		RWMutex:   sync.RWMutex{},
+		MetricMap: make(map[string]bool),
+	}
 	for _, namespace := range exporter.Namespaces {
 		wg.Add(1)
 		go func(ctx context.Context, ch chan<- prometheus.Metric, namespace string) {
 			defer wg.Done()
-			exporter.collectMetricByNamespace(ctx, ch, namespace)
+			exporter.collectMetricByNamespace(ctx, ch, namespace, &proMap)
 		}(ctx, ch, namespace)
 	}
 	wg.Wait()
@@ -255,4 +277,25 @@ func getLatestData(data []model.DatapointForBatchMetric) (float64, error) {
 	}
 
 	return *data[len(data)-1].Average, nil
+}
+
+func isMetricLabelConflict(fqName string, label labelInfo, metricMap *PrometheusMetricMap) bool {
+	labelArray := make([]string, 0, len(label.Name))
+	for i := range label.Name {
+		labelTmp := fmt.Sprintf("%s=%s", label.Name[i], label.Value[i])
+		labelArray = append(labelArray, labelTmp)
+	}
+	labelResult := fmt.Sprintf("%s{%s}", fqName, strings.Join(labelArray, ","))
+
+	metricMap.RLock()
+	_, txnMapOk := metricMap.MetricMap[labelResult]
+	metricMap.RUnlock()
+	if txnMapOk {
+		return true
+	} else {
+		metricMap.Lock()
+		metricMap.MetricMap[labelResult] = true
+		metricMap.Unlock()
+	}
+	return false
 }

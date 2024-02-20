@@ -50,6 +50,7 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 |MapReduce服务|SYS.MRS |√|RMS/云服务|
 |湖仓构建服务|SYS.LakeFormation |√|RMS/云服务|
 |智能数据湖运营平台|SYS.DAYU |√|云服务|
+|云防火墙|SYS.CFW |√|RMS|
 
 注：自定义标签时，key只能包含大写字母、小写字母以及中划线
 

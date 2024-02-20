@@ -1,8 +1,13 @@
 package collector
 
 import (
+	"sync"
 	"testing"
 	"time"
+
+	"github.com/agiledragon/gomonkey/v2"
+	"github.com/huaweicloud/cloudeye-exporter/logs"
+	"go.uber.org/zap/zapcore"
 
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 	"github.com/stretchr/testify/assert"

@@ -50,6 +50,7 @@ var (
 		"SYS.LakeFormation": LakeFormationInfo{},
 		"SYS.MRS":           MRSInfo{},
 		"SYS.DAYU":          DayuInfo{},
+		"SYS.CFW":           CFWInfo{},
 	}
 )
 
