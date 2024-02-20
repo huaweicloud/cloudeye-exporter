@@ -41,6 +41,7 @@
    + [关系型数据库 RDS](templates/rds_dashboard_template.json)
    + [Web应用防火墙 WAF](templates/waf_dashboard_template.json)
    + [弹性公网IP和带宽 VPC](templates/vpc_dashboard_template.json)
+   + [云防火墙 CFW](templates/cfw_dashboard_template.json)
 4. 效果展示：
    >ECS:
    > ![img.png](pic/ecs.jpg)
