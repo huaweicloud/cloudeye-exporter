@@ -94,8 +94,20 @@ func (exporter *BaseHuaweiCloudExporter) setProData(ctx context.Context, ch chan
 		label := getLabel(metric, allResourcesInfo)
 		fqName := prometheus.BuildFQName(exporter.Prefix, replaceName(*metric.Namespace), metric.MetricName)
 
+		ip := "-" // 添加常量标签，默认值为-，有对应的映射关系就是对应的ip
+		for i, name := range label.Name {
+			if strings.HasSuffix(name, "cluster_id") || strings.HasSuffix(name, "node_id") {
+				if value, exists := MIPId[label.Value[i]]; exists {
+					ip = value
+				}
+			}
+		}
+		constLabels := prometheus.Labels{
+			"ip": ip,
+		}
+
 		proMetric, err := prometheus.NewConstMetric(
-			prometheus.NewDesc(fqName, fqName, label.Name, nil),
+			prometheus.NewDesc(fqName, fqName, label.Name, constLabels),
 			prometheus.GaugeValue, data, label.Value...)
 		if err != nil {
 			logs.Logger.Errorf("[%s] New const metric error: %s, fqName: %s, label: %+v",

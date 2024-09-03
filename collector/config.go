@@ -18,6 +18,25 @@ import (
 	"github.com/huaweicloud/cloudeye-exporter/logs"
 )
 
+var MIPId = map[string]string{ // RDS和DDS的id-ip映射关系
+	"62f6158bdd714ed684044140331521abin03": "10.160.56.8",
+	"7ada0963b132406495912dbbc6969a06in03": "10.160.56.3",
+	"56e9446e378e43a3ac3e20368b8d1182in03": "10.160.56.4",
+	"f0ef6b89407a4d4abce3e61abe29881din03": "10.160.56.5",
+	"cec1b10c027a41af92bf59e50a999e51in03": "10.160.56.106",
+	"dcbeecadc24f4081a9a67aa9d19b2967in03": "10.160.56.6",
+	"b4adc76de01e434184b7c33589eb1c82in03": "10.160.56.2",
+	"91ebe0379bbc48b6b788dca21056c3b5in03": "10.160.56.108",
+	"afc468c79a1842c585ddb52818c8efa2in03": "10.160.56.107",
+	"21deb09156bf4f9ab7e748f90855786din01": "10.160.22.2",
+	"3b29f36be92543d18c4ee5d8b034b234in03": "10.160.56.7",
+	"b704051649864bae9de1494e632dc253in03": "10.160.56.9",
+	"c85c01a2224f4d0cba00c7336328fec1in03": "10.160.56.109",
+	"683ce4d041904ebe88730af8a643f9f7no02": "10.160.59.3",
+	"2e55193102804a64b7d1e505baaff565no02": "10.160.59.4",
+	"4565ca156f1e4d9982d847e4bc28f598no02": "10.160.59.2",
+}
+
 type CloudAuth struct {
 	ProjectName string `yaml:"project_name"`
 	ProjectID   string `yaml:"project_id"`

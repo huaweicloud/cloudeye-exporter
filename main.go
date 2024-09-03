@@ -23,9 +23,27 @@ var (
 	ak, sk      string
 )
 
+func addIdIpMappingMetrics() *prometheus.GaugeVec {
+	gaugeVec := prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "huaweicloud_instance_info",
+		Help: "华为云RDS，DDS实例 内网ip--实例id 映射表",
+	},
+		[]string{"instance_id", "ip"},
+	)
+
+	i := 1
+	for id, ip := range collector.MIPId {
+		gaugeVec.With(prometheus.Labels{"instance_id": id, "ip": ip}).Set(float64(i))
+		i++
+	}
+
+	return gaugeVec
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
+	service := r.URL.Query().Get("service")
 	target := r.URL.Query().Get("services")
-	if target == "" {
+	if target == "" && service == "" {
 		http.Error(w, "'target' parameter must be specified", 400)
 		return
 	}
@@ -38,6 +56,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	registry := prometheus.NewRegistry()
 	logs.Logger.Infof("Start to monitor services: %s", targets)
 	exporter := collector.GetMonitoringCollector(targets)
+
+	if service == "INFO.ID-IP" { // service 参数的值为 INFO 返回id-ip映射表
+		infoExporter := addIdIpMappingMetrics()
+		registry.MustRegister(infoExporter)
+	}
+
 	registry.MustRegister(exporter)
 	h := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
 	h.ServeHTTP(w, r)

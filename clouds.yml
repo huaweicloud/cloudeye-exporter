@@ -2,10 +2,10 @@ global:
   prefix: "huaweicloud"
   scrape_batch_size: 300
   resource_sync_interval_minutes: 180
-  ignore_ssl_verify: false
+  ignore_ssl_verify: true
 auth:
-  auth_url: "https://iam.xxx.yyy.com/v3"
-  project_name: "{project_name}"
-  access_key: "{access_key}"
-  secret_key: "{secret_key}"
-  region: "{region}"
+  auth_url: "https://iam.cn-north-4.myhuaweicloud.com/v3"
+  project_name: "cn-north-4"
+  access_key: "WLZXVMLLT8YIAZRJWJTB"
+  secret_key: "NPRrwGuiwPj2818jTlDMEPoRUxFgn52pOqOnHvwY"
+  region: "cn-north-4"
