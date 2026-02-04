@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListSchemasResponse Response Object
 type ListSchemasResponse struct {
 
 	// schemas 接口.

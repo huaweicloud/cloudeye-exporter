@@ -4,7 +4,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 	dns "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/dns/v2"
 	dnsModel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/dns/v2/model"
@@ -156,7 +155,7 @@ func getAllPublicZonesByEpId(epId string) ([]dnsModel.PublicZoneResp, error) {
 
 func getDnsClient() *dns.DnsClient {
 	return dns.NewDnsClient(dns.DnsClientBuilder().WithCredential(
-		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("dns", "v2")).Build())
 }

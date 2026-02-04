@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListPendingAggregationRequestsResponse Response Object
 type ListPendingAggregationRequestsResponse struct {
 
 	// 挂起的聚合请求列表。

@@ -3,7 +3,6 @@ package collector
 import (
 	"sync"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	ces "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 	cesv2 "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v2"
@@ -18,8 +17,8 @@ var (
 )
 
 func getCESClient() *ces.CesClient {
-	return ces.NewCesClient(ces.CesClientBuilder().WithCredential(
-		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+	return ces.NewCesClient(ces.CesClientBuilder().
+		WithCredential(authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("ces", "v1")).Build())
 }
@@ -69,8 +68,7 @@ func listAllMetrics(namespace string) ([]model.MetricInfoList, error) {
 }
 
 func getCESClientV2() *cesv2.CesClient {
-	return cesv2.NewCesClient(ces.CesClientBuilder().WithCredential(
-		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+	return cesv2.NewCesClient(ces.CesClientBuilder().WithCredential(authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("ces", "v2")).Build())
 }

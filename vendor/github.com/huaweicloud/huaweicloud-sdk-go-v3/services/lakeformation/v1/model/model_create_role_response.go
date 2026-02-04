@@ -9,16 +9,16 @@ import (
 	"strings"
 )
 
-// Response Object
+// CreateRoleResponse Response Object
 type CreateRoleResponse struct {
 
-	// role名字
+	// 角色名称。只能包含字母、数字和下划线，且长度为1~255个字符。
 	RoleName *string `json:"role_name,omitempty"`
 
-	// 描述信息
+	// 描述信息。最大长度为4000个字符。当无描述信息时，则description值为null，当值为null时，响应Body无该参数。
 	Description *string `json:"description,omitempty"`
 
-	// 主体来源 IAM云用户 SAML联邦 LDAP ld用户 LOCAL 本地用户 OTHER 其它
+	// 主体来源 IAM云用户 SAML联邦 LDAP ld用户 LOCAL 本地用户 AGENTTENANT 委托 OTHER 其它
 	PrincipalSource *CreateRoleResponsePrincipalSource `json:"principal_source,omitempty"`
 	HttpStatusCode  int                                `json:"-"`
 }
@@ -37,11 +37,12 @@ type CreateRoleResponsePrincipalSource struct {
 }
 
 type CreateRoleResponsePrincipalSourceEnum struct {
-	IAM   CreateRoleResponsePrincipalSource
-	SAML  CreateRoleResponsePrincipalSource
-	LDAP  CreateRoleResponsePrincipalSource
-	LOCAL CreateRoleResponsePrincipalSource
-	OTHER CreateRoleResponsePrincipalSource
+	IAM         CreateRoleResponsePrincipalSource
+	SAML        CreateRoleResponsePrincipalSource
+	LDAP        CreateRoleResponsePrincipalSource
+	LOCAL       CreateRoleResponsePrincipalSource
+	AGENTTENANT CreateRoleResponsePrincipalSource
+	OTHER       CreateRoleResponsePrincipalSource
 }
 
 func GetCreateRoleResponsePrincipalSourceEnum() CreateRoleResponsePrincipalSourceEnum {
@@ -57,6 +58,9 @@ func GetCreateRoleResponsePrincipalSourceEnum() CreateRoleResponsePrincipalSourc
 		},
 		LOCAL: CreateRoleResponsePrincipalSource{
 			value: "LOCAL",
+		},
+		AGENTTENANT: CreateRoleResponsePrincipalSource{
+			value: "AGENTTENANT",
 		},
 		OTHER: CreateRoleResponsePrincipalSource{
 			value: "OTHER",
@@ -74,13 +78,18 @@ func (c CreateRoleResponsePrincipalSource) MarshalJSON() ([]byte, error) {
 
 func (c *CreateRoleResponsePrincipalSource) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

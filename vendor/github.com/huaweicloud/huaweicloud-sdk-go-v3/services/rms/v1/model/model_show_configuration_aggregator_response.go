@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowConfigurationAggregatorResponse Response Object
 type ShowConfigurationAggregatorResponse struct {
 
 	// 资源聚合器名称。

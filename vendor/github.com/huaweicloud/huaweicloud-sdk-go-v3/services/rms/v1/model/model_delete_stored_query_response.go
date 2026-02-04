@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// DeleteStoredQueryResponse Response Object
 type DeleteStoredQueryResponse struct {
 	HttpStatusCode int `json:"-"`
 }

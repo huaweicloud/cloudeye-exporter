@@ -40,11 +40,10 @@ type EnvCache struct {
 }
 
 func getEnvCache() *EnvCache {
-	if envCache == nil {
-		envOnce.Do(func() {
-			envCache = &EnvCache{value: make(map[string]*Region)}
-		})
-	}
+	envOnce.Do(func() {
+		envCache = &EnvCache{value: make(map[string]*Region)}
+	})
+
 	return envCache
 }
 
@@ -67,7 +66,8 @@ func (p *EnvProvider) GetRegion(regionId string) *Region {
 		return nil
 	}
 
-	reg := NewRegion(regionId, endpoint)
+	endpoints := strings.Split(endpoint, ",")
+	reg := NewRegion(regionId, endpoints...)
 	getEnvCache().value[p.serviceName+regionId] = reg
 	return reg
 }

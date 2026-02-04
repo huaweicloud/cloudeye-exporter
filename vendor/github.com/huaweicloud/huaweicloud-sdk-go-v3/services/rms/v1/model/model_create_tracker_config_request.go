@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// CreateTrackerConfigRequest Request Object
 type CreateTrackerConfigRequest struct {
 	Body *TrackerConfigBody `json:"body,omitempty"`
 }

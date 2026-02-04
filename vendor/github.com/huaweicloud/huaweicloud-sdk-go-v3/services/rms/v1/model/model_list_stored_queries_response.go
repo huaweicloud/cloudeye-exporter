@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListStoredQueriesResponse Response Object
 type ListStoredQueriesResponse struct {
 
 	// 高级查询列表

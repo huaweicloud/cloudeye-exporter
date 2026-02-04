@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// DeleteAggregationAuthorizationRequest Request Object
 type DeleteAggregationAuthorizationRequest struct {
 
 	// 授权的资源聚合器的帐号ID。

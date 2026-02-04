@@ -10,63 +10,63 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 
 ## 拓展标签支持情况
 该插件对于已对接云监控的云服务均支持指标数据的导出。为提高云服务资源的识别度、可读性，插件对于以下服务支持导出资源属性label，如ECS实例会增加hostname、ip等label，同时支持将华为云标签转化为label，满足对资源自定义label的诉求，具体如下（点击云服务链接即可查看exporter支持导出的指标列表）：
-|云服务|命名空间|支持通过实例TAG增加标签|标签数据来源|
-| :--- | :--- | :--: | :--: |
-|[弹性云服务器](cloudservice_metrics/SYS.ECS.md)|SYS.ECS/AGT.ECS|√|RMS/云服务|
-|[云硬盘](cloudservice_metrics/SYS.EVS.md)|SYS.EVS|√|RMS/云服务|
-|[分布式缓存服务](cloudservice_metrics/SYS.DCS.md)|SYS.DCS|√|RMS|
-|[云专线](cloudservice_metrics/SYS.DCAAS.md)|SYS.DCAAS|√|RMS|
-|[弹性公网IP和带宽](cloudservice_metrics/SYS.VPC.md)|SYS.VPC|√|RMS|
-|[云搜索服务](cloudservice_metrics/SYS.ES.md)|SYS.ES|√|RMS|
-|[关系型数据库](cloudservice_metrics/SYS.RDS.md)|SYS.RDS|√|RMS|
-|[弹性负载均衡](cloudservice_metrics/SYS.ELB.md)|SYS.ELB|√|云服务|
-|[云数据库 GaussDB(for MySQL)](cloudservice_metrics/SYS.GAUSSDB.md)|SYS.GAUSSDB|√|RMS|
-|[云数据库 GaussDB(for openGauss)](cloudservice_metrics/SYS.GAUSSDBV5.md)|SYS.GAUSSDBV5|√|云服务|
-|[NAT网关](cloudservice_metrics/SYS.NAT.md)|SYS.NAT|√|RMS|
-|[弹性伸缩](cloudservice_metrics/SYS.AS.md)|SYS.AS|√|RMS|
-|[函数工作流](cloudservice_metrics/SYS.FunctionGraph.md)|SYS.FunctionGraph|√|RMS|
-|[数据复制服务](cloudservice_metrics/SYS.DRS.md)|SYS.DRS|√|RMS|
-|[Web应用防火墙](cloudservice_metrics/SYS.WAF.md)|SYS.WAF|√|RMS|
-|[文档数据库服务](cloudservice_metrics/SYS.DDS.md)|SYS.DDS|√|云服务|
-|[API网关](cloudservice_metrics/SYS.APIG.md)|SYS.APIG|×|云服务|
-|[云备份](cloudservice_metrics/SYS.CBR.md)|SYS.CBR|√|RMS/云服务|
-|[数据湖探索](cloudservice_metrics/SYS.DLI.md)|SYS.DLI|√|RMS&云服务|
-|[弹性文件服务](cloudservice_metrics/SYS.SFS.md)|SYS.SFS|×|云服务|
-|[弹性文件服务 SFS Turbo](cloudservice_metrics/SYS.EFS.md)|SYS.EFS|√|RMS|
-|[虚拟专用网络](cloudservice_metrics/SYS.VPN.md)|SYS.VPN|√|RMS|
-|[云数据迁移](cloudservice_metrics/SYS.CDM.md)|SYS.CDM|×|云服务|
-|[数据仓库服务](cloudservice_metrics/SYS.DWS.md)|SYS.DWS|√|云服务|
-|[DDoS高防](cloudservice_metrics/SYS.DDOS.md)|SYS.DDOS|√|RMS|
-|[云数据库GeminiDB](cloudservice_metrics/SYS.NoSQL.md)|SYS.NoSQL|×|云服务|
-|[SYS.DMS（分布式消息服务）](cloudservice_metrics/SYS.DMS.md)|SYS.DMS|√|RMS|
-|[分布式数据库中间件](cloudservice_metrics/SYS.DDMS.md)|SYS.DDMS|×|RMS&云服务|
-|[API专享版网关](cloudservice_metrics/SYS.APIC.md)|SYS.APIC|×|云服务|
-|[裸金属服务器](cloudservice_metrics/SYS.BMS.md)|SERVICE.BMS|√|RMS|
-|[ModelArts](cloudservice_metrics/SYS.ModelArts.md)|SYS.ModelArts|√|RMS|
-|[VPC终端节点](cloudservice_metrics/SYS.VPCEP.md)|SYS.VPCEP |√|RMS|
-|[图引擎服务GES](cloudservice_metrics/SYS.GES.md)|SYS.GES|√|RMS|
-|[数据库安全服务DBSS](cloudservice_metrics/SYS.DBSS.md)|SYS.DBSS |√|RMS|
-|[MapReduce服务](cloudservice_metrics/SYS.MRS.md)|SYS.MRS |√|RMS/云服务|
-|[湖仓构建服务](cloudservice_metrics/SYS.LakeFormation.md)|SYS.LakeFormation |√|RMS/云服务|
-|[智能数据湖运营平台](cloudservice_metrics/SYS.DAYU.md)|SYS.DAYU |√|云服务|
-|[云防火墙](cloudservice_metrics/SYS.CFW.md)|SYS.CFW |√|RMS|
-|[广域网质量监控](cloudservice_metrics/SYS.WANQMonitor.md)|SYS.WANQMonitor |√|云服务|
-|[云日志服务](cloudservice_metrics/SYS.LTS.md)|SYS.LTS |×|云服务|
-|[视频直播](cloudservice_metrics/SYS.Live.md)|SYS.LIVE |×|云服务|
-|[云原生应用网络](cloudservice_metrics/SYS.ANC.md)|SYS.ANC|√|RMS|
-|[企业主机安全](cloudservice_metrics/SYS.HSS.md)|SYS.HSS|×|云服务|
-|[表格存储服务](cloudservice_metrics/SYS.CloudTable.md)|SYS.CloudTable|×|云服务|
-|[事件网格](cloudservice_metrics/SYS.EG.md)|SYS.EG|√|RMS|
-|[对象存储服务](cloudservice_metrics/SYS.OBS.md)|SYS.OBS|√|RMS|
-|[云解析服务](cloudservice_metrics/SYS.DNS.md)|SYS.DNS|√|云服务|
-|[企业门户](cloudservice_metrics/SYS.EWP.md)|SYS.EWP|√|云服务|
-|[云连接](cloudservice_metrics/SYS.CC.md)|SYS.CC|√|云服务|
-|[内容分发网络](cloudservice_metrics/SYS.CDN.md)|SYS.CDN|×|云服务|
-|[MaaS服务](cloudservice_metrics/SYS.MaaS.md)|SYS.MaaS|×|云服务|
-|[全域互联带宽](cloudservice_metrics/SYS.GCB.md)|SYS.GCB|×|云服务|
-|[全域弹性公网IP和带宽](cloudservice_metrics/SYS.GEIP.md)|SYS.GEIP|√|RMS|
-|[企业路由服务](cloudservice_metrics/SYS.ER.md)|SYS.ER|√|RMS|
-|[云手机服务器](cloudservice_metrics/SYS.ECP.md)|SYS.ECP|√|RMS|
+|云服务|命名空间|支持通过实例TAG增加标签|标签数据来源|是否支持epid过滤|
+| :--- | :--- | :--: | :--: | :--: |
+|[弹性云服务器](cloudservice_metrics/SYS.ECS.md)|SYS.ECS/AGT.ECS|√|RMS/云服务|支持|
+|[云硬盘](cloudservice_metrics/SYS.EVS.md)|SYS.EVS|√|RMS/云服务|支持|
+|[分布式缓存服务](cloudservice_metrics/SYS.DCS.md)|SYS.DCS|√|RMS|支持|
+|[云专线](cloudservice_metrics/SYS.DCAAS.md)|SYS.DCAAS|√|RMS|支持|
+|[弹性公网IP和带宽](cloudservice_metrics/SYS.VPC.md)|SYS.VPC|√|RMS|支持|
+|[云搜索服务](cloudservice_metrics/SYS.ES.md)|SYS.ES|√|RMS|支持|
+|[关系型数据库](cloudservice_metrics/SYS.RDS.md)|SYS.RDS|√|RMS|支持|
+|[弹性负载均衡](cloudservice_metrics/SYS.ELB.md)|SYS.ELB|√|云服务|不支持|
+|[云数据库 GaussDB(for MySQL)](cloudservice_metrics/SYS.GAUSSDB.md)|SYS.GAUSSDB|√|RMS|支持|
+|[云数据库 GaussDB(for openGauss)](cloudservice_metrics/SYS.GAUSSDBV5.md)|SYS.GAUSSDBV5|√|云服务|不支持|
+|[NAT网关](cloudservice_metrics/SYS.NAT.md)|SYS.NAT|√|RMS|支持|
+|[弹性伸缩](cloudservice_metrics/SYS.AS.md)|SYS.AS|√|RMS|支持|
+|[函数工作流](cloudservice_metrics/SYS.FunctionGraph.md)|SYS.FunctionGraph|√|RMS|支持|
+|[数据复制服务](cloudservice_metrics/SYS.DRS.md)|SYS.DRS|√|RMS|支持|
+|[Web应用防火墙](cloudservice_metrics/SYS.WAF.md)|SYS.WAF|√|RMS|支持|
+|[文档数据库服务](cloudservice_metrics/SYS.DDS.md)|SYS.DDS|√|云服务|不支持|
+|[API网关](cloudservice_metrics/SYS.APIG.md)|SYS.APIG|×|云服务|不支持|
+|[云备份](cloudservice_metrics/SYS.CBR.md)|SYS.CBR|√|RMS/云服务|支持|
+|[数据湖探索](cloudservice_metrics/SYS.DLI.md)|SYS.DLI|√|RMS&云服务|支持|
+|[弹性文件服务](cloudservice_metrics/SYS.SFS.md)|SYS.SFS|×|云服务|不支持|
+|[弹性文件服务 SFS Turbo](cloudservice_metrics/SYS.EFS.md)|SYS.EFS|√|RMS|支持|
+|[虚拟专用网络](cloudservice_metrics/SYS.VPN.md)|SYS.VPN|√|RMS|支持|
+|[云数据迁移](cloudservice_metrics/SYS.CDM.md)|SYS.CDM|×|云服务|不支持|
+|[数据仓库服务](cloudservice_metrics/SYS.DWS.md)|SYS.DWS|√|云服务|不支持|
+|[DDoS高防](cloudservice_metrics/SYS.DDOS.md)|SYS.DDOS|√|RMS|支持|
+|[云数据库GeminiDB](cloudservice_metrics/SYS.NoSQL.md)|SYS.NoSQL|×|云服务|不支持|
+|[SYS.DMS（分布式消息服务）](cloudservice_metrics/SYS.DMS.md)|SYS.DMS|√|RMS|支持|
+|[分布式数据库中间件](cloudservice_metrics/SYS.DDMS.md)|SYS.DDMS|×|RMS&云服务|支持|
+|[API专享版网关](cloudservice_metrics/SYS.APIC.md)|SYS.APIC|×|云服务|不支持|
+|[裸金属服务器](cloudservice_metrics/SYS.BMS.md)|SERVICE.BMS|√|RMS|支持|
+|[ModelArts](cloudservice_metrics/SYS.ModelArts.md)|SYS.ModelArts|√|RMS|支持|
+|[VPC终端节点](cloudservice_metrics/SYS.VPCEP.md)|SYS.VPCEP |√|RMS|支持|
+|[图引擎服务GES](cloudservice_metrics/SYS.GES.md)|SYS.GES|√|RMS|支持|
+|[数据库安全服务DBSS](cloudservice_metrics/SYS.DBSS.md)|SYS.DBSS |√|RMS|支持|
+|[MapReduce服务](cloudservice_metrics/SYS.MRS.md)|SYS.MRS |√|RMS/云服务|支持|
+|[湖仓构建服务](cloudservice_metrics/SYS.LakeFormation.md)|SYS.LakeFormation |√|RMS/云服务|支持|
+|[智能数据湖运营平台](cloudservice_metrics/SYS.DAYU.md)|SYS.DAYU |√|云服务|不支持|
+|[云防火墙](cloudservice_metrics/SYS.CFW.md)|SYS.CFW |√|RMS|支持|
+|[广域网质量监控](cloudservice_metrics/SYS.WANQMonitor.md)|SYS.WANQMonitor |√|云服务|不支持|
+|[云日志服务](cloudservice_metrics/SYS.LTS.md)|SYS.LTS |×|云服务|不支持|
+|[视频直播](cloudservice_metrics/SYS.Live.md)|SYS.LIVE |×|云服务|不支持|
+|[云原生应用网络](cloudservice_metrics/SYS.ANC.md)|SYS.ANC|√|RMS|支持|
+|[企业主机安全](cloudservice_metrics/SYS.HSS.md)|SYS.HSS|×|云服务|不支持|
+|[表格存储服务](cloudservice_metrics/SYS.CloudTable.md)|SYS.CloudTable|×|云服务|不支持|
+|[事件网格](cloudservice_metrics/SYS.EG.md)|SYS.EG|√|RMS|支持|
+|[对象存储服务](cloudservice_metrics/SYS.OBS.md)|SYS.OBS|√|RMS|支持|
+|[云解析服务](cloudservice_metrics/SYS.DNS.md)|SYS.DNS|√|云服务|不支持|
+|[企业门户](cloudservice_metrics/SYS.EWP.md)|SYS.EWP|√|云服务|不支持|
+|[云连接](cloudservice_metrics/SYS.CC.md)|SYS.CC|√|云服务|不支持|
+|[内容分发网络](cloudservice_metrics/SYS.CDN.md)|SYS.CDN|×|云服务|不支持|
+|[MaaS服务](cloudservice_metrics/SYS.MaaS.md)|SYS.MaaS|×|云服务|不支持|
+|[全域互联带宽](cloudservice_metrics/SYS.GCB.md)|SYS.GCB|×|云服务|不支持|
+|[全域弹性公网IP和带宽](cloudservice_metrics/SYS.GEIP.md)|SYS.GEIP|√|RMS|支持|
+|[企业路由服务](cloudservice_metrics/SYS.ER.md)|SYS.ER|√|RMS|支持|
+|[云手机服务器](cloudservice_metrics/SYS.ECP.md)|SYS.ECP|√|RMS|支持|
 
 注：
 1. 自定义标签时，key只能包含大写字母、小写字母、数字以及下划线，且不能以数字开头。
@@ -99,10 +99,10 @@ tar -xzvf cloudeye-exporter-${version}.tar.gz
  *  [地区和终端节点（国际站）](https://developer.huaweicloud.com/intl/en-us/endpoint?IAM)
 ```
 global:
-  port: "{private IP}:8087" # 监听端口 :出于安全考虑，建议不将expoter服务端口暴露到公网，建议配置为127.0.0.1:{port}，或{内网ip}:{port}，例如：192.168.1.100:8087；如业务需要将该端口暴露到公网，请确保合理配置安全组，防火墙，iptables等访问控制策略，确保最小访问权限
+  port: "{private IP}:8087" # 监听端口 :出于安全考虑，建议不将expoter服务端口暴露到公网，建议配置为127.0.0.1:{port}，或{内网ip}:{port}，例如：192.168.1.100:8087；如业务需要将该端口暴露到公网，请确保合理配置安全组，防火墙，iptables等访问控制策略，确保最小访问权限；监听端口默认为8087
   scrape_batch_size: 300
   resource_sync_interval_minutes: 20 # 资源信息更新频率：默认180分钟更新一次；该配置值小于10分钟，将以10分钟1次为资源信息更新频率
-  ep_ids: "xxx1,xxx2" # 可选配置，根据企业项目ID过滤资源，不配置默认查询所有资源的指标，多个ID使用英文逗号进行分割。
+  ep_ids: "xxx1,xxx2" # 可选配置，根据企业项目ID过滤资源(支持企业项目id过滤的云服务参考'拓展标签支持情况'章节图表)，不配置默认查询所有资源的指标，多个ID使用英文逗号进行分割。
   logs_conf_path: "/root/logs.yml" # 可选配置，指定日志打印配置文件路径，建议使用绝对路径。若未指定，程序将默认使用执行启动命令所在目录下的日志配置文件。
   metrics_conf_path: "/root/metric.yml" # 可选配置，指定指标配置文件路径，建议使用绝对路径。若未指定，程序将默认使用执行启动命令所在目录下的指标配置文件。
   endpoints_conf_path: "/root/endpoints.yml" # 可选配置，指定服务域名配置文件路径，建议使用绝对路径。若未指定，程序将默认使用执行启动命令所在目录下的服务域名配置文件。
@@ -129,8 +129,11 @@ auth:
   access_key: "" # IAM用户访问密钥 您可参考4.1章节，使用脚本将ak sk解密后传入，避免因在配置文件中明文配置AK SK而引发信息泄露
   secret_key: ""
   region: "cn-north-1" # 区域ID
+  oidc:  # CCE容器部署场景下，oidc认证相关的配置，可实现免AK/SK认证
+    id_token_file_path: "" # 存放id_token的文件路径，id_token由企业IdP构建，携带联邦用户身份信息
+    idp_id: ""  # 身份提供商ID
+    domain_id: ""  # 华为云账号ID
 ```
-注：默认的监控端口为8087.
 
 3. 欧洲站注意事项
 
@@ -249,6 +252,24 @@ $huaweiCloud_ProxyUserName $huaweiCloud_ProxyPassword
 $root_path $server_crt_path $server_key_path $huaweiCloud_https_password
 EOF
 ```
+
+4.5 exporter提供了多种认证模式访问华为云服务获取监控指标数据，通过参数-auth_mode [aksk|oidc]可按需选择不同的认证方式，aksk为在未指定认证方式的情况下的默认值，代表采用IAM aksk认证方式；oidc为CCE容器场景下提供的免AKSK认证方式。
+```shell
+./cloudeye-exporter -auth_mode [aksk|oidc]
+```
+**oidc认证模式使用约束**：exporter导出指标时，需调用云服务接口查询资源，当前部分云服务不支持oidc认证模式，这部分云服务可使用aksk认证模式对接；表单列出当前未支持oidc认证模式的云服务及相关维度。
+
+|云服务|命名空间|维度|维度描述|
+| :--- | :--- | :--: | :--: |
+|GeminiDB(非关系型数据库)|SYS.NoSQL|ddb_table_id|GeminiDB Serverless表ID|
+|LakeFormation(湖仓构建)|SYS.LakeFormation|instance_id|LakeFormation实例ID|
+|云连接|SYS.CC|cloud_connect_id,bwp_id,region_bandwidth_id|云连接ID,带宽包ID,域间带宽ID|
+|弹性文件服务|SYS.SFS|share_id|容量型SFS ID|
+|弹性文件服务|SYS.SFS|bucket_name|通用文件系统ID|
+|云数据库TaurusDB|SYS.GAUSSDB|gaussdb_mysql_instance_id,gaussdb_mysql_node_id|TaurusDB实例ID,TaurusDB节点ID|
+|云数据库TaurusDB|SYS.GAUSSDB|gaussdb_mysql_ha_id,gaussdb_mysql_ha_node_id|TaurusDB经典架构实例ID,TaurusDB经典架构节点ID|
+
+注：OIDC认证方式的详细使用请参考[OIDC认证鉴权最佳实践](best-practices/CCE-OIDC-Best-Practices)
 
 5. 指标配置
 cloudeye-exporter支持的指标可在 [支持监控的服务列表](https://support.huaweicloud.com/usermanual-ces/zh-cn_topic_0202622212.html)中查看。若发现您需要的指标没有获取到，可查阅该文档将对应的指标填入metric.yml中。

@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// 健康检查详情。
+// VpcHealthConfig 健康检查详情。
 type VpcHealthConfig struct {
 
 	// 使用以下协议，对VPC中主机执行健康检查： - TCP - HTTP - HTTPS
@@ -21,7 +21,7 @@ type VpcHealthConfig struct {
 	// 健康检查时的请求方法
 	Method *VpcHealthConfigMethod `json:"method,omitempty"`
 
-	// 健康检查的目标端口，缺少或port = 0时为VPC中主机的端口号。  若此端口存在非0值，则使用此端口进行健康检查。
+	// 健康检查的目标端口，缺少或port = 0时为VPC中主机的端口号。  如果此端口存在非0值，则使用此端口进行健康检查。
 	Port *int32 `json:"port,omitempty"`
 
 	// 正常阈值。判定VPC通道中主机正常的依据为：连续检查x成功，x为您设置的正常阈值。
@@ -36,7 +36,7 @@ type VpcHealthConfig struct {
 	// 检查目标HTTP响应时，判断成功使用的HTTP响应码。取值范围为100到599之前的任意整数值，支持如下三种格式： - 多个值，如：200,201,202 - 一系列值，如：200-299 - 组合值，如：201,202,210-299 protocol = http时必选
 	HttpCode *string `json:"http_code,omitempty"`
 
-	// 是否开启双向认证。若开启，则使用实例配置中的backend_client_certificate配置项的证书
+	// 是否开启双向认证。如果开启，则使用实例配置中的backend_client_certificate配置项的证书
 	EnableClientSsl *bool `json:"enable_client_ssl,omitempty"`
 
 	// 健康检查状态   - 1：可用   - 2：不可用
@@ -89,13 +89,18 @@ func (c VpcHealthConfigProtocol) MarshalJSON() ([]byte, error) {
 
 func (c *VpcHealthConfigProtocol) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -131,13 +136,18 @@ func (c VpcHealthConfigMethod) MarshalJSON() ([]byte, error) {
 
 func (c *VpcHealthConfigMethod) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -172,13 +182,18 @@ func (c VpcHealthConfigStatus) MarshalJSON() ([]byte, error) {
 
 func (c *VpcHealthConfigStatus) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("int32")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(int32)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: int32")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(int32); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to int32 error")
 	}

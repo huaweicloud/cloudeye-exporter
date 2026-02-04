@@ -14,7 +14,7 @@ type ThrottleSpecialCreate struct {
 	// 流控时间内特殊对象能够访问API的最大次数限制
 	CallLimits int32 `json:"call_limits"`
 
-	// 特殊APP的编号或特殊租户的帐号ID
+	// 特殊APP的编号或特殊租户的账号ID
 	ObjectId string `json:"object_id"`
 
 	// 特殊对象类型
@@ -60,13 +60,18 @@ func (c ThrottleSpecialCreateObjectType) MarshalJSON() ([]byte, error) {
 
 func (c *ThrottleSpecialCreateObjectType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

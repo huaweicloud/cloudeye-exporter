@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowCloudConnectionRoutesRequest Request Object
 type ShowCloudConnectionRoutesRequest struct {
 
-	// 云连接路由实例ID。
+	// 资源的Id。
 	Id string `json:"id"`
 }
 

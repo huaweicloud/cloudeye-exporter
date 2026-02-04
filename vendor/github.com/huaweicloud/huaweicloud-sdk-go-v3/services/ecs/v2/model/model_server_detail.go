@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 云服务器详情。
+// ServerDetail 云服务器详情。
 type ServerDetail struct {
 
 	// 弹性云服务器状态。  取值范围：  ACTIVE、BUILD、DELETED、ERROR、HARD_REBOOT、MIGRATING、PAUSED、REBOOT、REBUILD、RESIZE、REVERT_RESIZE、SHUTOFF、SHELVED、SHELVED_OFFLOADED、SOFT_DELETED、SUSPENDED、VERIFY_RESIZE  弹性云服务器状态说明请参考[云服务器状态](https://support.huaweicloud.com/api-ecs/ecs_08_0002.html)
@@ -15,7 +15,7 @@ type ServerDetail struct {
 	// 弹性云服务器更新时间。  时间格式例如：2019-05-22T03:30:52Z
 	Updated string `json:"updated"`
 
-	// 弹性云服务器自动释放时间。  时间格式例如：2020-01-19T03:30:52Z
+	// 弹性云服务器定时删除时间。  时间格式例如：2020-01-19T03:30:52Z
 	AutoTerminateTime string `json:"auto_terminate_time"`
 
 	// 弹性云服务器所在主机的主机ID。
@@ -76,7 +76,8 @@ type ServerDetail struct {
 	// 预留属性。
 	AccessIPv6 string `json:"accessIPv6"`
 
-	Fault *ServerFault `json:"fault,omitempty"`
+	// 弹性云服务器故障信息。  可选参数，在弹性云服务器状态为ERROR且存在异常的情况下返回。
+	Fault *interface{} `json:"fault,omitempty"`
 
 	// 弹性云服务器进度。
 	Progress *int32 `json:"progress,omitempty"`

@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Request Object
+// UpdateAuthorisationRequest Request Object
 type UpdateAuthorisationRequest struct {
 
-	// 授权实例ID。
+	// 资源的Id。
 	Id string `json:"id"`
 
 	Body *UpdateAuthorisationRequestBody `json:"body,omitempty"`

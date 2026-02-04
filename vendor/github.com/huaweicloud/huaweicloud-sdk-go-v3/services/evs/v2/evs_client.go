@@ -1,21 +1,21 @@
 package v2
 
 import (
-	http_client "github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
+	httpclient "github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/invoker"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/evs/v2/model"
 )
 
 type EvsClient struct {
-	HcClient *http_client.HcHttpClient
+	HcClient *httpclient.HcHttpClient
 }
 
-func NewEvsClient(hcClient *http_client.HcHttpClient) *EvsClient {
+func NewEvsClient(hcClient *httpclient.HcHttpClient) *EvsClient {
 	return &EvsClient{HcClient: hcClient}
 }
 
-func EvsClientBuilder() *http_client.HcHttpClientBuilder {
-	builder := http_client.NewHcHttpClientBuilder()
+func EvsClientBuilder() *httpclient.HcHttpClientBuilder {
+	builder := httpclient.NewHcHttpClientBuilder()
 	return builder
 }
 
@@ -62,6 +62,27 @@ func (c *EvsClient) BatchDeleteVolumeTags(request *model.BatchDeleteVolumeTagsRe
 func (c *EvsClient) BatchDeleteVolumeTagsInvoker(request *model.BatchDeleteVolumeTagsRequest) *BatchDeleteVolumeTagsInvoker {
 	requestDef := GenReqDefForBatchDeleteVolumeTags()
 	return &BatchDeleteVolumeTagsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ChangeVolumeChargeMode 修改云硬盘计费模式
+//
+// 将挂载状态下的云硬盘的计费模式有按需转成包周期，且到期时间和挂载的虚拟机保持一致。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *EvsClient) ChangeVolumeChargeMode(request *model.ChangeVolumeChargeModeRequest) (*model.ChangeVolumeChargeModeResponse, error) {
+	requestDef := GenReqDefForChangeVolumeChargeMode()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ChangeVolumeChargeModeResponse), nil
+	}
+}
+
+// ChangeVolumeChargeModeInvoker 修改云硬盘计费模式
+func (c *EvsClient) ChangeVolumeChargeModeInvoker(request *model.ChangeVolumeChargeModeRequest) *ChangeVolumeChargeModeInvoker {
+	requestDef := GenReqDefForChangeVolumeChargeMode()
+	return &ChangeVolumeChargeModeInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
 // CinderAcceptVolumeTransfer 接受云硬盘过户
@@ -406,6 +427,27 @@ func (c *EvsClient) ListVolumesByTagsInvoker(request *model.ListVolumesByTagsReq
 	return &ListVolumesByTagsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// ModifyVolumeQoS 修改云硬盘QoS
+//
+// 调整云硬盘的iops或者吞吐量。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *EvsClient) ModifyVolumeQoS(request *model.ModifyVolumeQoSRequest) (*model.ModifyVolumeQoSResponse, error) {
+	requestDef := GenReqDefForModifyVolumeQoS()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ModifyVolumeQoSResponse), nil
+	}
+}
+
+// ModifyVolumeQoSInvoker 修改云硬盘QoS
+func (c *EvsClient) ModifyVolumeQoSInvoker(request *model.ModifyVolumeQoSRequest) *ModifyVolumeQoSInvoker {
+	requestDef := GenReqDefForModifyVolumeQoS()
+	return &ModifyVolumeQoSInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
 // ResizeVolume 扩容云硬盘
 //
 // 对按需或者包周期云硬盘进行扩容。
@@ -536,6 +578,29 @@ func (c *EvsClient) ShowVolumeTags(request *model.ShowVolumeTagsRequest) (*model
 func (c *EvsClient) ShowVolumeTagsInvoker(request *model.ShowVolumeTagsRequest) *ShowVolumeTagsInvoker {
 	requestDef := GenReqDefForShowVolumeTags()
 	return &ShowVolumeTagsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// UnsubscribePostpaidVolume 退订包周期计费模式的云硬盘
+//
+// 退订包周期计费模式的云硬盘，有如下约束：
+// -  系统盘、启动盘不可使用当前接口退订，必须和弹性云服务器一起退订
+// -  接口的请求body体最多可以传60个云硬盘id
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *EvsClient) UnsubscribePostpaidVolume(request *model.UnsubscribePostpaidVolumeRequest) (*model.UnsubscribePostpaidVolumeResponse, error) {
+	requestDef := GenReqDefForUnsubscribePostpaidVolume()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.UnsubscribePostpaidVolumeResponse), nil
+	}
+}
+
+// UnsubscribePostpaidVolumeInvoker 退订包周期计费模式的云硬盘
+func (c *EvsClient) UnsubscribePostpaidVolumeInvoker(request *model.UnsubscribePostpaidVolumeRequest) *UnsubscribePostpaidVolumeInvoker {
+	requestDef := GenReqDefForUnsubscribePostpaidVolume()
+	return &UnsubscribePostpaidVolumeInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
 // UpdateSnapshot 更新云硬盘快照

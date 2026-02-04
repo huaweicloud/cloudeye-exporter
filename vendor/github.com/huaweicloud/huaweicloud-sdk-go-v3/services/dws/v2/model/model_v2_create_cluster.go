@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// v2创建集群请求
+// V2CreateCluster v2创建集群请求
 type V2CreateCluster struct {
 
 	// 集群名称，要求唯一性，必须以字母开头并只包含字母、数字、中划线或下划线，长度为4~64个字符。
@@ -24,7 +24,7 @@ type V2CreateCluster struct {
 	// 管理员用户名称。用户命名要求如下： 只能由小写字母、数字或下划线组成。 必须由小写字母或下划线开头。 长度为1~63个字符。用户名不能为DWS数据库的关键字。
 	DbName string `json:"db_name"`
 
-	// 管理员用户密码。 8~32个字符 至少包含以下字符中的3种：大写字母、小写字母、数字和特殊字符（~!?,.:;-_(){}[]/<>@#%^&*+|\\=）。不能与用户名或倒序的用户名相同。
+	// 管理员用户密码。 12~32个字符 至少包含以下字符中的3种：大写字母、小写字母、数字和特殊字符（~!?,.:;-_(){}[]/<>@#%^&*+|\\=）。不能与用户名或倒序的用户名相同。
 	DbPassword string `json:"db_password"`
 
 	// 集群数据库端口，取值范围为8000~30000，默认值：8000。
@@ -36,7 +36,8 @@ type V2CreateCluster struct {
 	// 可用区列表。集群可用区选择详情请参见地区和终端节点地区和终端节点。
 	AvailabilityZones []string `json:"availability_zones"`
 
-	Tags *Tags `json:"tags,omitempty"`
+	// 标签列表
+	Tags *[]Tags `json:"tags,omitempty"`
 
 	// 指定虚拟私有云ID，用于集群网络配置。
 	VpcId string `json:"vpc_id"`

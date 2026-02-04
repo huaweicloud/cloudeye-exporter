@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 实例规格信息列表。
+// ListFlavorsResult 实例规格信息列表。
 type ListFlavorsResult struct {
 
 	// 引擎名称。
@@ -21,7 +21,7 @@ type ListFlavorsResult struct {
 	// 内存大小，单位为兆字节。
 	Ram string `json:"ram"`
 
-	// 资源规格编码。例如：geminidb.cassandra.8xlarge.4   - “geminidb.cassandra”表示云数据库GaussDB NoSQL的Cassandra数据库产品。   - “8xlarge.4”表示节点性能规格。
+	// 资源规格编码。例如：geminidb.cassandra.8xlarge.4   - “geminidb.cassandra”表示云数据库GeminiDB的Cassandra数据库产品。   - “8xlarge.4”表示节点性能规格。
 	SpecCode string `json:"spec_code"`
 
 	// 支持该规格的可用区ID。   - 该字段已废弃，请不要使用。

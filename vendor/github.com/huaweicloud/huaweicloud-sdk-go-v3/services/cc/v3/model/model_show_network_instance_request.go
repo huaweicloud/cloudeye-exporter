@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowNetworkInstanceRequest Request Object
 type ShowNetworkInstanceRequest struct {
 
-	// 网络实例ID。
+	// 资源的Id。
 	Id string `json:"id"`
 }
 

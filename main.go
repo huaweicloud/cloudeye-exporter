@@ -22,6 +22,7 @@ var (
 	httpsEnabled = flag.Bool("k", false, "Start the cloudeye exporter service in https mode")
 	getVersion   = flag.Bool("v", false, "Get version from command line")
 	proxyEnabled = flag.Bool("p", false, "Start the cloudeye exporter service and start the proxy")
+	authMode     = flag.String("auth_mode", collector.AuthModePermanentAkSk, "Specify the authentication mode when cloudeye exporter query resources and metrics")
 
 	ak, sk, proxyUserName, proxyPassword string
 )
@@ -95,6 +96,10 @@ func getHttpsEnabledFromCommandLine() {
 	}
 }
 
+func getAuthModeFromCommandLine() {
+	collector.AuthMode = *authMode
+}
+
 func getVersionFunc() {
 	if *getVersion {
 		fmt.Printf("Cloudeye-exporter version: %s", collector.Version)
@@ -108,6 +113,7 @@ func main() {
 	getAkSkFromCommandLine()
 	getHttpsEnabledFromCommandLine()
 	getProxyInfoFromCommandLine()
+	getAuthModeFromCommandLine()
 	initConf()
 	initCache()
 

@@ -375,3 +375,69 @@ func TestGetServerResourceKeyFromMetricInfo(t *testing.T) {
 		})
 	}
 }
+
+func TestCleanMergedMetrics(t *testing.T) {
+	// 创建测试用的指标数据
+	now := time.Now().Unix()
+
+	// 创建一些测试指标
+	metric1 := model.MetricInfoList{
+		Namespace:  "SYS.ECS",
+		MetricName: "cpu_util",
+		Dimensions: []model.MetricsDimension{
+			{Name: "instance_id", Value: "instance-1"},
+		},
+	}
+
+	metric2 := model.MetricInfoList{
+		Namespace:  "SYS.ECS",
+		MetricName: "mem_util",
+		Dimensions: []model.MetricsDimension{
+			{Name: "instance_id", Value: "instance-2"},
+		},
+	}
+
+	metric3 := model.MetricInfoList{
+		Namespace:  "SYS.ECS",
+		MetricName: "disk_util",
+		Dimensions: []model.MetricsDimension{
+			{Name: "instance_id", Value: "instance-3"},
+		},
+	}
+
+	// 构建测试用的mergedMetricMap
+	mergedMetricMap := map[string]MetricInfoListWithTTL{
+		"instance-1.cpu_util": {
+			TTL:            now + 3600, // 1小时后过期
+			MetricInfoList: metric1,
+		},
+		"instance-2.mem_util": {
+			TTL:            now - 3600, // 1小时前过期
+			MetricInfoList: metric2,
+		},
+		"instance-3.disk_util": {
+			TTL:            now + 7200, // 2小时后过期
+			MetricInfoList: metric3,
+		},
+	}
+
+	// 调用被测试函数
+	result := cleanMergedMetrics(mergedMetricMap)
+
+	// 验证结果：应该只包含未过期的指标
+	assert.Equal(t, 2, len(result))
+
+	// 验证返回的指标是否正确
+	resultMap := make(map[string]bool)
+	for _, metric := range result {
+		key := getMetricKeyFromMetricInfo(metric.MetricInfoList)
+		resultMap[key] = true
+	}
+
+	// 应该包含未过期的指标
+	assert.True(t, resultMap["instance-1.cpu_util"])
+	assert.True(t, resultMap["instance-3.disk_util"])
+
+	// 不应该包含已过期的指标
+	assert.False(t, resultMap["instance-2.mem_util"])
+}

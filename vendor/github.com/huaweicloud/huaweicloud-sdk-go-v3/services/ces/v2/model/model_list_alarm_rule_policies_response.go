@@ -6,11 +6,11 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListAlarmRulePoliciesResponse Response Object
 type ListAlarmRulePoliciesResponse struct {
 
 	// 策略信息
-	Policies *[]Policy `json:"policies,omitempty"`
+	Policies *[]ListPolicy `json:"policies,omitempty"`
 
 	// 指定告警规则对应的策略总数
 	Count          *int32 `json:"count,omitempty"`

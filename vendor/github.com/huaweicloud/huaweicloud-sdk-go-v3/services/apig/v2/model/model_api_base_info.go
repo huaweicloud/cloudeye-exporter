@@ -11,7 +11,7 @@ import (
 
 type ApiBaseInfo struct {
 
-	// API名称。  长度为3 ~ 64位的字符串，字符串由中文、英文字母、数字、下划线组成，且只能以英文或中文开头。 > 中文字符必须为UTF-8或者unicode编码。
+	// API名称。  支持汉字、英文、数字、中划线、下划线、点、斜杠、中英文格式下的小括号和冒号、中文格式下的顿号，且只能以英文、汉字和数字开头，3-255个字符。 > 中文字符必须为UTF-8或者unicode编码。
 	Name string `json:"name"`
 
 	// API类型 - 1：公有API - 2：私有API
@@ -20,16 +20,16 @@ type ApiBaseInfo struct {
 	// API的版本
 	Version *string `json:"version,omitempty"`
 
-	// API的请求协议 - HTTP - HTTPS - BOTH：同时支持HTTP和HTTPS
+	// API的请求协议 - HTTP - HTTPS - BOTH：同时支持HTTP和HTTPS - GRPCS
 	ReqProtocol ApiBaseInfoReqProtocol `json:"req_protocol"`
 
-	// API的请求方式
+	// API的请求方式，当API的请求协议为GRPC类型协议时请求方式固定为POST。
 	ReqMethod ApiBaseInfoReqMethod `json:"req_method"`
 
-	// 请求地址。可以包含请求参数，用{}标识，比如/getUserInfo/{userId}，支持 * % - _ . 等特殊字符，总长度不超过512，且满足URI规范。 > 需要服从URI规范。
+	// 请求地址。可以包含请求参数，用{}标识，比如/getUserInfo/{userId}，支持 * % - _ . 等特殊字符，总长度不超过512，且满足URI规范。  > 需要服从URI规范。
 	ReqUri string `json:"req_uri"`
 
-	// API的认证方式 - NONE：无认证 - APP：APP认证 - IAM：IAM认证 - AUTHORIZER：自定义认证
+	// API的认证方式 - NONE：无认证 - APP：APP认证 - IAM：IAM认证 - AUTHORIZER：自定义认证，当auth_type取值为AUTHORIZER时，authorizer_id字段必须传入
 	AuthType ApiBaseInfoAuthType `json:"auth_type"`
 
 	AuthOpt *AuthOpt `json:"auth_opt,omitempty"`
@@ -40,7 +40,7 @@ type ApiBaseInfo struct {
 	// API的匹配方式 - SWA：前缀匹配 - NORMAL：正常匹配（绝对匹配） 默认：NORMAL
 	MatchMode *ApiBaseInfoMatchMode `json:"match_mode,omitempty"`
 
-	// 后端类型 - HTTP：web后端 - FUNCTION：函数工作流 - MOCK：模拟的后端
+	// 后端类型 - HTTP：web后端 - FUNCTION：函数工作流，当backend_type取值为FUNCTION时，func_info字段必须传入 - MOCK：模拟的后端，当backend_type取值为MOCK时，mock_info字段必须传入 - GRPC：grpc后端
 	BackendType ApiBaseInfoBackendType `json:"backend_type"`
 
 	// API描述。字符长度不超过255 > 中文字符必须为UTF-8或者unicode编码。
@@ -52,16 +52,16 @@ type ApiBaseInfo struct {
 	// API请求体描述，可以是请求体示例、媒体类型、参数等信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。
 	BodyRemark *string `json:"body_remark,omitempty"`
 
-	// 正常响应示例，描述API的正常返回信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。
+	// 正常响应示例，描述API的正常返回信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。  当API的请求协议为GRPC类型时不支持配置。
 	ResultNormalSample *string `json:"result_normal_sample,omitempty"`
 
-	// 失败返回示例，描述API的异常返回信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。
+	// 失败返回示例，描述API的异常返回信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。  当API的请求协议为GRPC类型时不支持配置。
 	ResultFailureSample *string `json:"result_failure_sample,omitempty"`
 
 	// 前端自定义认证对象的ID
 	AuthorizerId *string `json:"authorizer_id,omitempty"`
 
-	// 标签。  支持英文，数字，下划线，且只能以英文开头。支持输入多个标签，不同标签以英文逗号分割。
+	// 标签。  支持英文，数字，中文，特殊符号（-*#%.:_），且只能以中文或英文开头。  默认支持10个标签，如需扩大配额请联系技术工程师修改API_TAG_NUM_LIMIT配置。
 	Tags *[]string `json:"tags,omitempty"`
 
 	// 分组自定义响应ID
@@ -76,8 +76,11 @@ type ApiBaseInfo struct {
 	// 标签  待废弃，优先使用tags字段
 	Tag *string `json:"tag,omitempty"`
 
-	// 请求内容格式类型：  application/json application/xml multipart/form-date text/plain  暂不支持
+	// 请求内容格式类型：  application/json application/xml multipart/form-data text/plain
 	ContentType *ApiBaseInfoContentType `json:"content_type,omitempty"`
+
+	// 是否对与FunctionGraph交互场景的body进行Base64编码。仅当content_type为application/json时，可以不对body进行Base64编码。 应用场景： - 自定义认证 - 绑定断路器插件，且断路器后端降级策略为函数后端 - API后端类型为函数工作流
+	IsSendFgBodyBase64 *bool `json:"is_send_fg_body_base64,omitempty"`
 }
 
 func (o ApiBaseInfo) String() string {
@@ -118,13 +121,18 @@ func (c ApiBaseInfoType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiBaseInfoType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("int32")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(int32)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: int32")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(int32); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to int32 error")
 	}
@@ -138,6 +146,7 @@ type ApiBaseInfoReqProtocolEnum struct {
 	HTTP  ApiBaseInfoReqProtocol
 	HTTPS ApiBaseInfoReqProtocol
 	BOTH  ApiBaseInfoReqProtocol
+	GRPCS ApiBaseInfoReqProtocol
 }
 
 func GetApiBaseInfoReqProtocolEnum() ApiBaseInfoReqProtocolEnum {
@@ -150,6 +159,9 @@ func GetApiBaseInfoReqProtocolEnum() ApiBaseInfoReqProtocolEnum {
 		},
 		BOTH: ApiBaseInfoReqProtocol{
 			value: "BOTH",
+		},
+		GRPCS: ApiBaseInfoReqProtocol{
+			value: "GRPCS",
 		},
 	}
 }
@@ -164,13 +176,18 @@ func (c ApiBaseInfoReqProtocol) MarshalJSON() ([]byte, error) {
 
 func (c *ApiBaseInfoReqProtocol) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -230,13 +247,18 @@ func (c ApiBaseInfoReqMethod) MarshalJSON() ([]byte, error) {
 
 func (c *ApiBaseInfoReqMethod) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -280,13 +302,18 @@ func (c ApiBaseInfoAuthType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiBaseInfoAuthType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -322,13 +349,18 @@ func (c ApiBaseInfoMatchMode) MarshalJSON() ([]byte, error) {
 
 func (c *ApiBaseInfoMatchMode) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -342,6 +374,7 @@ type ApiBaseInfoBackendTypeEnum struct {
 	HTTP     ApiBaseInfoBackendType
 	FUNCTION ApiBaseInfoBackendType
 	MOCK     ApiBaseInfoBackendType
+	GRPC     ApiBaseInfoBackendType
 }
 
 func GetApiBaseInfoBackendTypeEnum() ApiBaseInfoBackendTypeEnum {
@@ -354,6 +387,9 @@ func GetApiBaseInfoBackendTypeEnum() ApiBaseInfoBackendTypeEnum {
 		},
 		MOCK: ApiBaseInfoBackendType{
 			value: "MOCK",
+		},
+		GRPC: ApiBaseInfoBackendType{
+			value: "GRPC",
 		},
 	}
 }
@@ -368,13 +404,18 @@ func (c ApiBaseInfoBackendType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiBaseInfoBackendType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -387,7 +428,7 @@ type ApiBaseInfoContentType struct {
 type ApiBaseInfoContentTypeEnum struct {
 	APPLICATION_JSON    ApiBaseInfoContentType
 	APPLICATION_XML     ApiBaseInfoContentType
-	MULTIPART_FORM_DATE ApiBaseInfoContentType
+	MULTIPART_FORM_DATA ApiBaseInfoContentType
 	TEXT_PLAIN          ApiBaseInfoContentType
 }
 
@@ -399,8 +440,8 @@ func GetApiBaseInfoContentTypeEnum() ApiBaseInfoContentTypeEnum {
 		APPLICATION_XML: ApiBaseInfoContentType{
 			value: "application/xml",
 		},
-		MULTIPART_FORM_DATE: ApiBaseInfoContentType{
-			value: "multipart/form-date",
+		MULTIPART_FORM_DATA: ApiBaseInfoContentType{
+			value: "multipart/form-data",
 		},
 		TEXT_PLAIN: ApiBaseInfoContentType{
 			value: "text/plain",
@@ -418,13 +459,18 @@ func (c ApiBaseInfoContentType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiBaseInfoContentType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

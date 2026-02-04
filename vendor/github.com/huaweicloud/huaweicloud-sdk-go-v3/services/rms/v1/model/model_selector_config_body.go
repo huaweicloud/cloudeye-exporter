@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// tracker选择器
+// SelectorConfigBody tracker选择器
 type SelectorConfigBody struct {
 
 	// 是否选择所有支持的资源

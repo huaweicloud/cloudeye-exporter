@@ -3,7 +3,6 @@ package collector
 import (
 	"time"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 	dds "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/dds/v3"
 	ddsmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/dds/v3/model"
@@ -123,7 +122,7 @@ func fmtDdsInstance(instance ddsmodel.QueryInstanceResponse) DdsInstanceInfo {
 
 func getDDSClient() *dds.DdsClient {
 	return dds.NewDdsClient(dds.DdsClientBuilder().WithCredential(
-		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("dds", "v3")).Build())
 }

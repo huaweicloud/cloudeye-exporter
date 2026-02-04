@@ -5,30 +5,6 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/cc/v3/model"
 )
 
-type AssociateBandwidthPackageInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *AssociateBandwidthPackageInvoker) Invoke() (*model.AssociateBandwidthPackageResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.AssociateBandwidthPackageResponse), nil
-	}
-}
-
-type BatchCreateDeleteTagsInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *BatchCreateDeleteTagsInvoker) Invoke() (*model.BatchCreateDeleteTagsResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.BatchCreateDeleteTagsResponse), nil
-	}
-}
-
 type CreateAuthorisationInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -38,66 +14,6 @@ func (i *CreateAuthorisationInvoker) Invoke() (*model.CreateAuthorisationRespons
 		return nil, err
 	} else {
 		return result.(*model.CreateAuthorisationResponse), nil
-	}
-}
-
-type CreateBandwidthPackageInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *CreateBandwidthPackageInvoker) Invoke() (*model.CreateBandwidthPackageResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.CreateBandwidthPackageResponse), nil
-	}
-}
-
-type CreateCloudConnectionInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *CreateCloudConnectionInvoker) Invoke() (*model.CreateCloudConnectionResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.CreateCloudConnectionResponse), nil
-	}
-}
-
-type CreateInterRegionBandwidthInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *CreateInterRegionBandwidthInvoker) Invoke() (*model.CreateInterRegionBandwidthResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.CreateInterRegionBandwidthResponse), nil
-	}
-}
-
-type CreateNetworkInstanceInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *CreateNetworkInstanceInvoker) Invoke() (*model.CreateNetworkInstanceResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.CreateNetworkInstanceResponse), nil
-	}
-}
-
-type CreateTagInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *CreateTagInvoker) Invoke() (*model.CreateTagResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.CreateTagResponse), nil
 	}
 }
 
@@ -113,78 +29,6 @@ func (i *DeleteAuthorisationInvoker) Invoke() (*model.DeleteAuthorisationRespons
 	}
 }
 
-type DeleteBandwidthPackageInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *DeleteBandwidthPackageInvoker) Invoke() (*model.DeleteBandwidthPackageResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.DeleteBandwidthPackageResponse), nil
-	}
-}
-
-type DeleteCloudConnectionInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *DeleteCloudConnectionInvoker) Invoke() (*model.DeleteCloudConnectionResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.DeleteCloudConnectionResponse), nil
-	}
-}
-
-type DeleteInterRegionBandwidthInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *DeleteInterRegionBandwidthInvoker) Invoke() (*model.DeleteInterRegionBandwidthResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.DeleteInterRegionBandwidthResponse), nil
-	}
-}
-
-type DeleteNetworkInstanceInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *DeleteNetworkInstanceInvoker) Invoke() (*model.DeleteNetworkInstanceResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.DeleteNetworkInstanceResponse), nil
-	}
-}
-
-type DeleteTagInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *DeleteTagInvoker) Invoke() (*model.DeleteTagResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.DeleteTagResponse), nil
-	}
-}
-
-type DisassociateBandwidthPackageInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *DisassociateBandwidthPackageInvoker) Invoke() (*model.DisassociateBandwidthPackageResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.DisassociateBandwidthPackageResponse), nil
-	}
-}
-
 type ListAuthorisationsInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -194,78 +38,6 @@ func (i *ListAuthorisationsInvoker) Invoke() (*model.ListAuthorisationsResponse,
 		return nil, err
 	} else {
 		return result.(*model.ListAuthorisationsResponse), nil
-	}
-}
-
-type ListBandwidthPackagesInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *ListBandwidthPackagesInvoker) Invoke() (*model.ListBandwidthPackagesResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.ListBandwidthPackagesResponse), nil
-	}
-}
-
-type ListCloudConnectionRoutesInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *ListCloudConnectionRoutesInvoker) Invoke() (*model.ListCloudConnectionRoutesResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.ListCloudConnectionRoutesResponse), nil
-	}
-}
-
-type ListCloudConnectionsInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *ListCloudConnectionsInvoker) Invoke() (*model.ListCloudConnectionsResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.ListCloudConnectionsResponse), nil
-	}
-}
-
-type ListDomainTagsInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *ListDomainTagsInvoker) Invoke() (*model.ListDomainTagsResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.ListDomainTagsResponse), nil
-	}
-}
-
-type ListInterRegionBandwidthsInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *ListInterRegionBandwidthsInvoker) Invoke() (*model.ListInterRegionBandwidthsResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.ListInterRegionBandwidthsResponse), nil
-	}
-}
-
-type ListNetworkInstancesInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *ListNetworkInstancesInvoker) Invoke() (*model.ListNetworkInstancesResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.ListNetworkInstancesResponse), nil
 	}
 }
 
@@ -281,39 +53,99 @@ func (i *ListPermissionsInvoker) Invoke() (*model.ListPermissionsResponse, error
 	}
 }
 
-type ListQuotasInvoker struct {
+type UpdateAuthorisationInvoker struct {
 	*invoker.BaseInvoker
 }
 
-func (i *ListQuotasInvoker) Invoke() (*model.ListQuotasResponse, error) {
+func (i *UpdateAuthorisationInvoker) Invoke() (*model.UpdateAuthorisationResponse, error) {
 	if result, err := i.BaseInvoker.Invoke(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ListQuotasResponse), nil
+		return result.(*model.UpdateAuthorisationResponse), nil
 	}
 }
 
-type ListResourceByFilterTagInvoker struct {
+type AssociateBandwidthPackageInvoker struct {
 	*invoker.BaseInvoker
 }
 
-func (i *ListResourceByFilterTagInvoker) Invoke() (*model.ListResourceByFilterTagResponse, error) {
+func (i *AssociateBandwidthPackageInvoker) Invoke() (*model.AssociateBandwidthPackageResponse, error) {
 	if result, err := i.BaseInvoker.Invoke(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ListResourceByFilterTagResponse), nil
+		return result.(*model.AssociateBandwidthPackageResponse), nil
 	}
 }
 
-type ListTagsInvoker struct {
+type CreateBandwidthPackageInvoker struct {
 	*invoker.BaseInvoker
 }
 
-func (i *ListTagsInvoker) Invoke() (*model.ListTagsResponse, error) {
+func (i *CreateBandwidthPackageInvoker) Invoke() (*model.CreateBandwidthPackageResponse, error) {
 	if result, err := i.BaseInvoker.Invoke(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ListTagsResponse), nil
+		return result.(*model.CreateBandwidthPackageResponse), nil
+	}
+}
+
+type DeleteBandwidthPackageInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteBandwidthPackageInvoker) Invoke() (*model.DeleteBandwidthPackageResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteBandwidthPackageResponse), nil
+	}
+}
+
+type DisassociateBandwidthPackageInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DisassociateBandwidthPackageInvoker) Invoke() (*model.DisassociateBandwidthPackageResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DisassociateBandwidthPackageResponse), nil
+	}
+}
+
+type ListBandwidthPackageTagsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListBandwidthPackageTagsInvoker) Invoke() (*model.ListBandwidthPackageTagsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListBandwidthPackageTagsResponse), nil
+	}
+}
+
+type ListBandwidthPackagesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListBandwidthPackagesInvoker) Invoke() (*model.ListBandwidthPackagesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListBandwidthPackagesResponse), nil
+	}
+}
+
+type ListBandwidthPackagesByTagsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListBandwidthPackagesByTagsInvoker) Invoke() (*model.ListBandwidthPackagesByTagsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListBandwidthPackagesByTagsResponse), nil
 	}
 }
 
@@ -329,63 +161,27 @@ func (i *ShowBandwidthPackageInvoker) Invoke() (*model.ShowBandwidthPackageRespo
 	}
 }
 
-type ShowCloudConnectionInvoker struct {
+type TagBandwidthPackageInvoker struct {
 	*invoker.BaseInvoker
 }
 
-func (i *ShowCloudConnectionInvoker) Invoke() (*model.ShowCloudConnectionResponse, error) {
+func (i *TagBandwidthPackageInvoker) Invoke() (*model.TagBandwidthPackageResponse, error) {
 	if result, err := i.BaseInvoker.Invoke(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ShowCloudConnectionResponse), nil
+		return result.(*model.TagBandwidthPackageResponse), nil
 	}
 }
 
-type ShowCloudConnectionRoutesInvoker struct {
+type UntagBandwidthPackageInvoker struct {
 	*invoker.BaseInvoker
 }
 
-func (i *ShowCloudConnectionRoutesInvoker) Invoke() (*model.ShowCloudConnectionRoutesResponse, error) {
+func (i *UntagBandwidthPackageInvoker) Invoke() (*model.UntagBandwidthPackageResponse, error) {
 	if result, err := i.BaseInvoker.Invoke(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ShowCloudConnectionRoutesResponse), nil
-	}
-}
-
-type ShowInterRegionBandwidthInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *ShowInterRegionBandwidthInvoker) Invoke() (*model.ShowInterRegionBandwidthResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.ShowInterRegionBandwidthResponse), nil
-	}
-}
-
-type ShowNetworkInstanceInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *ShowNetworkInstanceInvoker) Invoke() (*model.ShowNetworkInstanceResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.ShowNetworkInstanceResponse), nil
-	}
-}
-
-type UpdateAuthorisationInvoker struct {
-	*invoker.BaseInvoker
-}
-
-func (i *UpdateAuthorisationInvoker) Invoke() (*model.UpdateAuthorisationResponse, error) {
-	if result, err := i.BaseInvoker.Invoke(); err != nil {
-		return nil, err
-	} else {
-		return result.(*model.UpdateAuthorisationResponse), nil
+		return result.(*model.UntagBandwidthPackageResponse), nil
 	}
 }
 
@@ -401,6 +197,438 @@ func (i *UpdateBandwidthPackageInvoker) Invoke() (*model.UpdateBandwidthPackageR
 	}
 }
 
+type ApplyCentralNetworkPolicyInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ApplyCentralNetworkPolicyInvoker) Invoke() (*model.ApplyCentralNetworkPolicyResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ApplyCentralNetworkPolicyResponse), nil
+	}
+}
+
+type CreateCentralNetworkInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateCentralNetworkInvoker) Invoke() (*model.CreateCentralNetworkResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateCentralNetworkResponse), nil
+	}
+}
+
+type CreateCentralNetworkPolicyInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateCentralNetworkPolicyInvoker) Invoke() (*model.CreateCentralNetworkPolicyResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateCentralNetworkPolicyResponse), nil
+	}
+}
+
+type DeleteCentralNetworkInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteCentralNetworkInvoker) Invoke() (*model.DeleteCentralNetworkResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteCentralNetworkResponse), nil
+	}
+}
+
+type DeleteCentralNetworkPolicyInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteCentralNetworkPolicyInvoker) Invoke() (*model.DeleteCentralNetworkPolicyResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteCentralNetworkPolicyResponse), nil
+	}
+}
+
+type ListCentralNetworkPoliciesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworkPoliciesInvoker) Invoke() (*model.ListCentralNetworkPoliciesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworkPoliciesResponse), nil
+	}
+}
+
+type ListCentralNetworkPolicyChangeSetInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworkPolicyChangeSetInvoker) Invoke() (*model.ListCentralNetworkPolicyChangeSetResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworkPolicyChangeSetResponse), nil
+	}
+}
+
+type ListCentralNetworkTagsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworkTagsInvoker) Invoke() (*model.ListCentralNetworkTagsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworkTagsResponse), nil
+	}
+}
+
+type ListCentralNetworksInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworksInvoker) Invoke() (*model.ListCentralNetworksResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworksResponse), nil
+	}
+}
+
+type ListCentralNetworksByTagsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworksByTagsInvoker) Invoke() (*model.ListCentralNetworksByTagsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworksByTagsResponse), nil
+	}
+}
+
+type ShowCentralNetworkInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowCentralNetworkInvoker) Invoke() (*model.ShowCentralNetworkResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowCentralNetworkResponse), nil
+	}
+}
+
+type TagCentralNetworkInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *TagCentralNetworkInvoker) Invoke() (*model.TagCentralNetworkResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.TagCentralNetworkResponse), nil
+	}
+}
+
+type UntagCentralNetworkInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UntagCentralNetworkInvoker) Invoke() (*model.UntagCentralNetworkResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UntagCentralNetworkResponse), nil
+	}
+}
+
+type UpdateCentralNetworkInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateCentralNetworkInvoker) Invoke() (*model.UpdateCentralNetworkResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateCentralNetworkResponse), nil
+	}
+}
+
+type CreateCentralNetworkErRouteTableAttachmentInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateCentralNetworkErRouteTableAttachmentInvoker) Invoke() (*model.CreateCentralNetworkErRouteTableAttachmentResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateCentralNetworkErRouteTableAttachmentResponse), nil
+	}
+}
+
+type CreateCentralNetworkGdgwAttachmentInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateCentralNetworkGdgwAttachmentInvoker) Invoke() (*model.CreateCentralNetworkGdgwAttachmentResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateCentralNetworkGdgwAttachmentResponse), nil
+	}
+}
+
+type DeleteCentralNetworkAttachmentInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteCentralNetworkAttachmentInvoker) Invoke() (*model.DeleteCentralNetworkAttachmentResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteCentralNetworkAttachmentResponse), nil
+	}
+}
+
+type ListCentralNetworkAttachmentsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworkAttachmentsInvoker) Invoke() (*model.ListCentralNetworkAttachmentsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworkAttachmentsResponse), nil
+	}
+}
+
+type ListCentralNetworkErRouteTableAttachmentsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworkErRouteTableAttachmentsInvoker) Invoke() (*model.ListCentralNetworkErRouteTableAttachmentsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworkErRouteTableAttachmentsResponse), nil
+	}
+}
+
+type ListCentralNetworkGdgwAttachmentsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworkGdgwAttachmentsInvoker) Invoke() (*model.ListCentralNetworkGdgwAttachmentsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworkGdgwAttachmentsResponse), nil
+	}
+}
+
+type ShowCentralNetworkErRouteTableAttachmentInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowCentralNetworkErRouteTableAttachmentInvoker) Invoke() (*model.ShowCentralNetworkErRouteTableAttachmentResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowCentralNetworkErRouteTableAttachmentResponse), nil
+	}
+}
+
+type ShowCentralNetworkGdgwAttachmentInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowCentralNetworkGdgwAttachmentInvoker) Invoke() (*model.ShowCentralNetworkGdgwAttachmentResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowCentralNetworkGdgwAttachmentResponse), nil
+	}
+}
+
+type UpdateCentralNetworkErRouteTableAttachmentInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateCentralNetworkErRouteTableAttachmentInvoker) Invoke() (*model.UpdateCentralNetworkErRouteTableAttachmentResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateCentralNetworkErRouteTableAttachmentResponse), nil
+	}
+}
+
+type UpdateCentralNetworkGdgwAttachmentInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateCentralNetworkGdgwAttachmentInvoker) Invoke() (*model.UpdateCentralNetworkGdgwAttachmentResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateCentralNetworkGdgwAttachmentResponse), nil
+	}
+}
+
+type ListCentralNetworkCapabilitiesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworkCapabilitiesInvoker) Invoke() (*model.ListCentralNetworkCapabilitiesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworkCapabilitiesResponse), nil
+	}
+}
+
+type ListCentralNetworkConnectionsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworkConnectionsInvoker) Invoke() (*model.ListCentralNetworkConnectionsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworkConnectionsResponse), nil
+	}
+}
+
+type UpdateCentralNetworkConnectionInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateCentralNetworkConnectionInvoker) Invoke() (*model.UpdateCentralNetworkConnectionResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateCentralNetworkConnectionResponse), nil
+	}
+}
+
+type ListCentralNetworkQuotasInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCentralNetworkQuotasInvoker) Invoke() (*model.ListCentralNetworkQuotasResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCentralNetworkQuotasResponse), nil
+	}
+}
+
+type CreateCloudConnectionInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateCloudConnectionInvoker) Invoke() (*model.CreateCloudConnectionResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateCloudConnectionResponse), nil
+	}
+}
+
+type DeleteCloudConnectionInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteCloudConnectionInvoker) Invoke() (*model.DeleteCloudConnectionResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteCloudConnectionResponse), nil
+	}
+}
+
+type ListCloudConnectionTagsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCloudConnectionTagsInvoker) Invoke() (*model.ListCloudConnectionTagsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCloudConnectionTagsResponse), nil
+	}
+}
+
+type ListCloudConnectionsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCloudConnectionsInvoker) Invoke() (*model.ListCloudConnectionsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCloudConnectionsResponse), nil
+	}
+}
+
+type ListCloudConnectionsByTagsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCloudConnectionsByTagsInvoker) Invoke() (*model.ListCloudConnectionsByTagsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCloudConnectionsByTagsResponse), nil
+	}
+}
+
+type ShowCloudConnectionInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowCloudConnectionInvoker) Invoke() (*model.ShowCloudConnectionResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowCloudConnectionResponse), nil
+	}
+}
+
+type TagCloudConnectionInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *TagCloudConnectionInvoker) Invoke() (*model.TagCloudConnectionResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.TagCloudConnectionResponse), nil
+	}
+}
+
+type UntagCloudConnectionInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UntagCloudConnectionInvoker) Invoke() (*model.UntagCloudConnectionResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UntagCloudConnectionResponse), nil
+	}
+}
+
 type UpdateCloudConnectionInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -413,6 +641,234 @@ func (i *UpdateCloudConnectionInvoker) Invoke() (*model.UpdateCloudConnectionRes
 	}
 }
 
+type ListCloudConnectionQuotasInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCloudConnectionQuotasInvoker) Invoke() (*model.ListCloudConnectionQuotasResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCloudConnectionQuotasResponse), nil
+	}
+}
+
+type ListCloudConnectionRoutesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCloudConnectionRoutesInvoker) Invoke() (*model.ListCloudConnectionRoutesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCloudConnectionRoutesResponse), nil
+	}
+}
+
+type ShowCloudConnectionRoutesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowCloudConnectionRoutesInvoker) Invoke() (*model.ShowCloudConnectionRoutesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowCloudConnectionRoutesResponse), nil
+	}
+}
+
+type AssociateGlobalConnectionBandwidthInstanceInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *AssociateGlobalConnectionBandwidthInstanceInvoker) Invoke() (*model.AssociateGlobalConnectionBandwidthInstanceResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.AssociateGlobalConnectionBandwidthInstanceResponse), nil
+	}
+}
+
+type CreateGlobalConnectionBandwidthInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateGlobalConnectionBandwidthInvoker) Invoke() (*model.CreateGlobalConnectionBandwidthResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateGlobalConnectionBandwidthResponse), nil
+	}
+}
+
+type DeleteGlobalConnectionBandwidthInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteGlobalConnectionBandwidthInvoker) Invoke() (*model.DeleteGlobalConnectionBandwidthResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteGlobalConnectionBandwidthResponse), nil
+	}
+}
+
+type DisassociateGlobalConnectionBandwidthInstanceInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DisassociateGlobalConnectionBandwidthInstanceInvoker) Invoke() (*model.DisassociateGlobalConnectionBandwidthInstanceResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DisassociateGlobalConnectionBandwidthInstanceResponse), nil
+	}
+}
+
+type ListGlobalConnectionBandwidthConfigsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListGlobalConnectionBandwidthConfigsInvoker) Invoke() (*model.ListGlobalConnectionBandwidthConfigsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListGlobalConnectionBandwidthConfigsResponse), nil
+	}
+}
+
+type ListGlobalConnectionBandwidthLineLevelsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListGlobalConnectionBandwidthLineLevelsInvoker) Invoke() (*model.ListGlobalConnectionBandwidthLineLevelsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListGlobalConnectionBandwidthLineLevelsResponse), nil
+	}
+}
+
+type ListGlobalConnectionBandwidthSitesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListGlobalConnectionBandwidthSitesInvoker) Invoke() (*model.ListGlobalConnectionBandwidthSitesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListGlobalConnectionBandwidthSitesResponse), nil
+	}
+}
+
+type ListGlobalConnectionBandwidthSpecCodesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListGlobalConnectionBandwidthSpecCodesInvoker) Invoke() (*model.ListGlobalConnectionBandwidthSpecCodesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListGlobalConnectionBandwidthSpecCodesResponse), nil
+	}
+}
+
+type ListGlobalConnectionBandwidthsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListGlobalConnectionBandwidthsInvoker) Invoke() (*model.ListGlobalConnectionBandwidthsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListGlobalConnectionBandwidthsResponse), nil
+	}
+}
+
+type ListSupportBindingConnectionBandwidthsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListSupportBindingConnectionBandwidthsInvoker) Invoke() (*model.ListSupportBindingConnectionBandwidthsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListSupportBindingConnectionBandwidthsResponse), nil
+	}
+}
+
+type ShowGlobalConnectionBandwidthInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowGlobalConnectionBandwidthInvoker) Invoke() (*model.ShowGlobalConnectionBandwidthResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowGlobalConnectionBandwidthResponse), nil
+	}
+}
+
+type UpdateGlobalConnectionBandwidthInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateGlobalConnectionBandwidthInvoker) Invoke() (*model.UpdateGlobalConnectionBandwidthResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateGlobalConnectionBandwidthResponse), nil
+	}
+}
+
+type CreateInterRegionBandwidthInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateInterRegionBandwidthInvoker) Invoke() (*model.CreateInterRegionBandwidthResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateInterRegionBandwidthResponse), nil
+	}
+}
+
+type DeleteInterRegionBandwidthInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteInterRegionBandwidthInvoker) Invoke() (*model.DeleteInterRegionBandwidthResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteInterRegionBandwidthResponse), nil
+	}
+}
+
+type ListInterRegionBandwidthsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListInterRegionBandwidthsInvoker) Invoke() (*model.ListInterRegionBandwidthsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListInterRegionBandwidthsResponse), nil
+	}
+}
+
+type ShowInterRegionBandwidthInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowInterRegionBandwidthInvoker) Invoke() (*model.ShowInterRegionBandwidthResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowInterRegionBandwidthResponse), nil
+	}
+}
+
 type UpdateInterRegionBandwidthInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -422,6 +878,54 @@ func (i *UpdateInterRegionBandwidthInvoker) Invoke() (*model.UpdateInterRegionBa
 		return nil, err
 	} else {
 		return result.(*model.UpdateInterRegionBandwidthResponse), nil
+	}
+}
+
+type CreateNetworkInstanceInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateNetworkInstanceInvoker) Invoke() (*model.CreateNetworkInstanceResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateNetworkInstanceResponse), nil
+	}
+}
+
+type DeleteNetworkInstanceInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteNetworkInstanceInvoker) Invoke() (*model.DeleteNetworkInstanceResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteNetworkInstanceResponse), nil
+	}
+}
+
+type ListNetworkInstancesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListNetworkInstancesInvoker) Invoke() (*model.ListNetworkInstancesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListNetworkInstancesResponse), nil
+	}
+}
+
+type ShowNetworkInstanceInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowNetworkInstanceInvoker) Invoke() (*model.ShowNetworkInstanceResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowNetworkInstanceResponse), nil
 	}
 }
 

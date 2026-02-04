@@ -6,13 +6,14 @@ import (
 	"strings"
 )
 
-// Response Object
+// DisassociateBandwidthPackageResponse Response Object
 type DisassociateBandwidthPackageResponse struct {
-	BandwidthPackage *BandwidthPackage `json:"bandwidth_package,omitempty"`
 
-	// 请求ID。
-	RequestId      *string `json:"request_id,omitempty"`
-	HttpStatusCode int     `json:"-"`
+	// 资源ID标识符。
+	RequestId string `json:"request_id"`
+
+	BandwidthPackage *BandwidthPackage `json:"bandwidth_package"`
+	HttpStatusCode   int               `json:"-"`
 }
 
 func (o DisassociateBandwidthPackageResponse) String() string {

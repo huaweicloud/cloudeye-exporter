@@ -14,6 +14,7 @@ import (
 func TestShowDetailsOfInstanceV2(t *testing.T) {
 	conf.AccessKey = "test_ak"
 	conf.SecretKey = "test_sk"
+	conf.AuthMode = "aksk"
 	apigClient := getAPICSClient()
 	id := "0001-0001-0000001"
 	name := "instance01"

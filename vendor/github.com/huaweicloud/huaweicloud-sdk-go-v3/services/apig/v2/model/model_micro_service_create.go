@@ -9,10 +9,10 @@ import (
 	"strings"
 )
 
-// 微服务详情。
+// MicroServiceCreate 微服务详情。
 type MicroServiceCreate struct {
 
-	// 微服务类型： - CSE：CSE微服务注册中心 - CCE：CCE云容器引擎
+	// 微服务类型： - CSE：CSE微服务注册中心 - CCE：CCE云容器引擎（工作负载） - CCE_SERVICE: CCE云容器引擎（Service）
 	ServiceType *MicroServiceCreateServiceType `json:"service_type,omitempty"`
 
 	CseInfo *MicroServiceInfoCseBase `json:"cse_info,omitempty"`
@@ -34,8 +34,9 @@ type MicroServiceCreateServiceType struct {
 }
 
 type MicroServiceCreateServiceTypeEnum struct {
-	CSE MicroServiceCreateServiceType
-	CCE MicroServiceCreateServiceType
+	CSE         MicroServiceCreateServiceType
+	CCE         MicroServiceCreateServiceType
+	CCE_SERVICE MicroServiceCreateServiceType
 }
 
 func GetMicroServiceCreateServiceTypeEnum() MicroServiceCreateServiceTypeEnum {
@@ -45,6 +46,9 @@ func GetMicroServiceCreateServiceTypeEnum() MicroServiceCreateServiceTypeEnum {
 		},
 		CCE: MicroServiceCreateServiceType{
 			value: "CCE",
+		},
+		CCE_SERVICE: MicroServiceCreateServiceType{
+			value: "CCE_SERVICE",
 		},
 	}
 }
@@ -59,13 +63,18 @@ func (c MicroServiceCreateServiceType) MarshalJSON() ([]byte, error) {
 
 func (c *MicroServiceCreateServiceType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowAggregateResourceConfigResponse Response Object
 type ShowAggregateResourceConfigResponse struct {
 
 	// 资源ID。

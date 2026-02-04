@@ -28,6 +28,12 @@ type UrlDomainBaseInfo struct {
 
 	// 是否开启客户端证书校验。只有绑定证书时，该参数才生效。当绑定证书存在trusted_root_ca时，默认开启；当绑定证书不存在trusted_root_ca时，默认关闭。
 	VerifiedClientCertificateEnabled *bool `json:"verified_client_certificate_enabled,omitempty"`
+
+	// 访问该域名绑定的http协议入方向端口，-1表示无端口且协议不支持，可使用80默认端口，其他有效端口允许的取值范围为1024~49151，需为实例已开放的HTTP协议的自定义入方向端口。  当创建域名时，该参数未填表示用默认80端口；若填写该参数，则必须同时填写https_port；若要http_port和https_port同时使用默认端口，则两个参数都不填。  当修改域名时，该参数未填表示不修改该端口。
+	IngressHttpPort *int32 `json:"ingress_http_port,omitempty"`
+
+	// 访问该域名绑定的http协议入方向端口，-1表示无端口且协议不支持，可使用443默认端口，其他有效端口允许的取值范围为1024~49151，需为实例已开放的HTTPS协议的自定义入方向端口。  当创建域名时，该参数未填表示用默认443端口；若填写该参数，则必须同时填写http_port；若要http_port和https_port同时使用默认端口，则两个参数都不填。  当修改域名时，该参数未填表示不修改该端口。
+	IngressHttpsPort *int32 `json:"ingress_https_port,omitempty"`
 }
 
 func (o UrlDomainBaseInfo) String() string {
@@ -74,13 +80,18 @@ func (c UrlDomainBaseInfoStatus) MarshalJSON() ([]byte, error) {
 
 func (c *UrlDomainBaseInfoStatus) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("int32")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(int32)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: int32")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(int32); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to int32 error")
 	}

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-//
+// ServerLimits
 type ServerLimits struct {
 
 	// 镜像元数据最大的长度。
@@ -58,7 +58,7 @@ type ServerLimits struct {
 	TotalInstancesUsed int32 `json:"totalInstancesUsed"`
 
 	// 当前内存使用容量（单位：MB）。
-	TotalRAMUsed int32 `json:"totalRAMUsed"`
+	TotalRAMUsed int64 `json:"totalRAMUsed"`
 
 	// 当前安全组使用个数。
 	TotalSecurityGroupsUsed int32 `json:"totalSecurityGroupsUsed"`

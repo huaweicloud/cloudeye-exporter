@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 会话详细信息列表。
+// QuerySessionResponse 会话详细信息列表。
 type QuerySessionResponse struct {
 
 	// 会话ID。
@@ -21,7 +21,7 @@ type QuerySessionResponse struct {
 	// 操作类型。
 	Type string `json:"type"`
 
-	// 运行时间，单位为 ms。
+	// 运行时间，单位为 us。
 	CostTime string `json:"cost_time"`
 
 	// 执行计划描述。

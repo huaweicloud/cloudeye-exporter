@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 云服务详情
+// ResourceProviderResponse 云服务详情
 type ResourceProviderResponse struct {
 
 	// 云服务名称

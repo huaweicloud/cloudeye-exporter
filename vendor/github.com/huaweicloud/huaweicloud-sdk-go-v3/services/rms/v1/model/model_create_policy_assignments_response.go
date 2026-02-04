@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// CreatePolicyAssignmentsResponse Response Object
 type CreatePolicyAssignmentsResponse struct {
 
 	// 规则类型，包括预定义合规规则(builtin)和用户自定义合规规则(custom)
@@ -44,8 +44,11 @@ type CreatePolicyAssignmentsResponse struct {
 	CustomPolicy *CustomPolicy `json:"custom_policy,omitempty"`
 
 	// 规则参数
-	Parameters     map[string]PolicyParameterValue `json:"parameters,omitempty"`
-	HttpStatusCode int                             `json:"-"`
+	Parameters map[string]PolicyParameterValue `json:"parameters,omitempty"`
+
+	// 规则的创建者
+	CreatedBy      *string `json:"created_by,omitempty"`
+	HttpStatusCode int     `json:"-"`
 }
 
 func (o CreatePolicyAssignmentsResponse) String() string {
@@ -87,13 +90,18 @@ func (c CreatePolicyAssignmentsResponsePolicyAssignmentType) MarshalJSON() ([]by
 
 func (c *CreatePolicyAssignmentsResponsePolicyAssignmentType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

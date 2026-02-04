@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowDetailsOfCustomAuthorizersV2Response Response Object
 type ShowDetailsOfCustomAuthorizersV2Response struct {
 
 	// 自定义认证的名称。 长度为3 ~ 64位的字符串，字符串由中文、英文字母、数字、“_”组成，且只能以英文或中文开头。
@@ -22,6 +22,9 @@ type ShowDetailsOfCustomAuthorizersV2Response struct {
 
 	// 函数地址。
 	AuthorizerUri string `json:"authorizer_uri"`
+
+	// 对接函数的网络架构类型 - V1：非VPC网络架构 - V2：VPC网络架构
+	NetworkType *ShowDetailsOfCustomAuthorizersV2ResponseNetworkType `json:"network_type,omitempty"`
 
 	// 函数版本。  当函数别名URN和函数版本同时传入时，函数版本将被忽略，只会使用函数别名URN
 	AuthorizerVersion *string `json:"authorizer_version,omitempty"`
@@ -97,13 +100,18 @@ func (c ShowDetailsOfCustomAuthorizersV2ResponseType) MarshalJSON() ([]byte, err
 
 func (c *ShowDetailsOfCustomAuthorizersV2ResponseType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -135,13 +143,65 @@ func (c ShowDetailsOfCustomAuthorizersV2ResponseAuthorizerType) MarshalJSON() ([
 
 func (c *ShowDetailsOfCustomAuthorizersV2ResponseAuthorizerType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
+	} else {
+		return errors.New("convert enum data to string error")
+	}
+}
+
+type ShowDetailsOfCustomAuthorizersV2ResponseNetworkType struct {
+	value string
+}
+
+type ShowDetailsOfCustomAuthorizersV2ResponseNetworkTypeEnum struct {
+	V1 ShowDetailsOfCustomAuthorizersV2ResponseNetworkType
+	V2 ShowDetailsOfCustomAuthorizersV2ResponseNetworkType
+}
+
+func GetShowDetailsOfCustomAuthorizersV2ResponseNetworkTypeEnum() ShowDetailsOfCustomAuthorizersV2ResponseNetworkTypeEnum {
+	return ShowDetailsOfCustomAuthorizersV2ResponseNetworkTypeEnum{
+		V1: ShowDetailsOfCustomAuthorizersV2ResponseNetworkType{
+			value: "V1",
+		},
+		V2: ShowDetailsOfCustomAuthorizersV2ResponseNetworkType{
+			value: "V2",
+		},
+	}
+}
+
+func (c ShowDetailsOfCustomAuthorizersV2ResponseNetworkType) Value() string {
+	return c.value
+}
+
+func (c ShowDetailsOfCustomAuthorizersV2ResponseNetworkType) MarshalJSON() ([]byte, error) {
+	return utils.Marshal(c.value)
+}
+
+func (c *ShowDetailsOfCustomAuthorizersV2ResponseNetworkType) UnmarshalJSON(b []byte) error {
+	myConverter := converter.StringConverterFactory("string")
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
+		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

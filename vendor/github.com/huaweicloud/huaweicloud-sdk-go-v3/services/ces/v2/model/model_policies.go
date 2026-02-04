@@ -11,11 +11,11 @@ import (
 
 type Policies struct {
 
-	// 查询服务的命名空间，各服务命名空间请参考“[服务命名空间](ces_03_0059.xml)”
+	// 查询服务的命名空间，各服务命名空间请参考[服务命名空间](https://support.huaweicloud.com/usermanual-ces/zh-cn_topic_0202622212.html)
 	Namespace string `json:"namespace"`
 
 	// 资源维度，必须以字母开头，多维度用\",\"分割，只能包含0-9/a-z/A-Z/_/-，每个维度的最大长度为32
-	DimensionName string `json:"dimension_name"`
+	DimensionName *string `json:"dimension_name,omitempty"`
 
 	// 资源的监控指标名称，必须以字母开头，只能包含0-9/a-z/A-Z/_，字符长度最短为1，最大为64；如：弹性云服务器中的监控指标cpu_util，表示弹性服务器的CPU使用率；文档数据库中的指标mongo001_command_ps，表示command执行频率；各服务的指标名称可查看：“[服务指标名称](https://support.huaweicloud.com/usermanual-ces/zh-cn_topic_0202622212.html)”。
 	MetricName string `json:"metric_name"`
@@ -26,7 +26,7 @@ type Policies struct {
 	// 数据聚合方式
 	Filter string `json:"filter"`
 
-	// 告警阈值的比较条件
+	// 告警阈值的比较条件，支持的值为(>|<|>=|<=|=|!=|cycle_decrease|cycle_increase|cycle_wave)，cycle_decrease为环比下降，cycle_increase为环比上升，cycle_wave为环比波动
 	ComparisonOperator string `json:"comparison_operator"`
 
 	// 告警阈值(Number.MAX_VALUE)
@@ -35,7 +35,7 @@ type Policies struct {
 	// 数据的单位字符串，长度不超过32
 	Unit *string `json:"unit,omitempty"`
 
-	// 告警连续触发次数，正整数[1, 5]
+	// 告警连续触发次数，事件告警时参数值为1~180（包括1和180）；指标告警和站点告警时，次数采用枚举值，枚举值分别为：1、2、3、4、5、10、15、30、60、90、120、180
 	Count int32 `json:"count"`
 
 	// 告警级别，1为紧急，2为重要，3为次要，4为提示
@@ -59,6 +59,7 @@ type PoliciesPeriod struct {
 }
 
 type PoliciesPeriodEnum struct {
+	E_0     PoliciesPeriod
 	E_1     PoliciesPeriod
 	E_300   PoliciesPeriod
 	E_1200  PoliciesPeriod
@@ -69,7 +70,9 @@ type PoliciesPeriodEnum struct {
 
 func GetPoliciesPeriodEnum() PoliciesPeriodEnum {
 	return PoliciesPeriodEnum{
-		E_1: PoliciesPeriod{
+		E_0: PoliciesPeriod{
+			value: 0,
+		}, E_1: PoliciesPeriod{
 			value: 1,
 		}, E_300: PoliciesPeriod{
 			value: 300,
@@ -95,13 +98,18 @@ func (c PoliciesPeriod) MarshalJSON() ([]byte, error) {
 
 func (c *PoliciesPeriod) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("int32")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(int32)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: int32")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(int32); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to int32 error")
 	}
@@ -160,13 +168,18 @@ func (c PoliciesSuppressDuration) MarshalJSON() ([]byte, error) {
 
 func (c *PoliciesSuppressDuration) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("int32")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(int32)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: int32")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(int32); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to int32 error")
 	}

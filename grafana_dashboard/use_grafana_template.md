@@ -43,6 +43,7 @@
    
    **模板文件获取地址如下:**
    + [云搜索服务 CSS](templates/css(es)_dashboard_template.json)
+   + [云搜索服务 Koosearch](templates/es_koosearch_template.json)
    + [云专线 DCAAS](templates/dcaas_dashboard_template.json)
    + [分布式缓存服务 DCS](templates/dcs_dashboard_template.json)
    + [弹性云服务器 ECS](templates/ecs_dashboard_template.json)

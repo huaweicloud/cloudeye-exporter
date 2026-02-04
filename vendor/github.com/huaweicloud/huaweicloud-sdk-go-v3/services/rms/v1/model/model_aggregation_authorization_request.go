@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源聚合器授权请求体。
+// AggregationAuthorizationRequest 资源聚合器授权请求体。
 type AggregationAuthorizationRequest struct {
 
 	// 要授权的资源聚合器的帐号ID。

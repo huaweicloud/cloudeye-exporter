@@ -1,0 +1,27 @@
+package model
+
+import (
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
+
+	"strings"
+)
+
+// ListHostResponse Response Object
+type ListHostResponse struct {
+
+	// 云模式防护域名的数量
+	Total *int32 `json:"total,omitempty"`
+
+	// 详细的云模式防护域名列表信息
+	Items          *[]CloudWafHostItem `json:"items,omitempty"`
+	HttpStatusCode int                 `json:"-"`
+}
+
+func (o ListHostResponse) String() string {
+	data, err := utils.Marshal(o)
+	if err != nil {
+		return "ListHostResponse struct{}"
+	}
+
+	return strings.Join([]string{"ListHostResponse", string(data)}, " ")
+}

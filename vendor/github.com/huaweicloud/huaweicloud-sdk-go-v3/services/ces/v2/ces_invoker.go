@@ -53,6 +53,30 @@ func (i *BatchDeleteAlarmTemplatesInvoker) Invoke() (*model.BatchDeleteAlarmTemp
 	}
 }
 
+type BatchDeleteNotificationMasksInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchDeleteNotificationMasksInvoker) Invoke() (*model.BatchDeleteNotificationMasksResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchDeleteNotificationMasksResponse), nil
+	}
+}
+
+type BatchDeleteOneClickAlarmsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchDeleteOneClickAlarmsInvoker) Invoke() (*model.BatchDeleteOneClickAlarmsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchDeleteOneClickAlarmsResponse), nil
+	}
+}
+
 type BatchDeleteResourceGroupsInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -89,6 +113,66 @@ func (i *BatchEnableAlarmRulesInvoker) Invoke() (*model.BatchEnableAlarmRulesRes
 	}
 }
 
+type BatchUpdateNotificationMaskTimeInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchUpdateNotificationMaskTimeInvoker) Invoke() (*model.BatchUpdateNotificationMaskTimeResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchUpdateNotificationMaskTimeResponse), nil
+	}
+}
+
+type BatchUpdateNotificationMasksInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchUpdateNotificationMasksInvoker) Invoke() (*model.BatchUpdateNotificationMasksResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchUpdateNotificationMasksResponse), nil
+	}
+}
+
+type BatchUpdateOneClickAlarmPoliciesEnabledStateInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchUpdateOneClickAlarmPoliciesEnabledStateInvoker) Invoke() (*model.BatchUpdateOneClickAlarmPoliciesEnabledStateResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchUpdateOneClickAlarmPoliciesEnabledStateResponse), nil
+	}
+}
+
+type BatchUpdateOneClickAlarmsEnabledStateInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchUpdateOneClickAlarmsEnabledStateInvoker) Invoke() (*model.BatchUpdateOneClickAlarmsEnabledStateResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchUpdateOneClickAlarmsEnabledStateResponse), nil
+	}
+}
+
+type BatchUpdateWidgetsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchUpdateWidgetsInvoker) Invoke() (*model.BatchUpdateWidgetsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchUpdateWidgetsResponse), nil
+	}
+}
+
 type CreateAlarmRulesInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -113,6 +197,42 @@ func (i *CreateAlarmTemplateInvoker) Invoke() (*model.CreateAlarmTemplateRespons
 	}
 }
 
+type CreateDashboardWidgetsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateDashboardWidgetsInvoker) Invoke() (*model.CreateDashboardWidgetsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateDashboardWidgetsResponse), nil
+	}
+}
+
+type CreateOneClickAlarmInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateOneClickAlarmInvoker) Invoke() (*model.CreateOneClickAlarmResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateOneClickAlarmResponse), nil
+	}
+}
+
+type CreateOneDashboardInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateOneDashboardInvoker) Invoke() (*model.CreateOneDashboardResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateOneDashboardResponse), nil
+	}
+}
+
 type CreateResourceGroupInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -134,6 +254,30 @@ func (i *DeleteAlarmRuleResourcesInvoker) Invoke() (*model.DeleteAlarmRuleResour
 		return nil, err
 	} else {
 		return result.(*model.DeleteAlarmRuleResourcesResponse), nil
+	}
+}
+
+type DeleteDashboardsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteDashboardsInvoker) Invoke() (*model.DeleteDashboardsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteDashboardsResponse), nil
+	}
+}
+
+type DeleteOneWidgetInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteOneWidgetInvoker) Invoke() (*model.DeleteOneWidgetResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteOneWidgetResponse), nil
 	}
 }
 
@@ -221,6 +365,90 @@ func (i *ListAlarmTemplatesInvoker) Invoke() (*model.ListAlarmTemplatesResponse,
 	}
 }
 
+type ListCesTargetProjectTagsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListCesTargetProjectTagsInvoker) Invoke() (*model.ListCesTargetProjectTagsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListCesTargetProjectTagsResponse), nil
+	}
+}
+
+type ListDashboardInfosInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListDashboardInfosInvoker) Invoke() (*model.ListDashboardInfosResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListDashboardInfosResponse), nil
+	}
+}
+
+type ListDashboardWidgetsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListDashboardWidgetsInvoker) Invoke() (*model.ListDashboardWidgetsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListDashboardWidgetsResponse), nil
+	}
+}
+
+type ListNotificationMaskResourcesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListNotificationMaskResourcesInvoker) Invoke() (*model.ListNotificationMaskResourcesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListNotificationMaskResourcesResponse), nil
+	}
+}
+
+type ListNotificationMasksInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListNotificationMasksInvoker) Invoke() (*model.ListNotificationMasksResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListNotificationMasksResponse), nil
+	}
+}
+
+type ListOneClickAlarmRulesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListOneClickAlarmRulesInvoker) Invoke() (*model.ListOneClickAlarmRulesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListOneClickAlarmRulesResponse), nil
+	}
+}
+
+type ListOneClickAlarmsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListOneClickAlarmsInvoker) Invoke() (*model.ListOneClickAlarmsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListOneClickAlarmsResponse), nil
+	}
+}
+
 type ListResourceGroupsInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -269,6 +497,30 @@ func (i *ShowResourceGroupInvoker) Invoke() (*model.ShowResourceGroupResponse, e
 	}
 }
 
+type ShowWidgetInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowWidgetInvoker) Invoke() (*model.ShowWidgetResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowWidgetResponse), nil
+	}
+}
+
+type UpdateAlarmNotificationsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateAlarmNotificationsInvoker) Invoke() (*model.UpdateAlarmNotificationsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateAlarmNotificationsResponse), nil
+	}
+}
+
 type UpdateAlarmRulePoliciesInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -290,6 +542,42 @@ func (i *UpdateAlarmTemplateInvoker) Invoke() (*model.UpdateAlarmTemplateRespons
 		return nil, err
 	} else {
 		return result.(*model.UpdateAlarmTemplateResponse), nil
+	}
+}
+
+type UpdateDashboardInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateDashboardInvoker) Invoke() (*model.UpdateDashboardResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateDashboardResponse), nil
+	}
+}
+
+type UpdateNotificationMaskInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateNotificationMaskInvoker) Invoke() (*model.UpdateNotificationMaskResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateNotificationMaskResponse), nil
+	}
+}
+
+type UpdateOneClickAlarmNotificationsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateOneClickAlarmNotificationsInvoker) Invoke() (*model.UpdateOneClickAlarmNotificationsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateOneClickAlarmNotificationsResponse), nil
 	}
 }
 

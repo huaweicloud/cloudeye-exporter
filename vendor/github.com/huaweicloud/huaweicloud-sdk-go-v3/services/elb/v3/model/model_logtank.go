@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-// 云日志信息。
+// Logtank 云日志信息。
 type Logtank struct {
 
 	// 云日志ID。
 	Id string `json:"id"`
 
-	// 项目ID。
+	// 参数解释：项目ID。
 	ProjectId string `json:"project_id"`
 
 	// 负载均衡器ID。

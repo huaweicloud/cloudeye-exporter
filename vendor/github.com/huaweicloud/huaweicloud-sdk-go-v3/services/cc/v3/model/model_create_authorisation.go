@@ -9,32 +9,32 @@ import (
 	"strings"
 )
 
-// 创建授权的详细信息。
+// CreateAuthorisation 创建授权的详细信息。
 type CreateAuthorisation struct {
 
-	// 授权的名称。
+	// 实例名字。
 	Name *string `json:"name,omitempty"`
 
-	// 授权的描述信息。
+	// 实例描述。不支持 <>。
 	Description *string `json:"description,omitempty"`
 
-	// 授权网络实例的ID。
+	// 资源ID标识符。
 	InstanceId string `json:"instance_id"`
+
+	// 实例所属项目ID。
+	ProjectId string `json:"project_id"`
+
+	// RegionID。
+	RegionId string `json:"region_id"`
+
+	// 资源ID标识符。
+	CloudConnectionId string `json:"cloud_connection_id"`
 
 	// 授权网络实例的类型: - vpc：虚拟私有云
 	InstanceType CreateAuthorisationInstanceType `json:"instance_type"`
 
-	// 授权网络实例所属项目。
-	ProjectId string `json:"project_id"`
-
-	// 授权实例所属Region。
-	RegionId string `json:"region_id"`
-
 	// 被授权云连接实例所属的账户ID。
 	CloudConnectionDomainId string `json:"cloud_connection_domain_id"`
-
-	// 被授权云连接实例ID。
-	CloudConnectionId string `json:"cloud_connection_id"`
 }
 
 func (o CreateAuthorisation) String() string {
@@ -72,13 +72,18 @@ func (c CreateAuthorisationInstanceType) MarshalJSON() ([]byte, error) {
 
 func (c *CreateAuthorisationInstanceType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

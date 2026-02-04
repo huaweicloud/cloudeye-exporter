@@ -3,7 +3,6 @@ package collector
 import (
 	"time"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/global"
 	aad "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/aad/v1"
 	aadmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/aad/v1/model"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
@@ -17,7 +16,7 @@ type DDOSInfo struct{}
 
 func getDDOSClient() *aad.AadClient {
 	return aad.NewAadClient(aad.AadClientBuilder().WithCredential(
-		global.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithDomainId(conf.DomainID).Build()).
+		authCredentialMap[conf.AuthMode](GlobalServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("ddos", "v1")).Build())
 }

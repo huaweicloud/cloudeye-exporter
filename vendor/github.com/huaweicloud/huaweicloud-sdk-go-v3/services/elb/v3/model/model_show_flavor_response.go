@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowFlavorResponse Response Object
 type ShowFlavorResponse struct {
 
-	// 请求ID。  注：自动生成 。
+	// 参数解释：请求ID。  注：自动生成 。
 	RequestId *string `json:"request_id,omitempty"`
 
 	Flavor         *Flavor `json:"flavor,omitempty"`

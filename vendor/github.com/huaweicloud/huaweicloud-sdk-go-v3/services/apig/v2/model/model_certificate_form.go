@@ -9,10 +9,10 @@ import (
 	"strings"
 )
 
-// 添加或编辑证书的请求体表单
+// CertificateForm 添加或编辑证书的请求体表单
 type CertificateForm struct {
 
-	// 证书名称
+	// 证书名称。支持中文，英文字母，数字，下划线，且只能以英文或汉字开头，4~50个字符。 > 中文字符必须为UTF-8或者unicode编码。
 	Name string `json:"name"`
 
 	// 证书内容
@@ -70,13 +70,18 @@ func (c CertificateFormType) MarshalJSON() ([]byte, error) {
 
 func (c *CertificateFormType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

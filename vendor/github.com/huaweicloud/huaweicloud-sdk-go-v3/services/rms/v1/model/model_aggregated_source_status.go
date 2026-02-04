@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源聚合器状态响应体。
+// AggregatedSourceStatus 资源聚合器状态响应体。
 type AggregatedSourceStatus struct {
 
 	// 源帐号最近一次聚合失败时返回的错误码。

@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListVaultRequest Request Object
 type ListVaultRequest struct {
 
 	// 每页显示条目数，正整数
@@ -34,7 +34,7 @@ type ListVaultRequest struct {
 	EnterpriseProjectId *string `json:"enterprise_project_id,omitempty"`
 
 	// 存储库ID
-	Id *string `json:"id,omitempty"`
+	Id *[]string `json:"id,omitempty"`
 
 	// 策略ID
 	PolicyId *string `json:"policy_id,omitempty"`
@@ -42,7 +42,7 @@ type ListVaultRequest struct {
 	// 状态
 	Status *string `json:"status,omitempty"`
 
-	// 资源id
+	// 资源id，支持多资源，以英文逗号分割
 	ResourceIds *string `json:"resource_ids,omitempty"`
 }
 
@@ -85,13 +85,18 @@ func (c ListVaultRequestCloudType) MarshalJSON() ([]byte, error) {
 
 func (c *ListVaultRequestCloudType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -127,13 +132,18 @@ func (c ListVaultRequestProtectType) MarshalJSON() ([]byte, error) {
 
 func (c *ListVaultRequestProtectType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

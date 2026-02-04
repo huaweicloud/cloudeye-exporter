@@ -37,8 +37,9 @@ import (
 const (
 	ProjectIdInHeader     = "X-Project-Id"
 	SecurityTokenInHeader = "X-Security-Token"
-	ContentTypeInHeader   = "Content-Type"
 	AuthTokenInHeader     = "X-Auth-Token"
+	emptyAk               = "EMPTY_AK"
+	emptySK               = "EMPTY_SK"
 )
 
 var DefaultDerivedPredicate = auth.GetDefaultDerivedPredicate()
@@ -59,6 +60,7 @@ type Credentials struct {
 	expiredAt              int64
 }
 
+// ProcessAuthParams This function may panic under certain circumstances.
 func (s *Credentials) ProcessAuthParams(client *impl.DefaultHttpClient, region string) auth.ICredential {
 	if s.ProjectId != "" {
 		return s
@@ -73,19 +75,34 @@ func (s *Credentials) ProcessAuthParams(client *impl.DefaultHttpClient, region s
 
 	derivedPredicate := s.DerivedPredicate
 	s.DerivedPredicate = nil
-
-	req, err := s.ProcessAuthRequest(client, internal.GetKeystoneListProjectsRequest(s.IamEndpoint, region))
+	r := internal.GetKeystoneListProjectsRequest(s.IamEndpoint, region, client.GetHttpConfig())
+	req, err := s.ProcessAuthRequest(client, r)
 	if err != nil {
-		panic(fmt.Sprintf("failed to get project id, %s", err.Error()))
+		panic(fmt.Errorf("failed to get project id of region '%s' automatically: %s", region, err.Error()))
 	}
 
-	id, err := internal.KeystoneListProjects(client, req)
+	resp, err := internal.KeystoneListProjects(client, req)
 	if err != nil {
-		panic(fmt.Sprintf("failed to get project id, %s", err.Error()))
+		panic(fmt.Errorf("failed to get project id of region '%s' automatically, X-IAM-Trace-Id=%s, %s",
+			region, resp.TraceId, err.Error()))
+	}
+	projects := *resp.Projects
+	if len(projects) < 1 {
+		panic(fmt.Errorf("failed to get project id of region '%s' automatically, X-IAM-Trace-Id=%s,"+
+			" confirm that the project exists in your account, or set project id manually:"+
+			" basic.NewCredentialsBuilder().WithAk(ak).WithSk(sk).WithProjectId(projectId).SafeBuild()", region, resp.TraceId))
+	} else if len(projects) > 1 {
+		projectIds := make([]string, 0, len(projects))
+		for _, project := range projects {
+			projectIds = append(projectIds, project.Id)
+		}
+		panic(fmt.Errorf("multiple project ids found: [%s], X-IAM-Trace-Id=%s, please select one when initializing the credentials:"+
+			" basic.NewCredentialsBuilder().WithAk(ak).WithSk(sk).WithProjectId(projectId).SafeBuild()", strings.Join(projectIds, ","), resp.TraceId))
 	}
 
+	id := projects[0].Id
 	s.ProjectId = id
-	authCache.PutAuth(akWithName, id)
+	_ = authCache.PutAuth(akWithName, id)
 
 	s.DerivedPredicate = derivedPredicate
 
@@ -93,8 +110,6 @@ func (s *Credentials) ProcessAuthParams(client *impl.DefaultHttpClient, region s
 }
 
 func (s *Credentials) ProcessAuthRequest(client *impl.DefaultHttpClient, req *request.DefaultHttpRequest) (*request.DefaultHttpRequest, error) {
-	reqBuilder := req.Builder()
-
 	if s.needUpdateAuthToken() {
 		err := s.updateAuthTokenByIdToken(client)
 		if err != nil {
@@ -107,10 +122,9 @@ func (s *Credentials) ProcessAuthRequest(client *impl.DefaultHttpClient, req *re
 		}
 	}
 
+	reqBuilder := req.Builder()
 	if s.ProjectId != "" {
-		reqBuilder = reqBuilder.
-			AddAutoFilledPathParam("project_id", s.ProjectId).
-			AddHeaderParam(ProjectIdInHeader, s.ProjectId)
+		reqBuilder = reqBuilder.AddAutoFilledPathParam("project_id", s.ProjectId).AddHeaderParam(ProjectIdInHeader, s.ProjectId)
 	}
 
 	if s.authToken != "" {
@@ -123,28 +137,23 @@ func (s *Credentials) ProcessAuthRequest(client *impl.DefaultHttpClient, req *re
 		reqBuilder.AddHeaderParam(SecurityTokenInHeader, s.SecurityToken)
 	}
 
-	if _, ok := req.GetHeaderParams()[ContentTypeInHeader]; ok {
-		if !strings.Contains(req.GetHeaderParams()[ContentTypeInHeader], "application/json") {
-			reqBuilder.AddHeaderParam("X-Sdk-Content-Sha256", "UNSIGNED-PAYLOAD")
-		}
-	}
-
-	var (
-		headerParams map[string]string
-		err          error
-	)
-
+	var additionalHeaders map[string]string
+	var err error
 	if s.IsDerivedAuth(req) {
-		headerParams, err = signer.SignDerived(reqBuilder.Build(), s.AK, s.SK, s.derivedAuthServiceName, s.regionId)
+		additionalHeaders, err = signer.GetDerivedSigner().Sign(reqBuilder.Build(), s.AK, s.SK, s.derivedAuthServiceName, s.regionId)
 	} else {
-		headerParams, err = signer.Sign(reqBuilder.Build(), s.AK, s.SK)
+		sn, err := signer.GetSigner(req.GetSigningAlgorithm())
+		if err != nil {
+			return nil, err
+		}
+		additionalHeaders, err = sn.Sign(reqBuilder.Build(), s.AK, s.SK)
 	}
 
 	if err != nil {
 		return nil, err
 	}
 
-	for key, value := range headerParams {
+	for key, value := range additionalHeaders {
 		req.AddHeaderParam(key, value)
 	}
 	return req, nil
@@ -162,7 +171,7 @@ func (s *Credentials) ProcessDerivedAuthParams(derivedAuthServiceName, regionId 
 	return s
 }
 
-func (s Credentials) IsDerivedAuth(httpRequest *request.DefaultHttpRequest) bool {
+func (s *Credentials) IsDerivedAuth(httpRequest *request.DefaultHttpRequest) bool {
 	if s.DerivedPredicate == nil {
 		return false
 	}
@@ -170,7 +179,7 @@ func (s Credentials) IsDerivedAuth(httpRequest *request.DefaultHttpRequest) bool
 	return s.DerivedPredicate(httpRequest)
 }
 
-func (s Credentials) needUpdateSecurityToken() bool {
+func (s *Credentials) needUpdateSecurityToken() bool {
 	if s.authToken != "" {
 		return false
 	}
@@ -201,7 +210,7 @@ func (s *Credentials) UpdateSecurityTokenFromMetadata() error {
 	return nil
 }
 
-func (s Credentials) needUpdateAuthToken() bool {
+func (s *Credentials) needUpdateAuthToken() bool {
 	if s.IdpId == "" || s.IdTokenFile == "" {
 		return false
 	}
@@ -217,7 +226,7 @@ func (s *Credentials) updateAuthTokenByIdToken(client *impl.DefaultHttpClient) e
 		return err
 	}
 
-	req := internal.GetProjectTokenWithIdTokenRequest(s.IamEndpoint, s.IdpId, idToken, s.ProjectId)
+	req := internal.GetProjectTokenWithIdTokenRequest(s.IamEndpoint, s.IdpId, idToken, s.ProjectId, client.GetHttpConfig())
 	resp, err := internal.CreateTokenWithIdToken(client, req)
 	if err != nil {
 		return err
@@ -232,7 +241,7 @@ func (s *Credentials) updateAuthTokenByIdToken(client *impl.DefaultHttpClient) e
 	return nil
 }
 
-func (s Credentials) getIdToken() (string, error) {
+func (s *Credentials) getIdToken() (string, error) {
 	_, err := os.Stat(s.IdTokenFile)
 	if err != nil {
 		return "", err
@@ -251,12 +260,14 @@ func (s Credentials) getIdToken() (string, error) {
 
 type CredentialsBuilder struct {
 	Credentials *Credentials
+	errMap      map[string]string
 }
 
 func NewCredentialsBuilder() *CredentialsBuilder {
-	return &CredentialsBuilder{Credentials: &Credentials{
-		IamEndpoint: internal.GetIamEndpoint(),
-	}}
+	return &CredentialsBuilder{
+		Credentials: &Credentials{IamEndpoint: internal.GetIamEndpoint()},
+		errMap:      make(map[string]string),
+	}
 }
 
 func (builder *CredentialsBuilder) WithIamEndpointOverride(endpoint string) *CredentialsBuilder {
@@ -265,12 +276,22 @@ func (builder *CredentialsBuilder) WithIamEndpointOverride(endpoint string) *Cre
 }
 
 func (builder *CredentialsBuilder) WithAk(ak string) *CredentialsBuilder {
-	builder.Credentials.AK = ak
+	if ak == "" {
+		builder.errMap[emptyAk] = "input ak cannot be an empty string"
+	} else {
+		builder.Credentials.AK = ak
+		delete(builder.errMap, emptyAk)
+	}
 	return builder
 }
 
 func (builder *CredentialsBuilder) WithSk(sk string) *CredentialsBuilder {
-	builder.Credentials.SK = sk
+	if sk == "" {
+		builder.errMap[emptySK] = "input sk cannot be an empty string"
+	} else {
+		builder.Credentials.SK = sk
+		delete(builder.errMap, emptySK)
+	}
 	return builder
 }
 
@@ -299,17 +320,34 @@ func (builder *CredentialsBuilder) WithIdTokenFile(idTokenFile string) *Credenti
 	return builder
 }
 
+// Deprecated: This function may panic under certain circumstances. Use SafeBuild instead.
 func (builder *CredentialsBuilder) Build() *Credentials {
+	credentials, err := builder.SafeBuild()
+	if err != nil {
+		panic(err)
+	}
+	return credentials
+}
+
+func (builder *CredentialsBuilder) SafeBuild() (*Credentials, error) {
+	if builder.errMap != nil && len(builder.errMap) != 0 {
+		errMsg := "build credentials failed: "
+		for _, msg := range builder.errMap {
+			errMsg += msg + "; "
+		}
+		return nil, sdkerr.NewCredentialsTypeError(errMsg)
+	}
+
 	if builder.Credentials.IdpId != "" || builder.Credentials.IdTokenFile != "" {
 		if builder.Credentials.IdpId == "" {
-			panic(sdkerr.NewCredentialsTypeError("IdpId is required when using IdpId&IdTokenFile"))
+			return nil, sdkerr.NewCredentialsTypeError("IdpId is required when using IdpId&IdTokenFile")
 		}
 		if builder.Credentials.IdTokenFile == "" {
-			panic(sdkerr.NewCredentialsTypeError("IdTokenFile is required when using IdpId&IdTokenFile"))
+			return nil, sdkerr.NewCredentialsTypeError("IdTokenFile is required when using IdpId&IdTokenFile")
 		}
 		if builder.Credentials.ProjectId == "" {
-			panic(sdkerr.NewCredentialsTypeError("ProjectId is required when using IdpId&IdTokenFile"))
+			return nil, sdkerr.NewCredentialsTypeError("ProjectId is required when using IdpId&IdTokenFile")
 		}
 	}
-	return builder.Credentials
+	return builder.Credentials, nil
 }

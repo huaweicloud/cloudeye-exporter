@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 规则过滤器
+// PolicyFilterDefinition 规则过滤器
 type PolicyFilterDefinition struct {
 
 	// 区域ID

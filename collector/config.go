@@ -11,15 +11,22 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def"
-
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/global"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def"
 	v3 "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/iam/v3"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/iam/v3/model"
 	"gopkg.in/yaml.v3"
 
 	"github.com/huaweicloud/cloudeye-exporter/logs"
 )
+
+type Oidc struct {
+	IdTokenFilePath string `yaml:"id_token_file_path"`
+	IdpId           string `yaml:"idp_id"`
+	DomainID        string `yaml:"domain_id"`
+}
 
 type CloudAuth struct {
 	ProjectName string `yaml:"project_name"`
@@ -30,6 +37,7 @@ type CloudAuth struct {
 	Region    string `yaml:"region"`
 	SecretKey string `yaml:"secret_key"`
 	AuthURL   string `yaml:"auth_url"`
+	OidcInfo  *Oidc  `yaml:"oidc"`
 }
 
 type Global struct {
@@ -79,6 +87,7 @@ var TmpAK string
 var TmpSK string
 var TmpProxyUserName string
 var TmpProxyPassword string
+var AuthMode string
 
 func InitCloudConf(file string) error {
 	realPath, err := NormalizePath(file)
@@ -213,8 +222,32 @@ func InitMetricConf() error {
 	if err != nil {
 		return err
 	}
+	err = yaml.Unmarshal(data, &metricConf)
+	// 对指标去重
+	if err == nil {
+		for _, metricConfigs := range metricConf {
+			for key, value := range metricConfigs.DimMetricName {
+				// 调用去重函数
+				uniqueValue := uniqueStrings(value)
+				// 更新map中的值
+				metricConfigs.DimMetricName[key] = uniqueValue
+			}
+		}
+	}
+	return err
+}
 
-	return yaml.Unmarshal(data, &metricConf)
+// uniqueStrings 去重函数，返回去重后的字符串数组
+func uniqueStrings(arr []string) []string {
+	seen := make(map[string]bool)
+	var result []string
+	for _, str := range arr {
+		if !seen[str] {
+			seen[str] = true
+			result = append(result, str)
+		}
+	}
+	return result
 }
 
 type UnitTransformItem struct {
@@ -424,9 +457,38 @@ type Config struct {
 	ProjectID        string
 	ProjectName      string
 	UserID           string
+	AuthMode         string
+	IdTokenFilePath  string
+	IdpId            string
 }
 
 var conf = &Config{}
+var authCredentialMap = map[string]func(serviceType string) auth.ICredential{
+	AuthModePermanentAkSk: func(serviceType string) auth.ICredential {
+		var credential auth.ICredential
+		switch serviceType {
+		case GlobalServiceType:
+			credential = global.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithDomainId(conf.DomainID).Build()
+		case RegionServiceType:
+			credential = basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()
+		default:
+			logs.Logger.Errorf("Invalid service type: %s", serviceType)
+		}
+		return credential
+	},
+	AuthModeOidcToken: func(serviceType string) auth.ICredential {
+		var credential auth.ICredential
+		switch serviceType {
+		case GlobalServiceType:
+			credential = global.NewCredentialsBuilder().WithIdpId(conf.IdpId).WithIdTokenFile(conf.IdTokenFilePath).WithDomainId(conf.DomainID).WithIamEndpointOverride(conf.IdentityEndpoint).Build()
+		case RegionServiceType:
+			credential = basic.NewCredentialsBuilder().WithIdpId(conf.IdpId).WithIdTokenFile(conf.IdTokenFilePath).WithProjectId(conf.ProjectID).WithIamEndpointOverride(conf.IdentityEndpoint).Build()
+		default:
+			logs.Logger.Errorf("Invalid service type: %s", serviceType)
+		}
+		return credential
+	},
+}
 
 func InitConfig() error {
 	conf.IdentityEndpoint = CloudConf.Auth.AuthURL
@@ -434,13 +496,24 @@ func InitConfig() error {
 	conf.ProjectID = CloudConf.Auth.ProjectID
 	conf.DomainName = CloudConf.Auth.DomainName
 	conf.Region = CloudConf.Auth.Region
-	// 安全模式下，ak/sk通过用户交互获取，避免明文方式存在于存储介质中
-	if SecurityMod {
-		conf.AccessKey = TmpAK
-		conf.SecretKey = TmpSK
+	if AuthMode == AuthModeOidcToken {
+		conf.AuthMode = AuthModeOidcToken
+		conf.DomainID = CloudConf.Auth.OidcInfo.DomainID
+		conf.IdpId = CloudConf.Auth.OidcInfo.IdpId
+		conf.IdTokenFilePath = CloudConf.Auth.OidcInfo.IdTokenFilePath
+	} else if AuthMode == AuthModePermanentAkSk {
+		conf.AuthMode = AuthModePermanentAkSk
+		// 安全模式下，ak/sk通过用户交互获取，避免明文方式存在于存储介质中
+		if SecurityMod {
+			conf.AccessKey = TmpAK
+			conf.SecretKey = TmpSK
+		} else {
+			conf.AccessKey = CloudConf.Auth.AccessKey
+			conf.SecretKey = CloudConf.Auth.SecretKey
+		}
 	} else {
-		conf.AccessKey = CloudConf.Auth.AccessKey
-		conf.SecretKey = CloudConf.Auth.SecretKey
+		fmt.Printf("Auth mode is invalid: %s", AuthMode)
+		return errors.New("Auth mode is invalid")
 	}
 
 	if conf.ProjectID == "" && conf.ProjectName == "" {
@@ -476,11 +549,7 @@ func getProjectInfo() (*model.KeystoneListProjectsResponse, error) {
 	iamclient := v3.NewIamClient(
 		v3.IamClientBuilder().
 			WithEndpoint(conf.IdentityEndpoint).
-			WithCredential(
-				global.NewCredentialsBuilder().
-					WithAk(conf.AccessKey).
-					WithSk(conf.SecretKey).
-					Build()).
+			WithCredential(authCredentialMap[conf.AuthMode](GlobalServiceType)).
 			WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 			Build())
 	return iamclient.KeystoneListProjects(&model.KeystoneListProjectsRequest{Name: &conf.ProjectName})

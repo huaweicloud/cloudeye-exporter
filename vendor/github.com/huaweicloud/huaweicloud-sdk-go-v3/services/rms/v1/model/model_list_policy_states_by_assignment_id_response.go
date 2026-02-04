@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListPolicyStatesByAssignmentIdResponse Response Object
 type ListPolicyStatesByAssignmentIdResponse struct {
 
 	// 合规结果查询返回值

@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	cesmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 	elb "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/elb/v3"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/elb/v3/model"
@@ -21,7 +20,7 @@ var availabilityZoneMap map[string]model.AvailabilityZone
 
 func getELBClient() *elb.ElbClient {
 	return elb.NewElbClient(elb.ElbClientBuilder().WithCredential(
-		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("elb", "v2")).Build())
 }

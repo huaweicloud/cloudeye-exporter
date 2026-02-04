@@ -11,8 +11,6 @@ import (
 	"time"
 
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/global"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/impl"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdkerr"
@@ -22,9 +20,16 @@ import (
 	"github.com/huaweicloud/cloudeye-exporter/logs"
 )
 
-const MinimumResourceInfoSyncInterval = 10
-const MaxNamespacesCount = 1000
-const MaxEpsCount = 10000
+const (
+	MinimumResourceInfoSyncInterval = 10
+	MaxNamespacesCount              = 1000
+	MaxEpsCount                     = 10000
+
+	AuthModePermanentAkSk = "aksk"
+	AuthModeOidcToken     = "oidc"
+	GlobalServiceType     = "GlobalService"
+	RegionServiceType     = "RegionService"
+)
 
 var tagRegexp *regexp.Regexp
 
@@ -251,7 +256,7 @@ func buildDimensionMetrics(metricNames []string, namespace string, dimensions []
 
 func getHcClient(endpoint string) *core.HcHttpClient {
 	return core.NewHcHttpClient(impl.NewDefaultHttpClient(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify))).
-		WithCredential(basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		WithCredential(authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithEndpoints([]string{endpoint})
 }
 
@@ -338,11 +343,7 @@ func GetIAMClient() *iam.IamClient {
 	return iam.NewIamClient(
 		iam.IamClientBuilder().
 			WithEndpoint(getEndpoint("iam", "v3")).
-			WithCredential(
-				global.NewCredentialsBuilder().
-					WithAk(conf.AccessKey).
-					WithSk(conf.SecretKey).
-					Build()).
+			WithCredential(authCredentialMap[conf.AuthMode](GlobalServiceType)).
 			WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 			Build())
 }
@@ -463,4 +464,28 @@ func cleanMergedMetrics(mergedMetricMap map[string]MetricInfoListWithTTL) []Metr
 		}
 	}
 	return cleanedMetrics
+}
+
+func GetDimensionsValueByName(dimensions []model.MetricsDimension, dimName string) string {
+	if dimName == "" || len(dimensions) == 0 {
+		return ""
+	}
+	for _, dimension := range dimensions {
+		if dimension.Name == dimName {
+			return dimension.Value
+		}
+	}
+	return ""
+}
+
+func ContainDimensionName(dimensions []model.MetricsDimension, dimName string) bool {
+	if dimName == "" || len(dimensions) == 0 {
+		return false
+	}
+	for _, dimension := range dimensions {
+		if dimension.Name == dimName {
+			return true
+		}
+	}
+	return false
 }

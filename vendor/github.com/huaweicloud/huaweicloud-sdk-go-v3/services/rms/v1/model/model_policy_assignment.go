@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// 规则
+// PolicyAssignment 规则
 type PolicyAssignment struct {
 
 	// 规则类型，包括预定义合规规则(builtin)和用户自定义合规规则(custom)
@@ -45,6 +45,9 @@ type PolicyAssignment struct {
 
 	// 规则参数
 	Parameters map[string]PolicyParameterValue `json:"parameters,omitempty"`
+
+	// 规则的创建者
+	CreatedBy *string `json:"created_by,omitempty"`
 }
 
 func (o PolicyAssignment) String() string {
@@ -86,13 +89,18 @@ func (c PolicyAssignmentPolicyAssignmentType) MarshalJSON() ([]byte, error) {
 
 func (c *PolicyAssignmentPolicyAssignmentType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

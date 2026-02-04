@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源聚合器请求体。
+// ConfigurationAggregatorRequest 资源聚合器请求体。
 type ConfigurationAggregatorRequest struct {
 
 	// 资源聚合器名称。

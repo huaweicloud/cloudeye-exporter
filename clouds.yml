@@ -15,3 +15,7 @@ auth:
   access_key: "{access_key}"
   secret_key: "{secret_key}"
   region: "{region}"
+  oidc:
+    id_token_file_path: "{id_token_file_path}"
+    idp_id: "{idp_id}"
+    domain_id: "{domain_id}"

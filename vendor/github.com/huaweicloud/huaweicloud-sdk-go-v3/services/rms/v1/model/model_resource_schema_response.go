@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 单条schema信息
+// ResourceSchemaResponse 单条schema信息
 type ResourceSchemaResponse struct {
 
 	// 资源类型.

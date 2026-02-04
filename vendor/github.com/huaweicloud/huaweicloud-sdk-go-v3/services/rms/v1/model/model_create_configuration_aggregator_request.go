@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// CreateConfigurationAggregatorRequest Request Object
 type CreateConfigurationAggregatorRequest struct {
 	Body *ConfigurationAggregatorRequest `json:"body,omitempty"`
 }

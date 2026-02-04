@@ -6,12 +6,12 @@ import (
 	"strings"
 )
 
-// Response Object
+// UpdateAlarmRulePoliciesResponse Response Object
 type UpdateAlarmRulePoliciesResponse struct {
 
 	// 策略信息
-	Policies       *[]Policy `json:"policies,omitempty"`
-	HttpStatusCode int       `json:"-"`
+	Policies       *[]UpdatePolicy `json:"policies,omitempty"`
+	HttpStatusCode int             `json:"-"`
 }
 
 func (o UpdateAlarmRulePoliciesResponse) String() string {

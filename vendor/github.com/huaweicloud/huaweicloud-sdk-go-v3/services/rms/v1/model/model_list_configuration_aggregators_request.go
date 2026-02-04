@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListConfigurationAggregatorsRequest Request Object
 type ListConfigurationAggregatorsRequest struct {
 
 	// 资源聚合器名称。

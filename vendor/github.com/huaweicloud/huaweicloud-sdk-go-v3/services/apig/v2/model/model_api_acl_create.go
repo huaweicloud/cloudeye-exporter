@@ -17,10 +17,10 @@ type ApiAclCreate struct {
 	// 类型 -  PERMIT (白名单类型) -  DENY (黑名单类型)
 	AclType ApiAclCreateAclType `json:"acl_type"`
 
-	// ACL策略值，支持一个或多个值，使用英文半角逗号分隔
+	// ACL策略值，支持一个或多个值，使用英文半角逗号分隔。 - entity_type为IP时，策略值需填写IP地址，最多可支持100个IP地址。 - entity_type为DOMAIN时，策略值需填写账号名，账号支持除英文半角逗号以外的任意ASCII字符，账号名长度限制在1-64个字符，不支持纯数字。多账号名字符的总长度不超过1024。 - entity_type为DOMAIN_ID时，策略值需填写账号ID，获取方式请参见API参考的“附录 > 获取账号ID”章节。
 	AclValue string `json:"acl_value"`
 
-	// 对象类型： - IP：IP地址 - DOMAIN：帐号名 - DOMAIN_ID：帐号ID
+	// 对象类型： - IP：IP地址 - DOMAIN：账号名 - DOMAIN_ID：账号ID
 	EntityType ApiAclCreateEntityType `json:"entity_type"`
 }
 
@@ -63,13 +63,18 @@ func (c ApiAclCreateAclType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiAclCreateAclType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -109,13 +114,18 @@ func (c ApiAclCreateEntityType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiAclCreateEntityType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

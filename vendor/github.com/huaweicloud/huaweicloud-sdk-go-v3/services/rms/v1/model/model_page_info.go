@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 分页对象
+// PageInfo 分页对象
 type PageInfo struct {
 
 	// 当前页的资源数量

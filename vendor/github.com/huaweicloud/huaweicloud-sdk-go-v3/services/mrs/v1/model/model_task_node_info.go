@@ -17,7 +17,7 @@ type TaskNodeInfo struct {
 	// Task节点数据磁盘存储类别，目前支持SATA、SAS和SSD。 - SATA：普通IO - SAS：高IO - SSD：超高IO - GPSSD：通用型SSD
 	DataVolumeType TaskNodeInfoDataVolumeType `json:"data_volume_type"`
 
-	// Task节点数据磁盘存储数目，取值范围：0～10。
+	// Task节点数据磁盘存储数目，取值范围：0～20。
 	DataVolumeCount int32 `json:"data_volume_count"`
 
 	// Task节点数据磁盘存储大小。  取值范围：100GB～32000GB，传值只需填数字，不需要带单位GB。
@@ -71,13 +71,18 @@ func (c TaskNodeInfoDataVolumeType) MarshalJSON() ([]byte, error) {
 
 func (c *TaskNodeInfoDataVolumeType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

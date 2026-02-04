@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowIpGroupRequest Request Object
 type ShowIpGroupRequest struct {
 
-	// IP地址组ID。
+	// 参数解释：IP地址组ID。
 	IpgroupId string `json:"ipgroup_id"`
 }
 

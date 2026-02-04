@@ -6,11 +6,11 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowLoadBalancerStatusResponse Response Object
 type ShowLoadBalancerStatusResponse struct {
 	Statuses *LoadBalancerStatusResult `json:"statuses,omitempty"`
 
-	// 请求ID。  注：自动生成 。
+	// 参数解释：请求ID。  注：自动生成 。
 	RequestId      *string `json:"request_id,omitempty"`
 	HttpStatusCode int     `json:"-"`
 }

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// tracker通道配置
+// ChannelConfigBody tracker通道配置
 type ChannelConfigBody struct {
 	Smn *TrackerSmnChannelConfigBody `json:"smn,omitempty"`
 

@@ -20,7 +20,6 @@
 package core
 
 import (
-	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -30,12 +29,12 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/exchange"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/impl"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/progress"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/request"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/response"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdkerr"
-	jsoniter "github.com/json-iterator/go"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/utils"
 	"go.mongodb.org/mongo-driver/bson"
-	"io/ioutil"
 	"net"
 	"net/url"
 	"reflect"
@@ -55,8 +54,9 @@ type HcHttpClient struct {
 	endpoints     []string
 	endpointIndex int32
 	credential    auth.ICredential
-	extraHeader   map[string]string
+	extraHeaders  map[string]string
 	httpClient    *impl.DefaultHttpClient
+	errorHandler  sdkerr.ErrorHandler
 }
 
 func NewHcHttpClient(httpClient *impl.DefaultHttpClient) *HcHttpClient {
@@ -73,13 +73,23 @@ func (hc *HcHttpClient) WithCredential(credential auth.ICredential) *HcHttpClien
 	return hc
 }
 
+func (hc *HcHttpClient) WithErrorHandler(errorHandler sdkerr.ErrorHandler) *HcHttpClient {
+	hc.errorHandler = errorHandler
+	return hc
+}
+
+func (hc *HcHttpClient) WithExtraHeaders(extraHeaders map[string]string) *HcHttpClient {
+	hc.extraHeaders = extraHeaders
+	return hc
+}
+
 func (hc *HcHttpClient) GetCredential() auth.ICredential {
 	return hc.credential
 }
 
+// Deprecated: This function will be removed in the future version. Use WithExtraHeaders instead.
 func (hc *HcHttpClient) PreInvoke(headers map[string]string) *HcHttpClient {
-	hc.extraHeader = headers
-	return hc
+	return hc.WithExtraHeaders(headers)
 }
 
 func (hc *HcHttpClient) Sync(req interface{}, reqDef *def.HttpRequestDef) (interface{}, error) {
@@ -92,9 +102,19 @@ func (hc *HcHttpClient) Sync(req interface{}, reqDef *def.HttpRequestDef) (inter
 
 func (hc *HcHttpClient) SyncInvoke(req interface{}, reqDef *def.HttpRequestDef,
 	exchange *exchange.SdkExchange) (interface{}, error) {
-	var resp *response.DefaultHttpResponse
+	return hc.SyncInvokeWithExtraHeaders(req, reqDef, exchange, hc.extraHeaders)
+}
+
+func (hc *HcHttpClient) SyncInvokeWithExtraHeaders(req interface{}, reqDef *def.HttpRequestDef,
+	exchange *exchange.SdkExchange, extraHeaders map[string]string) (interface{}, error) {
+	var (
+		httpRequest *request.DefaultHttpRequest
+		resp        *response.DefaultHttpResponse
+		err         error
+	)
+
 	for {
-		httpRequest, err := hc.buildRequest(req, reqDef)
+		httpRequest, err = hc.buildRequest(req, reqDef, extraHeaders)
 		if err != nil {
 			return nil, err
 		}
@@ -104,14 +124,15 @@ func (hc *HcHttpClient) SyncInvoke(req interface{}, reqDef *def.HttpRequestDef,
 			break
 		}
 
-		if isNoSuchHostErr(err) && atomic.LoadInt32(&hc.endpointIndex) < int32(len(hc.endpoints)-1) {
+		var dnsErr *net.DNSError
+		if errors.As(err, &dnsErr) && atomic.LoadInt32(&hc.endpointIndex) < int32(len(hc.endpoints)-1) {
 			atomic.AddInt32(&hc.endpointIndex, 1)
 		} else {
 			return nil, err
 		}
 	}
 
-	return hc.extractResponse(resp, reqDef)
+	return hc.extractResponse(httpRequest, resp, reqDef)
 }
 
 func (hc *HcHttpClient) extractEndpoint(req interface{}, reqDef *def.HttpRequestDef, attrMaps map[string]string) (string, error) {
@@ -137,7 +158,7 @@ func (hc *HcHttpClient) extractEndpoint(req interface{}, reqDef *def.HttpRequest
 	return endpoint, nil
 }
 
-func (hc *HcHttpClient) buildRequest(req interface{}, reqDef *def.HttpRequestDef) (*request.DefaultHttpRequest, error) {
+func (hc *HcHttpClient) buildRequest(req interface{}, reqDef *def.HttpRequestDef, extraHeaders map[string]string) (*request.DefaultHttpRequest, error) {
 	t := reflect.TypeOf(req)
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
@@ -149,24 +170,14 @@ func (hc *HcHttpClient) buildRequest(req interface{}, reqDef *def.HttpRequestDef
 		return nil, err
 	}
 
-	builder := request.NewHttpRequestBuilder().
-		WithEndpoint(endpoint).
-		WithMethod(reqDef.Method).
-		WithPath(reqDef.Path)
+	builder := request.NewHttpRequestBuilder().WithEndpoint(endpoint).WithMethod(reqDef.Method).WithPath(reqDef.Path).
+		WithSigningAlgorithm(hc.httpClient.GetHttpConfig().SigningAlgorithm)
 
-	if reqDef.ContentType != "" {
-		builder.AddHeaderParam(contentType, reqDef.ContentType)
+	if pq, ok := req.(progress.Request); ok {
+		builder.WithProgressListener(pq.GetProgressListener()).WithProgressInterval(pq.GetProgressInterval())
 	}
 
-	uaValue := "huaweicloud-usdk-go/3.0"
-	for k, v := range hc.extraHeader {
-		if strings.ToLower(k) == strings.ToLower(userAgent) {
-			uaValue = uaValue + ";" + v
-		} else {
-			builder.AddHeaderParam(k, v)
-		}
-	}
-	builder.AddHeaderParam(userAgent, uaValue)
+	hc.fillExtraHeaders(builder, extraHeaders)
 
 	builder, err = hc.fillParamsFromReq(req, t, reqDef, attrMaps, builder)
 	if err != nil {
@@ -186,9 +197,38 @@ func (hc *HcHttpClient) buildRequest(req interface{}, reqDef *def.HttpRequestDef
 	return httpRequest, err
 }
 
+func (hc *HcHttpClient) fillExtraHeaders(builder *request.HttpRequestBuilder, extraHeaders map[string]string) {
+	headers := make(map[string]string)
+
+	// client-level headers
+	if hc.extraHeaders != nil {
+		for k, v := range hc.extraHeaders {
+			headers[k] = v
+		}
+	}
+
+	// request-level headers
+	if extraHeaders != nil {
+		for k, v := range extraHeaders {
+			headers[k] = v
+		}
+	}
+
+	// user-agent
+	uaValue := "huaweicloud-usdk-go/3.0"
+	for k, v := range headers {
+		if strings.ToLower(k) == strings.ToLower(userAgent) {
+			uaValue = uaValue + ";" + v
+		} else {
+			builder.AddHeaderParam(k, v)
+		}
+	}
+	builder.AddHeaderParam(userAgent, uaValue)
+}
+
 func (hc *HcHttpClient) fillParamsFromReq(req interface{}, t reflect.Type, reqDef *def.HttpRequestDef,
 	attrMaps map[string]string, builder *request.HttpRequestBuilder) (*request.HttpRequestBuilder, error) {
-
+	hasBody := false
 	for _, fieldDef := range reqDef.RequestFields {
 		value, err := hc.getFieldValueByName(fieldDef.Name, attrMaps, req)
 		if err != nil {
@@ -217,9 +257,14 @@ func (hc *HcHttpClient) fillParamsFromReq(req interface{}, t reflect.Type, reqDe
 			} else {
 				builder.WithBody("", value.Interface())
 			}
+			hasBody = true
 		case def.Form:
 			builder.AddFormParam(fieldDef.JsonTag, value.Interface().(def.FormData))
 		}
+	}
+
+	if reqDef.ContentType != "" && !(hc.httpClient.GetHttpConfig().IgnoreContentTypeForGetRequest && reqDef.Method == "GET" && !hasBody) {
+		builder.AddHeaderParam(contentType, reqDef.ContentType)
 	}
 
 	return builder, nil
@@ -262,27 +307,37 @@ func (hc *HcHttpClient) getFieldValueByName(name string, jsonTag map[string]stri
 
 func flattenEnumStruct(value reflect.Value) (reflect.Value, error) {
 	if value.Kind() == reflect.Struct {
-		v, e := jsoniter.Marshal(value.Interface())
+		if method := value.MethodByName("Value"); method.IsValid() {
+			return method.Call(nil)[0], nil
+		}
+
+		v, e := utils.Marshal(value.Interface())
 		if e == nil {
-			if strings.HasPrefix(string(v), "\"") {
-				return reflect.ValueOf(strings.Trim(string(v), "\"")), nil
-			} else {
-				return reflect.ValueOf(string(v)), nil
+			str := string(v)
+			if strings.HasSuffix(str, "\n") {
+				str = strings.Trim(str, "\n")
 			}
+			if strings.HasPrefix(str, "\"") {
+				str = strings.Trim(str, "\"")
+			}
+			return reflect.ValueOf(str), nil
 		}
 		return reflect.ValueOf(nil), e
 	}
 	return value, nil
 }
 
-func (hc *HcHttpClient) extractResponse(resp *response.DefaultHttpResponse, reqDef *def.HttpRequestDef) (interface{},
+func (hc *HcHttpClient) extractResponse(req *request.DefaultHttpRequest, resp *response.DefaultHttpResponse, reqDef *def.HttpRequestDef) (interface{},
 	error) {
-	if resp.GetStatusCode() >= 400 {
-		return nil, sdkerr.NewServiceResponseError(resp.Response)
+	if hc.errorHandler == nil {
+		hc.errorHandler = sdkerr.DefaultErrorHandler{}
+	}
+	err := hc.errorHandler.HandleError(req, resp)
+	if err != nil {
+		return nil, err
 	}
 
-	if err := hc.deserializeResponse(resp, reqDef); err != nil {
-
+	if err = hc.deserializeResponse(resp, reqDef); err != nil {
 		return nil, err
 	}
 
@@ -305,6 +360,7 @@ func (hc *HcHttpClient) deserializeResponse(resp *response.DefaultHttpResponse, 
 		field.Set(reflect.ValueOf(resp.GetStatusCode()))
 	}
 
+	// Return directly without reading the stream
 	if body, ok := t.FieldByName("Body"); ok && body.Type.Name() == "ReadCloser" {
 		v.FieldByName("Body").Set(reflect.ValueOf(resp.Response.Body))
 		addStatusCode()
@@ -321,17 +377,9 @@ func (hc *HcHttpClient) deserializeResponse(resp *response.DefaultHttpResponse, 
 }
 
 func (hc *HcHttpClient) deserializeResponseFields(resp *response.DefaultHttpResponse, reqDef *def.HttpRequestDef) error {
-	data, err := ioutil.ReadAll(resp.Response.Body)
+	data, err := resp.GetBodyAsBytes()
 	if err != nil {
-		if closeErr := resp.Response.Body.Close(); closeErr != nil {
-			return err
-		}
 		return err
-	}
-	if err = resp.Response.Body.Close(); err != nil {
-		return err
-	} else {
-		resp.Response.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 	}
 
 	processError := func(err error) error {
@@ -367,7 +415,7 @@ func (hc *HcHttpClient) deserializeResponseFields(resp *response.DefaultHttpResp
 		} else if strings.Contains(resp.Response.Header.Get(contentType), applicationBson) {
 			err = bson.Unmarshal(data, reqDef.Response)
 		} else {
-			err = jsoniter.Unmarshal(data, &reqDef.Response)
+			err = utils.Unmarshal(data, &reqDef.Response)
 		}
 
 		if err != nil {
@@ -470,28 +518,4 @@ func (hc *HcHttpClient) getFieldInfo(reqDef *def.HttpRequestDef, item *def.Field
 	}
 
 	return isPtr, fieldKind
-}
-
-func isNoSuchHostErr(err error) bool {
-	if err == nil {
-		return false
-	}
-	var errInterface interface{} = err
-	if innerErr, ok := errInterface.(*url.Error); !ok {
-		return false
-	} else {
-		errInterface = innerErr.Err
-	}
-
-	if innerErr, ok := errInterface.(*net.OpError); !ok {
-		return false
-	} else {
-		errInterface = innerErr.Err
-	}
-
-	if innerErr, ok := errInterface.(*net.DNSError); !ok {
-		return false
-	} else {
-		return innerErr.Err == "no such host"
-	}
 }

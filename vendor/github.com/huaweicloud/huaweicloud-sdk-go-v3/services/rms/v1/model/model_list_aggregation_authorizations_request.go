@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListAggregationAuthorizationsRequest Request Object
 type ListAggregationAuthorizationsRequest struct {
 
 	// 授权的帐号ID。

@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListResourceGroupsServicesResourcesResponse Response Object
 type ListResourceGroupsServicesResourcesResponse struct {
 
 	// 资源总数
 	Count *int32 `json:"count,omitempty"`
 
-	// 资源分组资源列表
+	// 资源分组关联资源列表
 	Resources      *[]GetResourceGroupResources `json:"resources,omitempty"`
 	HttpStatusCode int                          `json:"-"`
 }

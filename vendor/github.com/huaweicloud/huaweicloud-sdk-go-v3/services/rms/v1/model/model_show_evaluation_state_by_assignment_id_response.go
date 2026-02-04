@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowEvaluationStateByAssignmentIdResponse Response Object
 type ShowEvaluationStateByAssignmentIdResponse struct {
 
 	// 规则ID

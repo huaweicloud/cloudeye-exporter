@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源
+// PolicyResource 资源
 type PolicyResource struct {
 
 	// 资源id

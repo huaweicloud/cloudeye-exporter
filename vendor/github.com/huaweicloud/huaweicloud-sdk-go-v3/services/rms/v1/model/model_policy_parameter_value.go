@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 规则参数值
+// PolicyParameterValue 规则参数值
 type PolicyParameterValue struct {
 
 	// 规则参数值

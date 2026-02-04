@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListAggregationAuthorizationsResponse Response Object
 type ListAggregationAuthorizationsResponse struct {
 
 	// 授权过的资源聚合器帐号列表。

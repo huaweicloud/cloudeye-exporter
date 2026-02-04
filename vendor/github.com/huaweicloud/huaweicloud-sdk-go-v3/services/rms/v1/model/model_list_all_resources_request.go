@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListAllResourcesRequest Request Object
 type ListAllResourcesRequest struct {
 
 	// 区域ID

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 合规状态
+// PolicyState 合规状态
 type PolicyState struct {
 
 	// 用户ID

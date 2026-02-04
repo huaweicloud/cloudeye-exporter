@@ -1220,6 +1220,29 @@ SYS.GAUSSDBV5:
       - cpu_user_usage
       - cpu_sys_usage
       - cpu_wait_usage
+    'gaussdbv5_instance_id,gaussdbv5_pdb_id':
+      - pdb016_database_size
+      - pdb017_disk_usage
+    'gaussdbv5_instance_id,gaussdbv5_pdb_id,gaussdbv5_pdb_component_id':
+      - pdb001_used_dynamic_memory
+      - pdb002_used_shared_memory
+      - pdb003_avg_cpu_utilization
+      - pdb030_online_session
+      - pdb031_online_ratio
+      - pdb032_active_session
+      - pdb033_active_ratio
+      - pdb034_wait_session
+      - pdb035_wait_ratio
+      - pdb040_buffer_hit_ratio
+      - pdb042_gauss_p80
+      - pdb043_gauss_p95
+      - pdb055_ddl_count
+      - pdb056_dml_count
+      - pdb057_dcl_count
+      - pdb044_commit_counter
+      - pdb045_rollback_counter
+      - pdb046_bg_commit_counter
+      - pdb048_resp_avg
 SYS.DBPROXY:
   dim_metric_name:
     dbproxy_instance_id,dbproxy_node_id:

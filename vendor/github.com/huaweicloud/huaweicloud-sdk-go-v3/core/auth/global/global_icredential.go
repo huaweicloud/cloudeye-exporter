@@ -30,16 +30,16 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdkerr"
 	"io/ioutil"
 	"os"
-	"strings"
 	"time"
 )
 
 const (
 	DomainIdInHeader      = "X-Domain-Id"
 	SecurityTokenInHeader = "X-Security-Token"
-	ContentTypeInHeader   = "Content-Type"
 	GlobalRegionId        = "globe"
 	AuthTokenInHeader     = "X-Auth-Token"
+	emptyAk               = "EMPTY_AK"
+	emptySK               = "EMPTY_SK"
 )
 
 var DefaultDerivedPredicate = auth.GetDefaultDerivedPredicate()
@@ -60,6 +60,7 @@ type Credentials struct {
 	expiredAt              int64
 }
 
+// ProcessAuthParams This function may panic under certain circumstances.
 func (s *Credentials) ProcessAuthParams(client *impl.DefaultHttpClient, region string) auth.ICredential {
 	if s.DomainId != "" {
 		return s
@@ -74,18 +75,25 @@ func (s *Credentials) ProcessAuthParams(client *impl.DefaultHttpClient, region s
 	derivedPredicate := s.DerivedPredicate
 	s.DerivedPredicate = nil
 
-	req, err := s.ProcessAuthRequest(client, internal.GetKeystoneListAuthDomainsRequest(s.IamEndpoint))
+	req, err := s.ProcessAuthRequest(client, internal.GetKeystoneListAuthDomainsRequest(s.IamEndpoint, client.GetHttpConfig()))
 	if err != nil {
-		panic(fmt.Sprintf("failed to get domain id, %s", err.Error()))
+		panic(fmt.Errorf("failed to get domain id automatically, %w", err))
 	}
 
-	id, err := internal.KeystoneListAuthDomains(client, req)
+	resp, err := internal.KeystoneListAuthDomains(client, req)
 	if err != nil {
-		panic(fmt.Sprintf("failed to get domain id, %s", err.Error()))
+		panic(fmt.Errorf("failed to get domain id automatically, X-IAM-Trace-Id=%s, %w", resp.TraceId, err))
+	}
+	domains := *resp.Domains
+	if len(domains) == 0 {
+		panic(fmt.Errorf("failed to get domain id automatically, X-IAM-Trace-Id=%s,"+
+			" please confirm that you have 'iam:users:getUser' permission, or set domain id manually:"+
+			" global.NewCredentialsBuilder().WithAk(ak).WithSk(sk).WithDomainId(domainId).SafeBuild()", resp.TraceId))
 	}
 
+	id := domains[0].Id
 	s.DomainId = id
-	authCache.PutAuth(s.AK, id)
+	_ = authCache.PutAuth(s.AK, id)
 
 	s.DerivedPredicate = derivedPredicate
 
@@ -93,8 +101,6 @@ func (s *Credentials) ProcessAuthParams(client *impl.DefaultHttpClient, region s
 }
 
 func (s *Credentials) ProcessAuthRequest(client *impl.DefaultHttpClient, req *request.DefaultHttpRequest) (*request.DefaultHttpRequest, error) {
-	reqBuilder := req.Builder()
-
 	if s.needUpdateAuthToken() {
 		err := s.updateAuthTokenByIdToken(client)
 		if err != nil {
@@ -107,10 +113,9 @@ func (s *Credentials) ProcessAuthRequest(client *impl.DefaultHttpClient, req *re
 		}
 	}
 
+	reqBuilder := req.Builder()
 	if s.DomainId != "" {
-		reqBuilder = reqBuilder.
-			AddAutoFilledPathParam("domain_id", s.DomainId).
-			AddHeaderParam(DomainIdInHeader, s.DomainId)
+		reqBuilder = reqBuilder.AddAutoFilledPathParam("domain_id", s.DomainId).AddHeaderParam(DomainIdInHeader, s.DomainId)
 	}
 
 	if s.authToken != "" {
@@ -123,31 +128,25 @@ func (s *Credentials) ProcessAuthRequest(client *impl.DefaultHttpClient, req *re
 		reqBuilder.AddHeaderParam(SecurityTokenInHeader, s.SecurityToken)
 	}
 
-	if _, ok := req.GetHeaderParams()[ContentTypeInHeader]; ok {
-		if !strings.Contains(req.GetHeaderParams()[ContentTypeInHeader], "application/json") {
-			reqBuilder.AddHeaderParam("X-Sdk-Content-Sha256", "UNSIGNED-PAYLOAD")
-		}
-	}
-
-	var (
-		headerParams map[string]string
-		err          error
-	)
-
+	var additionalHeaders map[string]string
+	var err error
 	if s.IsDerivedAuth(req) {
-		headerParams, err = signer.SignDerived(reqBuilder.Build(), s.AK, s.SK, s.derivedAuthServiceName, s.regionId)
+		additionalHeaders, err = signer.GetDerivedSigner().Sign(reqBuilder.Build(), s.AK, s.SK, s.derivedAuthServiceName, s.regionId)
 	} else {
-		headerParams, err = signer.Sign(reqBuilder.Build(), s.AK, s.SK)
+		sn, err := signer.GetSigner(req.GetSigningAlgorithm())
+		if err != nil {
+			return nil, err
+		}
+		additionalHeaders, err = sn.Sign(reqBuilder.Build(), s.AK, s.SK)
 	}
 
 	if err != nil {
 		return nil, err
 	}
 
-	for key, value := range headerParams {
+	for key, value := range additionalHeaders {
 		req.AddHeaderParam(key, value)
 	}
-
 	return req, nil
 }
 
@@ -163,7 +162,7 @@ func (s *Credentials) ProcessDerivedAuthParams(derivedAuthServiceName, regionId 
 	return s
 }
 
-func (s Credentials) IsDerivedAuth(httpRequest *request.DefaultHttpRequest) bool {
+func (s *Credentials) IsDerivedAuth(httpRequest *request.DefaultHttpRequest) bool {
 	if s.DerivedPredicate == nil {
 		return false
 	}
@@ -171,7 +170,7 @@ func (s Credentials) IsDerivedAuth(httpRequest *request.DefaultHttpRequest) bool
 	return s.DerivedPredicate(httpRequest)
 }
 
-func (s Credentials) needUpdateSecurityToken() bool {
+func (s *Credentials) needUpdateSecurityToken() bool {
 	if s.authToken != "" {
 		return false
 	}
@@ -184,7 +183,7 @@ func (s Credentials) needUpdateSecurityToken() bool {
 	return s.expiredAt-time.Now().Unix() < 60
 }
 
-func (s Credentials) needUpdateAuthToken() bool {
+func (s *Credentials) needUpdateAuthToken() bool {
 	if s.IdpId == "" || s.IdTokenFile == "" {
 		return false
 	}
@@ -194,7 +193,7 @@ func (s Credentials) needUpdateAuthToken() bool {
 	return s.expiredAt-time.Now().Unix() < 60
 }
 
-func (s Credentials) getIdToken() (string, error) {
+func (s *Credentials) getIdToken() (string, error) {
 	_, err := os.Stat(s.IdTokenFile)
 	if err != nil {
 		return "", err
@@ -235,7 +234,7 @@ func (s *Credentials) updateAuthTokenByIdToken(client *impl.DefaultHttpClient) e
 		return err
 	}
 
-	req := internal.GetDomainTokenWithIdTokenRequest(s.IamEndpoint, s.IdpId, idToken, s.DomainId)
+	req := internal.GetDomainTokenWithIdTokenRequest(s.IamEndpoint, s.IdpId, idToken, s.DomainId, client.GetHttpConfig())
 	resp, err := internal.CreateTokenWithIdToken(client, req)
 	if err != nil {
 		return err
@@ -252,21 +251,33 @@ func (s *Credentials) updateAuthTokenByIdToken(client *impl.DefaultHttpClient) e
 
 type CredentialsBuilder struct {
 	Credentials *Credentials
+	errMap      map[string]string
 }
 
 func NewCredentialsBuilder() *CredentialsBuilder {
-	return &CredentialsBuilder{Credentials: &Credentials{
-		IamEndpoint: internal.GetIamEndpoint(),
-	}}
+	return &CredentialsBuilder{
+		Credentials: &Credentials{IamEndpoint: internal.GetIamEndpoint()},
+		errMap:      make(map[string]string),
+	}
 }
 
 func (builder *CredentialsBuilder) WithAk(ak string) *CredentialsBuilder {
-	builder.Credentials.AK = ak
+	if ak == "" {
+		builder.errMap[emptyAk] = "input ak cannot be an empty string"
+	} else {
+		builder.Credentials.AK = ak
+		delete(builder.errMap, emptyAk)
+	}
 	return builder
 }
 
 func (builder *CredentialsBuilder) WithSk(sk string) *CredentialsBuilder {
-	builder.Credentials.SK = sk
+	if sk == "" {
+		builder.errMap[emptySK] = "input sk cannot be an empty string"
+	} else {
+		builder.Credentials.SK = sk
+		delete(builder.errMap, emptySK)
+	}
 	return builder
 }
 
@@ -300,17 +311,34 @@ func (builder *CredentialsBuilder) WithIdTokenFile(idTokenFile string) *Credenti
 	return builder
 }
 
+// Deprecated: This function may panic under certain circumstances. Use SafeBuild instead.
 func (builder *CredentialsBuilder) Build() *Credentials {
+	credentials, err := builder.SafeBuild()
+	if err != nil {
+		panic(err)
+	}
+	return credentials
+}
+
+func (builder *CredentialsBuilder) SafeBuild() (*Credentials, error) {
+	if builder.errMap != nil && len(builder.errMap) != 0 {
+		errMsg := "build credentials failed: "
+		for _, msg := range builder.errMap {
+			errMsg += msg + "; "
+		}
+		return nil, sdkerr.NewCredentialsTypeError(errMsg)
+	}
+
 	if builder.Credentials.IdpId != "" || builder.Credentials.IdTokenFile != "" {
 		if builder.Credentials.IdpId == "" {
-			panic(sdkerr.NewCredentialsTypeError("IdpId is required when using IdpId&IdTokenFile"))
+			return nil, sdkerr.NewCredentialsTypeError("IdpId is required when using IdpId&IdTokenFile")
 		}
 		if builder.Credentials.IdTokenFile == "" {
-			panic(sdkerr.NewCredentialsTypeError("IdTokenFile is required when using IdpId&IdTokenFile"))
+			return nil, sdkerr.NewCredentialsTypeError("IdTokenFile is required when using IdpId&IdTokenFile")
 		}
 		if builder.Credentials.DomainId == "" {
-			panic(sdkerr.NewCredentialsTypeError("DomainId is required when using IdpId&IdTokenFile"))
+			return nil, sdkerr.NewCredentialsTypeError("DomainId is required when using IdpId&IdTokenFile")
 		}
 	}
-	return builder.Credentials
+	return builder.Credentials, nil
 }

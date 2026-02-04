@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// CreateAggregationAuthorizationResponse Response Object
 type CreateAggregationAuthorizationResponse struct {
 
 	// 资源聚合器授权标识符。

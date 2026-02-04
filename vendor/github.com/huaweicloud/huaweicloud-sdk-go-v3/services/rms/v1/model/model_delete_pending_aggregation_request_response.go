@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// DeletePendingAggregationRequestResponse Response Object
 type DeletePendingAggregationRequestResponse struct {
 	HttpStatusCode int `json:"-"`
 }

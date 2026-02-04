@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowPolicyAssignmentRequest Request Object
 type ShowPolicyAssignmentRequest struct {
 
 	// 规则ID

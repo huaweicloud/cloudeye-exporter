@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowDetailsOfApiGroupV2Response Response Object
 type ShowDetailsOfApiGroupV2Response struct {
 
 	// 编号
@@ -29,11 +29,14 @@ type ShowDetailsOfApiGroupV2Response struct {
 	// 最近修改时间
 	UpdateTime *sdktime.SdkTime `json:"update_time"`
 
-	// 是否已上架云商店： - 1：已上架 - 2：未上架 - 3：审核中
+	// 是否已上架云商店： - 1：已上架 - 2：未上架 - 3：审核中  [暂不支持](tag:cmcc,ctc,DT,g42,hk_g42,hk_sbc,hk_tm,hws_eu,hws_ocb,OCB,sbc,tm,hws_hk)
 	OnSellStatus int32 `json:"on_sell_status"`
 
 	// 分组上绑定的独立域名列表
 	UrlDomains *[]UrlDomain `json:"url_domains,omitempty"`
+
+	// 调试域名是否可以访问，true表示可以访问，false表示禁止访问
+	SlDomainAccessEnabled *bool `json:"sl_domain_access_enabled,omitempty"`
 
 	// 系统默认分配的子域名列表
 	SlDomains *[]string `json:"sl_domains,omitempty"`
@@ -99,13 +102,18 @@ func (c ShowDetailsOfApiGroupV2ResponseStatus) MarshalJSON() ([]byte, error) {
 
 func (c *ShowDetailsOfApiGroupV2ResponseStatus) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("int32")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(int32)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: int32")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(int32); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to int32 error")
 	}

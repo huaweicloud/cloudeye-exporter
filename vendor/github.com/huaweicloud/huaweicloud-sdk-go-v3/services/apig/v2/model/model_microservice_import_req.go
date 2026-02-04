@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
-// 导入微服务的请求对象
+// MicroserviceImportReq 导入微服务的请求对象
 type MicroserviceImportReq struct {
 	GroupInfo *MicroserviceGroup `json:"group_info"`
 
-	// 微服务中心类型。 - CSE：CSE微服务注册中心 - CCE: CCE云容器引擎
+	// 微服务中心类型。 - CSE：CSE微服务注册中心 - CCE: CCE云容器引擎（工作负载） - CCE_SERVICE: CCE云容器引擎（Service）
 	ServiceType MicroserviceImportReqServiceType `json:"service_type"`
 
 	// API网关访问微服务的请求协议 - HTTP - HTTPS
@@ -25,7 +25,7 @@ type MicroserviceImportReq struct {
 	// APIG请求后端服务的超时时间。最大超时时间可通过实例特性backend_timeout配置修改，可修改的上限为600000，默认5000  单位：毫秒。
 	BackendTimeout *int32 `json:"backend_timeout,omitempty"`
 
-	// API的认证方式，默认无认证[，site暂不支持IAM认证。](tag:Site) - NONE：无认证 - APP：APP认证 - IAM：IAM认证
+	// API的认证方式，默认无认证。 - NONE：无认证 - APP：APP认证 - IAM：IAM认证
 	AuthType *MicroserviceImportReqAuthType `json:"auth_type,omitempty"`
 
 	// 是否支持跨域，默认不支持 - true：支持 - false：不支持
@@ -50,8 +50,9 @@ type MicroserviceImportReqServiceType struct {
 }
 
 type MicroserviceImportReqServiceTypeEnum struct {
-	CSE MicroserviceImportReqServiceType
-	CCE MicroserviceImportReqServiceType
+	CSE         MicroserviceImportReqServiceType
+	CCE         MicroserviceImportReqServiceType
+	CCE_SERVICE MicroserviceImportReqServiceType
 }
 
 func GetMicroserviceImportReqServiceTypeEnum() MicroserviceImportReqServiceTypeEnum {
@@ -61,6 +62,9 @@ func GetMicroserviceImportReqServiceTypeEnum() MicroserviceImportReqServiceTypeE
 		},
 		CCE: MicroserviceImportReqServiceType{
 			value: "CCE",
+		},
+		CCE_SERVICE: MicroserviceImportReqServiceType{
+			value: "CCE_SERVICE",
 		},
 	}
 }
@@ -75,13 +79,18 @@ func (c MicroserviceImportReqServiceType) MarshalJSON() ([]byte, error) {
 
 func (c *MicroserviceImportReqServiceType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -117,13 +126,18 @@ func (c MicroserviceImportReqProtocol) MarshalJSON() ([]byte, error) {
 
 func (c *MicroserviceImportReqProtocol) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -163,13 +177,18 @@ func (c MicroserviceImportReqAuthType) MarshalJSON() ([]byte, error) {
 
 func (c *MicroserviceImportReqAuthType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

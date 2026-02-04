@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListAlarmTemplatesRequest Request Object
 type ListAlarmTemplatesRequest struct {
 
 	// 分页查询时查询的起始位置，表示从第几条数据开始，默认为0
@@ -24,7 +24,7 @@ type ListAlarmTemplatesRequest struct {
 	// 资源维度，必须以字母开头，多维度用\",\"分割，只能包含0-9/a-z/A-Z/_/-，每个维度的最大长度为32
 	DimName *string `json:"dim_name,omitempty"`
 
-	// 模板类型(system代表默认自定义模板，custom代表系统模板),不传自定义和系统均需返回
+	// 模板类型(system代表默认指标模板，custom代表自定义指标模板，system_event代表默认事件模板，custom_event代表自定义事件模板，system_custom_event代表全部事件模板),不传返回全部指标模板
 	TemplateType *ListAlarmTemplatesRequestTemplateType `json:"template_type,omitempty"`
 
 	// 告警模板的名称，以字母或汉字开头，可包含字母、数字、汉字、_、-，长度范围[1,128]，支持模糊匹配
@@ -45,8 +45,11 @@ type ListAlarmTemplatesRequestTemplateType struct {
 }
 
 type ListAlarmTemplatesRequestTemplateTypeEnum struct {
-	SYSTEM ListAlarmTemplatesRequestTemplateType
-	CUSTOM ListAlarmTemplatesRequestTemplateType
+	SYSTEM              ListAlarmTemplatesRequestTemplateType
+	CUSTOM              ListAlarmTemplatesRequestTemplateType
+	SYSTEM_EVENT        ListAlarmTemplatesRequestTemplateType
+	CUSTOM_EVENT        ListAlarmTemplatesRequestTemplateType
+	SYSTEM_CUSTOM_EVENT ListAlarmTemplatesRequestTemplateType
 }
 
 func GetListAlarmTemplatesRequestTemplateTypeEnum() ListAlarmTemplatesRequestTemplateTypeEnum {
@@ -56,6 +59,15 @@ func GetListAlarmTemplatesRequestTemplateTypeEnum() ListAlarmTemplatesRequestTem
 		},
 		CUSTOM: ListAlarmTemplatesRequestTemplateType{
 			value: "custom",
+		},
+		SYSTEM_EVENT: ListAlarmTemplatesRequestTemplateType{
+			value: "system_event",
+		},
+		CUSTOM_EVENT: ListAlarmTemplatesRequestTemplateType{
+			value: "custom_event",
+		},
+		SYSTEM_CUSTOM_EVENT: ListAlarmTemplatesRequestTemplateType{
+			value: "system_custom_event",
 		},
 	}
 }
@@ -70,13 +82,18 @@ func (c ListAlarmTemplatesRequestTemplateType) MarshalJSON() ([]byte, error) {
 
 func (c *ListAlarmTemplatesRequestTemplateType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

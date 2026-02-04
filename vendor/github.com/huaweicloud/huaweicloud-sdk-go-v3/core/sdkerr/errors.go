@@ -20,9 +20,8 @@
 package sdkerr
 
 import (
-	"bytes"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
+	"go.mongodb.org/mongo-driver/bson"
 	"io/ioutil"
 	"net/http"
 
@@ -103,8 +102,8 @@ func (m errMap) getStringValue(key string) string {
 type ServiceResponseError struct {
 	StatusCode                  int    `json:"status_code"`
 	RequestId                   string `json:"request_id"`
-	ErrorCode                   string `json:"error_code"`
-	ErrorMessage                string `json:"error_message"`
+	ErrorCode                   string `json:"error_code" bson:"errorCode"`
+	ErrorMessage                string `json:"error_message" bson:"errorMsg"`
 	EncodedAuthorizationMessage string `json:"encoded_authorization_message"`
 }
 
@@ -114,24 +113,25 @@ func NewServiceResponseError(resp *http.Response) *ServiceResponseError {
 		RequestId:  resp.Header.Get(xRequestId),
 	}
 
+	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
-	defer func() {
-		closeErr := resp.Body.Close()
-		if closeErr == nil && err == nil {
-			resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
-		}
-	}()
+	if err != nil {
+		sr.ErrorMessage = err.Error()
+		return sr
+	}
 
-	if err == nil {
-		dataBuf := errMap{}
-		err := jsoniter.Unmarshal(data, &dataBuf)
-		if err != nil {
+	dataBuf := errMap{}
+	if resp.Header.Get("Content-Type") == "application/bson" {
+		err = bson.Unmarshal(data, &sr)
+	} else {
+		err = utils.Unmarshal(data, &dataBuf)
+	}
+	if err != nil {
+		sr.ErrorMessage = string(data)
+	} else {
+		processServiceResponseError(dataBuf, sr)
+		if sr.ErrorMessage == "" {
 			sr.ErrorMessage = string(data)
-		} else {
-			processServiceResponseError(dataBuf, sr)
-			if sr.ErrorMessage == "" {
-				sr.ErrorMessage = string(data)
-			}
 		}
 	}
 

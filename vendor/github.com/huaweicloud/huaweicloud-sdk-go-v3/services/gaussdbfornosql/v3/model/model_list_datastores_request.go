@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListDatastoresRequest Request Object
 type ListDatastoresRequest struct {
 
-	// 数据库类型。   - GaussDB(for Cassandra)数据库实例，取值为“cassandra”。   - GaussDB(for Mongo)数据库实例，取值为“mongodb”。   - GaussDB(for Influx)数据库实例，取值为“influxdb”。   - GaussDB(for Redis)数据库实例，取值为“redis”。
+	// 数据库类型。   - GeminiDB Cassandra数据库实例，取值为“cassandra”。   - GeminiDB Mongo数据库实例，取值为“mongodb”。   - GeminiDB Influx数据库实例，取值为“influxdb”。   - GeminiDB Redis数据库实例，取值为“redis”。
 	DatastoreName string `json:"datastore_name"`
 }
 

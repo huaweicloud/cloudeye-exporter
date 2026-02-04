@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListOrganizationPolicyAssignmentsResponse Response Object
 type ListOrganizationPolicyAssignmentsResponse struct {
 
 	// 组织合规规则列表。

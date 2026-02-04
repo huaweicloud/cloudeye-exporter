@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源聚合器授权。
+// AggregationAuthorizationResp 资源聚合器授权。
 type AggregationAuthorizationResp struct {
 
 	// 资源聚合器授权标识符。

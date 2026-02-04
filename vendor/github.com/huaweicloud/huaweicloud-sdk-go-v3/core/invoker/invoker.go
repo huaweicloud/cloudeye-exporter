@@ -20,12 +20,13 @@
 package invoker
 
 import (
+	"time"
+
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/exchange"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/invoker/retry"
-	"time"
 )
 
 type RetryChecker func(interface{}, error) bool
@@ -66,8 +67,17 @@ func (b *BaseInvoker) ReplaceCredentialWhen(fun func(auth.ICredential) auth.ICre
 	return b
 }
 
+// Deprecated: This function will be removed in the future version, use AddHeaders instead.
 func (b *BaseInvoker) AddHeader(headers map[string]string) *BaseInvoker {
-	b.headers = headers
+	return b.AddHeaders(headers)
+}
+
+func (b *BaseInvoker) AddHeaders(headers map[string]string) *BaseInvoker {
+	if headers != nil {
+		for k, v := range headers {
+			b.headers[k] = v
+		}
+	}
 	return b
 }
 
@@ -79,25 +89,25 @@ func (b *BaseInvoker) WithRetry(retryTimes int, checker RetryChecker, backoffStr
 }
 
 func (b *BaseInvoker) Invoke() (interface{}, error) {
-	if b.retryTimes != 0 && b.retryChecker != nil {
-		var execTimes int
-		var resp interface{}
-		var err error
-		for {
-			if execTimes == b.retryTimes {
-				break
-			}
-			resp, err = b.client.PreInvoke(b.headers).SyncInvoke(b.request, b.meta, b.Exchange)
-			execTimes += 1
-
-			if b.retryChecker(resp, err) {
-				time.Sleep(time.Duration(b.backoffStrategy.ComputeDelayBeforeNextRetry()))
-			} else {
-				break
-			}
-		}
-		return resp, err
-	} else {
-		return b.client.PreInvoke(b.headers).SyncInvoke(b.request, b.meta, b.Exchange)
+	if b.retryTimes == 0 || b.retryChecker == nil {
+		return b.client.SyncInvokeWithExtraHeaders(b.request, b.meta, b.Exchange, b.headers)
 	}
+
+	var execTimes int
+	var resp interface{}
+	var err error
+	for {
+		resp, err = b.client.SyncInvokeWithExtraHeaders(b.request, b.meta, b.Exchange, b.headers)
+		execTimes++
+
+		if execTimes > b.retryTimes || !b.retryChecker(resp, err) {
+			break
+		}
+
+		delay := b.backoffStrategy.ComputeDelayBeforeNextRetry(int32(execTimes))
+		if delay > 0 {
+			time.Sleep(time.Duration(delay) * time.Millisecond)
+		}
+	}
+	return resp, err
 }

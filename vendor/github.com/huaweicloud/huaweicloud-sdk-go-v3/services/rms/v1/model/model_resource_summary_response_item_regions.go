@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 区域概要
+// ResourceSummaryResponseItemRegions 区域概要
 type ResourceSummaryResponseItemRegions struct {
 
 	// 区域id

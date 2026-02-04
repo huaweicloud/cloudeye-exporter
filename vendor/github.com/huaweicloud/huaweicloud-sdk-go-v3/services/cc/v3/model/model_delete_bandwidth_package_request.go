@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Request Object
+// DeleteBandwidthPackageRequest Request Object
 type DeleteBandwidthPackageRequest struct {
 
-	// 带宽包实例ID。
+	// 资源的Id。
 	Id string `json:"id"`
 }
 

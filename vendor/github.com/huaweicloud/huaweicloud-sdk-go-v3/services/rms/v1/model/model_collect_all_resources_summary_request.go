@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// CollectAllResourcesSummaryRequest Request Object
 type CollectAllResourcesSummaryRequest struct {
 
 	// 资源名称

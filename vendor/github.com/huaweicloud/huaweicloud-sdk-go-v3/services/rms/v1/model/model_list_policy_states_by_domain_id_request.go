@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListPolicyStatesByDomainIdRequest Request Object
 type ListPolicyStatesByDomainIdRequest struct {
 
 	// 合规状态

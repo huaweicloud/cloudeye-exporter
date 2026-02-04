@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// CreateAggregationAuthorizationRequest Request Object
 type CreateAggregationAuthorizationRequest struct {
 	Body *AggregationAuthorizationRequest `json:"body,omitempty"`
 }

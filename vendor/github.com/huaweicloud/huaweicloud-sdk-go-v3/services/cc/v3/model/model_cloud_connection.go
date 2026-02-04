@@ -8,35 +8,38 @@ import (
 	"strings"
 )
 
-// 云连接实例。
+// CloudConnection 云连接实例。
 type CloudConnection struct {
 
-	// 云连接实例的ID。
-	Id *string `json:"id,omitempty"`
+	// 资源ID标识符。
+	Id string `json:"id"`
 
-	// 云连接实例的名字。
-	Name *string `json:"name,omitempty"`
+	// 实例名字。
+	Name string `json:"name"`
 
-	// 云连接实例的描述。
+	// 实例描述。不支持 <>。
 	Description *string `json:"description,omitempty"`
 
-	// 帐号ID。
-	DomainId *string `json:"domain_id,omitempty"`
+	// 实例所属帐号ID。
+	DomainId string `json:"domain_id"`
 
-	// 云连接实例的企业项目ID。
+	// 实例所属企业项目ID。
 	EnterpriseProjectId *string `json:"enterprise_project_id,omitempty"`
+
+	// 实例创建时间。UTC时间格式，yyyy-MM-ddTHH:mm:ss。
+	CreatedAt *sdktime.SdkTime `json:"created_at"`
+
+	// 实例更新时间。UTC时间格式，yyyy-MM-ddTHH:mm:ss。
+	UpdatedAt *sdktime.SdkTime `json:"updated_at"`
+
+	// 实例标签。
+	Tags *[]Tag `json:"tags,omitempty"`
 
 	// 云连接实例的状态。ACTIVE：表示状态可用。
 	Status *CloudConnectionStatus `json:"status,omitempty"`
 
 	// 云连接实例的管理状态。
 	AdminStateUp *bool `json:"admin_state_up,omitempty"`
-
-	// 云连接实例的创建时间。UTC时间格式，yyyy-MM-ddTHH:mm:ss
-	CreatedAt *sdktime.SdkTime `json:"created_at,omitempty"`
-
-	// 云连接实例的更新时间。UTC时间格式，yyyy-MM-ddTHH:mm:ss
-	UpdatedAt *sdktime.SdkTime `json:"updated_at,omitempty"`
 
 	// 云连接使用场景。 - VPC：虚拟私有云。
 	UsedScene *CloudConnectionUsedScene `json:"used_scene,omitempty"`
@@ -86,13 +89,18 @@ func (c CloudConnectionStatus) MarshalJSON() ([]byte, error) {
 
 func (c *CloudConnectionStatus) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -124,13 +132,18 @@ func (c CloudConnectionUsedScene) MarshalJSON() ([]byte, error) {
 
 func (c *CloudConnectionUsedScene) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

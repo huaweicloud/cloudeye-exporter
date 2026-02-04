@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// PendingAggregationRequest对象。
+// PendingAggregationRequest PendingAggregationRequest对象。
 type PendingAggregationRequest struct {
 
 	// 请求聚合数据的帐号ID。

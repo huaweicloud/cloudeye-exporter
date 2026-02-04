@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListSchemasRequest Request Object
 type ListSchemasRequest struct {
 
 	// 最大的返回数量

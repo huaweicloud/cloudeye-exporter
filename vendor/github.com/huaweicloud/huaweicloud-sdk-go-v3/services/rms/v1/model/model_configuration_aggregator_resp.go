@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源聚合器响应体。
+// ConfigurationAggregatorResp 资源聚合器响应体。
 type ConfigurationAggregatorResp struct {
 
 	// 资源聚合器名称。

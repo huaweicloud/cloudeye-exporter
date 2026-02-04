@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Request Object
+// UpdateNetworkInstanceRequest Request Object
 type UpdateNetworkInstanceRequest struct {
 
-	// 网络实例ID。
+	// 资源的Id。
 	Id string `json:"id"`
 
 	Body *UpdateNetworkInstanceRequestBody `json:"body,omitempty"`

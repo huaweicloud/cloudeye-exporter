@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 	waf "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/waf/v1"
 	wafModel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/waf/v1/model"
@@ -73,7 +72,7 @@ func getAllWafInstancesFromRMS() ([]ResourceBaseInfo, error) {
 
 func getWAFClient() *waf.WafClient {
 	return waf.NewWafClient(waf.WafClientBuilder().WithCredential(
-		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("waf", "v1")).Build())
 }

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 标签对象
+// TagDetail 标签对象
 type TagDetail struct {
 
 	// 标签key

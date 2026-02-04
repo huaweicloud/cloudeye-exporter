@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 区域
+// Region 区域
 type Region struct {
 
 	// 区域ID

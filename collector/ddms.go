@@ -3,7 +3,6 @@ package collector
 import (
 	"time"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 	ddm "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ddm/v1"
 	ddmmodel "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ddm/v1/model"
@@ -112,7 +111,7 @@ func getDdmsInstanceNodes(instanceId string) ([]ddmmodel.ShowNodeResponse, error
 
 func getDDMSClient() *ddm.DdmClient {
 	return ddm.NewDdmClient(ddm.DdmClientBuilder().WithCredential(
-		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("ddm", "v1")).Build())
 }

@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListL7RulesRequest Request Object
 type ListL7RulesRequest struct {
 
 	// 策略ID。
 	L7policyId string `json:"l7policy_id"`
 
-	// 每页返回的个数。
+	// 参数解释：每页返回的个数。  取值范围：0-2000  默认取值：2000
 	Limit *int32 `json:"limit,omitempty"`
 
 	// 上一页最后一条记录的ID。  使用说明： - 必须与limit一起使用。 - 不指定时表示查询第一页。 - 该字段不允许为空或无效的ID。
@@ -33,7 +33,7 @@ type ListL7RulesRequest struct {
 	// 是否反向匹配。使用说明：固定为false。该字段能更新但不会生效。
 	Invert *bool `json:"invert,omitempty"`
 
-	// 转发规则的管理状态，默认为true。  不支持该字段，请勿使用。
+	// 转发规则的管理状态。  不支持该字段，请勿使用。
 	AdminStateUp *bool `json:"admin_state_up,omitempty"`
 
 	// 匹配内容的值。  支持多值查询，查询条件格式：*value=xxx&value=xxx*。

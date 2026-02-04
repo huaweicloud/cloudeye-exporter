@@ -9,11 +9,8 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListEventsRequest Request Object
 type ListEventsRequest struct {
-
-	// 发送的实体的MIME类型。推荐用户默认使用application/json，如果API是对象、镜像上传等接口，媒体类型可按照流类型的不同进行确定。
-	ContentType string `json:"Content-Type"`
 
 	// 事件类型，值为EVENT.SYS或EVENT.CUSTOM，EVENT.SYS表示系统事件，EVENT.CUSTOM表示自定义事件。
 	EventType *ListEventsRequestEventType `json:"event_type,omitempty"`
@@ -73,13 +70,18 @@ func (c ListEventsRequestEventType) MarshalJSON() ([]byte, error) {
 
 func (c *ListEventsRequestEventType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

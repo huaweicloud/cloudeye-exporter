@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// CollectAllResourcesSummaryResponse Response Object
 type CollectAllResourcesSummaryResponse struct {
 
 	// 资源概要信息列表

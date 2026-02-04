@@ -6,15 +6,15 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListListenersResponse Response Object
 type ListListenersResponse struct {
 
-	// 请求ID。  注：自动生成 。
+	// 参数解释：请求ID。  注：自动生成 。
 	RequestId *string `json:"request_id,omitempty"`
 
 	PageInfo *PageInfo `json:"page_info,omitempty"`
 
-	// Listener的列表。
+	// 参数解释：Listener的列表。
 	Listeners      *[]Listener `json:"listeners,omitempty"`
 	HttpStatusCode int         `json:"-"`
 }

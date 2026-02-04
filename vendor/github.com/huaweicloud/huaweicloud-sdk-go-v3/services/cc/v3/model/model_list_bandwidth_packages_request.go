@@ -9,26 +9,29 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListBandwidthPackagesRequest Request Object
 type ListBandwidthPackagesRequest struct {
 
-	// 分页查询时，每页返回的个数。
+	// 每页返回的个数。 取值范围：1~1000。
 	Limit *int32 `json:"limit,omitempty"`
 
-	// 分页查询时，上一页最后一条记录的ID，为空时为查询第一页。 使用说明：必须与limit一起使用。
+	// 翻页信息，从上次API调用返回的翻页数据中获取，可填写前一页marker或者后一页marker，填入前一页previous_marker就向前翻页，后一页next_marker就向翻页。 翻页过程中，查询条件不能修改，包括过滤条件，排序条件，limit。
 	Marker *string `json:"marker,omitempty"`
 
-	// 根据ID过滤带宽包实例列表。
+	// 根据id查询，可查询多个id。
 	Id *[]string `json:"id,omitempty"`
 
-	// 根据名称过滤带宽包实例列表。
+	// 根据名字查询，可查询多个名字。
 	Name *[]string `json:"name,omitempty"`
+
+	// 根据企业项目ID过滤列表。
+	EnterpriseProjectId *[]string `json:"enterprise_project_id,omitempty"`
+
+	// 根据云连接的ID过滤列表。
+	CloudConnectionId *[]string `json:"cloud_connection_id,omitempty"`
 
 	// 根据状态过滤带宽包实例列表。ACTIVE：表示状态可用。
 	Status *[]ListBandwidthPackagesRequestStatus `json:"status,omitempty"`
-
-	// 根据企业项目ID过滤带宽包实例列表。
-	EnterpriseProjectId *[]string `json:"enterprise_project_id,omitempty"`
 
 	// 根据计费方式过滤带宽包实例列表。
 	BillingMode *[]string `json:"billing_mode,omitempty"`
@@ -72,13 +75,18 @@ func (c ListBandwidthPackagesRequestStatus) MarshalJSON() ([]byte, error) {
 
 func (c *ListBandwidthPackagesRequestStatus) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

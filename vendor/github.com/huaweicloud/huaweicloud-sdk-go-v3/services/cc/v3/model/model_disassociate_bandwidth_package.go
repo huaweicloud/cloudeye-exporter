@@ -9,13 +9,13 @@ import (
 	"strings"
 )
 
-// 解关联带宽包实例的详细信息。
+// DisassociateBandwidthPackage 解关联带宽包实例的详细信息。
 type DisassociateBandwidthPackage struct {
 
-	// 带宽包实例待解关联的资源实例ID。
+	// 带宽包实例绑定的资源ID。
 	ResourceId string `json:"resource_id"`
 
-	// 带宽包实例待解关联的资源实例类型，cloud_connection：表示为云连接实例。
+	// 带宽包实例绑定的资源类型。 cloud_connection: 云连接实例。
 	ResourceType DisassociateBandwidthPackageResourceType `json:"resource_type"`
 }
 
@@ -54,13 +54,18 @@ func (c DisassociateBandwidthPackageResourceType) MarshalJSON() ([]byte, error) 
 
 func (c *DisassociateBandwidthPackageResourceType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

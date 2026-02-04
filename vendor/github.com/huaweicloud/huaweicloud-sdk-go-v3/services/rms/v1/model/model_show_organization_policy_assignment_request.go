@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowOrganizationPolicyAssignmentRequest Request Object
 type ShowOrganizationPolicyAssignmentRequest struct {
 
 	// 组织ID。

@@ -6,8 +6,14 @@ import (
 	"strings"
 )
 
-//
+// JobEntities
 type JobEntities struct {
+
+	// 云服务器相关操作显示server_id。
+	ServerId *string `json:"server_id,omitempty"`
+
+	// 网卡相关操作显示nic_id。
+	NicId *string `json:"nic_id,omitempty"`
 
 	// 每个子任务的执行信息。
 	SubJobs *[]SubJob `json:"sub_jobs,omitempty"`

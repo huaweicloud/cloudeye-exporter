@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowEvaluationStateByAssignmentIdRequest Request Object
 type ShowEvaluationStateByAssignmentIdRequest struct {
 
 	// 规则ID

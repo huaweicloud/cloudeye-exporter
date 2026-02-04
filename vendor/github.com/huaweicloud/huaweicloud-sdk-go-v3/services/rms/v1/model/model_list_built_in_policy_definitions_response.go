@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ListBuiltInPolicyDefinitionsResponse Response Object
 type ListBuiltInPolicyDefinitionsResponse struct {
 
 	// 策略定义列表

@@ -26,8 +26,11 @@ type ApiPolicyFunctionResp struct {
 	// 函数别名URN  当函数别名URN和函数版本同时传入时，函数版本将被忽略，只会使用函数别名URN
 	AliasUrn *string `json:"alias_urn,omitempty"`
 
-	// API网关请求后端服务的超时时间。最大超时时间可通过实例特性backend_timeout配置修改，可修改的上限为600000。  单位：毫秒。
+	// API网关请求后端服务的超时时间。函数网络架构为V1时最大超时时间为60000，V2最大超时时间可通过实例特性backend_timeout配置修改，可修改的上限为600000。  单位：毫秒。
 	Timeout *int32 `json:"timeout,omitempty"`
+
+	// 函数后端的请求协议：HTTPS、GRPCS，默认值为HTTPS，前端配置中的请求协议为GRPCS时可选GRPCS。
+	ReqProtocol *ApiPolicyFunctionRespReqProtocol `json:"req_protocol,omitempty"`
 
 	// 编号
 	Id *string `json:"id,omitempty"`
@@ -87,13 +90,18 @@ func (c ApiPolicyFunctionRespInvocationType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiPolicyFunctionRespInvocationType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -129,13 +137,65 @@ func (c ApiPolicyFunctionRespNetworkType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiPolicyFunctionRespNetworkType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
+	} else {
+		return errors.New("convert enum data to string error")
+	}
+}
+
+type ApiPolicyFunctionRespReqProtocol struct {
+	value string
+}
+
+type ApiPolicyFunctionRespReqProtocolEnum struct {
+	HTTPS ApiPolicyFunctionRespReqProtocol
+	GRPCS ApiPolicyFunctionRespReqProtocol
+}
+
+func GetApiPolicyFunctionRespReqProtocolEnum() ApiPolicyFunctionRespReqProtocolEnum {
+	return ApiPolicyFunctionRespReqProtocolEnum{
+		HTTPS: ApiPolicyFunctionRespReqProtocol{
+			value: "HTTPS",
+		},
+		GRPCS: ApiPolicyFunctionRespReqProtocol{
+			value: "GRPCS",
+		},
+	}
+}
+
+func (c ApiPolicyFunctionRespReqProtocol) Value() string {
+	return c.value
+}
+
+func (c ApiPolicyFunctionRespReqProtocol) MarshalJSON() ([]byte, error) {
+	return utils.Marshal(c.value)
+}
+
+func (c *ApiPolicyFunctionRespReqProtocol) UnmarshalJSON(b []byte) error {
+	myConverter := converter.StringConverterFactory("string")
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
+		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -171,13 +231,18 @@ func (c ApiPolicyFunctionRespEffectMode) MarshalJSON() ([]byte, error) {
 
 func (c *ApiPolicyFunctionRespEffectMode) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

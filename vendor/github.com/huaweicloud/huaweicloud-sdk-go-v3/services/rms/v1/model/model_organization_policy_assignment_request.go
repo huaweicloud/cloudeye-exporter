@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 组织合规规则请求体。
+// OrganizationPolicyAssignmentRequest 组织合规规则请求体。
 type OrganizationPolicyAssignmentRequest struct {
 
 	// 需要排除配置规则的帐号。

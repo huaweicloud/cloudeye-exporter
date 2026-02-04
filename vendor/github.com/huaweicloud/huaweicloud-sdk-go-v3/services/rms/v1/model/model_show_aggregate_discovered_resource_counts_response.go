@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowAggregateDiscoveredResourceCountsResponse Response Object
 type ShowAggregateDiscoveredResourceCountsResponse struct {
 
 	// 资源计数进行分组的键。

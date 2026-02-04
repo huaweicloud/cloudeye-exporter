@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源概要信息
+// ResourceSummaryResponseItem 资源概要信息
 type ResourceSummaryResponseItem struct {
 
 	// 云服务名称

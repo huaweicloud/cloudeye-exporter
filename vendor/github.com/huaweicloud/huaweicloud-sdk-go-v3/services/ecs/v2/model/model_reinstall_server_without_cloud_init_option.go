@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 重装操作系统body。
+// ReinstallServerWithoutCloudInitOption 重装操作系统body。
 type ReinstallServerWithoutCloudInitOption struct {
 
 	// 云服务器管理员帐户的初始登录密码。  其中，Windows管理员帐户的用户名为Administrator。  建议密码复杂度如下：  - 长度为8-26位。 - 密码至少必须包含大写字母、小写字母、数字和特殊字符（!@$%^-_=+[{}]:,./?）中的三种。  > 说明： >  - 对于Windows弹性云服务器，密码不能包含用户名或用户名的逆序，不能包含用户名中超过两个连续字符的部分。 - adminpass和keyname不能同时为空。
@@ -20,6 +20,8 @@ type ReinstallServerWithoutCloudInitOption struct {
 
 	// 取值为withStopServer ，支持开机状态下切换弹性云服务器操作系统。 mode取值为withStopServer时，对开机状态的弹性云服务器执行切换操作系统操作，系统自动对云服务器先执行关机，再切换操作系统。
 	Mode *string `json:"mode,omitempty"`
+
+	Metadata *ReinstallSeverMetadataWithoutCloudInitOption `json:"metadata,omitempty"`
 }
 
 func (o ReinstallServerWithoutCloudInitOption) String() string {

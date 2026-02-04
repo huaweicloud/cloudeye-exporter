@@ -6,13 +6,14 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowInterRegionBandwidthResponse Response Object
 type ShowInterRegionBandwidthResponse struct {
-	InterRegionBandwidth *InterRegionBandwidth `json:"inter_region_bandwidth,omitempty"`
 
-	// 请求ID。
-	RequestId      *string `json:"request_id,omitempty"`
-	HttpStatusCode int     `json:"-"`
+	// 资源ID标识符。
+	RequestId string `json:"request_id"`
+
+	InterRegionBandwidth *InterRegionBandwidth `json:"inter_region_bandwidth"`
+	HttpStatusCode       int                   `json:"-"`
 }
 
 func (o ShowInterRegionBandwidthResponse) String() string {

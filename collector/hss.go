@@ -30,8 +30,8 @@ func (getter HSSInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.Metric
 			metrics := buildSingleDimensionMetrics(hssEpIdMetricNames, "SYS.HSS", "hss_enterprise_project_id", enterpriseProject.Id)
 			filterMetrics = append(filterMetrics, metrics...)
 			info := labelInfo{
-				Name:  []string{"epName", "epId"},
-				Value: []string{enterpriseProject.Name, enterpriseProject.Id},
+				Name:  []string{"epId"},
+				Value: []string{enterpriseProject.Id},
 			}
 			resourceInfos[GetResourceKeyFromMetricInfo(metrics[0])] = info
 		}

@@ -170,6 +170,7 @@ func clearLineBreaks(template string, args ...interface{}) string {
 		message = strings.Replace(message, "\f", "", -1)
 		message = strings.Replace(message, "\r", "", -1)
 		message = strings.Replace(message, "\u007f", "", -1)
+		message = strings.Replace(message, "\u0008", "", -1)
 	}
 	return message
 }

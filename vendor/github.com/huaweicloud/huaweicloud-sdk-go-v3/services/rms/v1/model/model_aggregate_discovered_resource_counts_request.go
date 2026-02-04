@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 查询聚合器中帐号资源计数请求体。
+// AggregateDiscoveredResourceCountsRequest 查询聚合器中帐号资源计数请求体。
 type AggregateDiscoveredResourceCountsRequest struct {
 
 	// 资源聚合器ID。

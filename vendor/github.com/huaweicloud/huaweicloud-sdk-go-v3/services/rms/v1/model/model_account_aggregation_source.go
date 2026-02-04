@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 聚合数据的源帐号。
+// AccountAggregationSource 聚合数据的源帐号。
 type AccountAggregationSource struct {
 
 	// 帐号列表。

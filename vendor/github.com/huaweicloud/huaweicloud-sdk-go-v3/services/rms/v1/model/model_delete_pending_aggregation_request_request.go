@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// DeletePendingAggregationRequestRequest Request Object
 type DeletePendingAggregationRequestRequest struct {
 
 	// 请求聚合数据的帐号ID。

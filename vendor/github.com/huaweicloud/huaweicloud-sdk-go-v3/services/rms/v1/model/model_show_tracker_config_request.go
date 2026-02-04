@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowTrackerConfigRequest Request Object
 type ShowTrackerConfigRequest struct {
 }
 

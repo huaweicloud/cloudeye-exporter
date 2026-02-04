@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// CountAllResourcesResponse Response Object
 type CountAllResourcesResponse struct {
 
 	// 资源总数

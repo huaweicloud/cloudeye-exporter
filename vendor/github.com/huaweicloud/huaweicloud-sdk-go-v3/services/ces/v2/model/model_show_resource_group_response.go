@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowResourceGroupResponse Response Object
 type ShowResourceGroupResponse struct {
 
 	// 资源分组的名称
@@ -23,13 +23,13 @@ type ShowResourceGroupResponse struct {
 	// 资源分组归属企业项目ID
 	EnterpriseProjectId *string `json:"enterprise_project_id,omitempty"`
 
-	// 资源分组创建方式，取值只能为EPS（同步企业项目）,TAG（标签动态匹配）,Manual（手动添加）
+	// 资源分组添加资源方式，取值只能为EPS（同步企业项目）,TAG（标签动态匹配）,Manual（手动添加）
 	Type *ShowResourceGroupResponseType `json:"type,omitempty"`
 
 	// 该资源分组内包含的资源来源的企业项目ID，type为EPS时必传
 	AssociationEpIds *[]string `json:"association_ep_ids,omitempty"`
 
-	// 标签动态匹配时的关联标签,type为TAG时必传
+	// 标签动态匹配时的关联标签,type为TAG时该字段不为空
 	Tags           *[]ResourceGroupTagRelation `json:"tags,omitempty"`
 	HttpStatusCode int                         `json:"-"`
 }
@@ -77,13 +77,18 @@ func (c ShowResourceGroupResponseType) MarshalJSON() ([]byte, error) {
 
 func (c *ShowResourceGroupResponseType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

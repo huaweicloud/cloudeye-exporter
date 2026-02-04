@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-// databases返回参数
+// GetDatabases databases返回参数
 type GetDatabases struct {
 
 	// 分片数。
 	Dbslot int32 `json:"dbslot"`
 
-	// 分片名称.
+	// 分片名称。
 	Name string `json:"name"`
 
 	// 状态。

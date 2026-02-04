@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowResourceDetailRequest Request Object
 type ShowResourceDetailRequest struct {
 
 	// 资源ID

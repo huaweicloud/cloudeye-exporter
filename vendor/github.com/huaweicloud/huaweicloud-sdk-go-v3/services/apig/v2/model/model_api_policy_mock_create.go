@@ -20,7 +20,7 @@ type ApiPolicyMockCreate struct {
 	// 策略后端名称。字符串由中文、英文字母、数字、下划线组成，且只能以中文或英文开头。
 	Name string `json:"name"`
 
-	// 后端参数列表
+	// 后端参数列表，后端类型为GRPC时不支持配置
 	BackendParams *[]BackendParamBase `json:"backend_params,omitempty"`
 
 	// 策略条件列表
@@ -69,13 +69,18 @@ func (c ApiPolicyMockCreateEffectMode) MarshalJSON() ([]byte, error) {
 
 func (c *ApiPolicyMockCreateEffectMode) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

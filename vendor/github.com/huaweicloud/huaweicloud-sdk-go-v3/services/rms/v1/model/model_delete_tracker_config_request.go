@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// DeleteTrackerConfigRequest Request Object
 type DeleteTrackerConfigRequest struct {
 }
 

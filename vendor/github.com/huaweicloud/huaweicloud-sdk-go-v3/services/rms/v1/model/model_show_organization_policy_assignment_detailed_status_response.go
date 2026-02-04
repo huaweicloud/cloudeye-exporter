@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowOrganizationPolicyAssignmentDetailedStatusResponse Response Object
 type ShowOrganizationPolicyAssignmentDetailedStatusResponse struct {
 
 	// 组织合规规则部署详细状态结果列表。

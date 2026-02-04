@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowTrackerConfigResponse Response Object
 type ShowTrackerConfigResponse struct {
 	Channel *ChannelConfigBody `json:"channel,omitempty"`
 

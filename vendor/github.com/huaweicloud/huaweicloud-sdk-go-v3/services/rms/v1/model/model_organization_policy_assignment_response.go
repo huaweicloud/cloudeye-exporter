@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 组织合规规则部署返回。
+// OrganizationPolicyAssignmentResponse 组织合规规则部署返回。
 type OrganizationPolicyAssignmentResponse struct {
 
 	// 组织合规规则创建者。

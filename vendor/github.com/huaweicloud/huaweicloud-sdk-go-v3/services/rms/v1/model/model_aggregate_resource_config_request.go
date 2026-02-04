@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 查询源帐号中的特定资源聚合的配置项请求体。
+// AggregateResourceConfigRequest 查询源帐号中的特定资源聚合的配置项请求体。
 type AggregateResourceConfigRequest struct {
 
 	// 资源聚合器ID。

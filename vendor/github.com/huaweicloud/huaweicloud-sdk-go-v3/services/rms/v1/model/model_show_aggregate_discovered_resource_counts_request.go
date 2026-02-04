@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowAggregateDiscoveredResourceCountsRequest Request Object
 type ShowAggregateDiscoveredResourceCountsRequest struct {
 	Body *AggregateDiscoveredResourceCountsRequest `json:"body,omitempty"`
 }

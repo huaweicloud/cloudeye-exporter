@@ -17,16 +17,16 @@ type Policy struct {
 	// 聚合方式, 支持的值为(average|min|max|sum)
 	Filter string `json:"filter"`
 
-	// 阈值符号, 支持的值为(>|<|>=|<=|=|><)
+	// 告警阈值的比较条件，支持的值为(>|<|>=|<=|=|!=|cycle_decrease|cycle_increase|cycle_wave)，cycle_decrease为环比下降，cycle_increase为环比上升，cycle_wave为环比波动
 	ComparisonOperator string `json:"comparison_operator"`
 
 	// 阈值
-	Value float64 `json:"value"`
+	Value *float64 `json:"value,omitempty"`
 
 	// 单位
 	Unit *string `json:"unit,omitempty"`
 
-	// 次数
+	// 告警连续触发次数，事件告警时参数值为1~180（包括1和180）；指标告警和站点告警时，次数采用枚举值，枚举值分别为：1、2、3、4、5、10、15、30、60、90、120、180
 	Count int32 `json:"count"`
 
 	// 告警抑制时间，单位为秒，对应页面上创建告警规则时告警策略最后一个字段，该字段主要为解决告警频繁的问题，0代表不抑制，满足条件即告警；300代表满足告警触发条件后每5分钟告警一次；

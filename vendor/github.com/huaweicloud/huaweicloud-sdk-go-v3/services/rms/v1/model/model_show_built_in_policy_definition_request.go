@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowBuiltInPolicyDefinitionRequest Request Object
 type ShowBuiltInPolicyDefinitionRequest struct {
 
 	// 策略ID

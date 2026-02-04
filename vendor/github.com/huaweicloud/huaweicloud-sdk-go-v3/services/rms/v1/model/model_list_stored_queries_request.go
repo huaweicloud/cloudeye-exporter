@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListStoredQueriesRequest Request Object
 type ListStoredQueriesRequest struct {
 
 	// 最大的返回数量

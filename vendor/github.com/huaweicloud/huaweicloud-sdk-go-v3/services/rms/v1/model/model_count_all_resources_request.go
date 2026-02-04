@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// CountAllResourcesRequest Request Object
 type CountAllResourcesRequest struct {
 
 	// 资源ID

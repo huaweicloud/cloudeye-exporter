@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowConfigurationAggregatorRequest Request Object
 type ShowConfigurationAggregatorRequest struct {
 
 	// 资源聚合器ID。

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 云服务器规格的扩展字段。
+// FlavorExtraSpec 云服务器规格的扩展字段。
 type FlavorExtraSpec struct {
 
 	// 云服务器规格的分类：  - normal：通用型 - entry：通用入门型 - cpuv1：计算I型 - cpuv2：计算II型 - computingv3：通用计算增强型 - kunpeng_computing：鲲鹏通用计算增强型 - kunpeng_highmem：鲲鹏内存优化型 - highmem：内存优化型 - saphana：大内存型 - diskintensive：磁盘增强型 - highio：超高I/O型 - ultracpu：超高性能计算型 - gpu：GPU加速型 - fpga：FPGA加速型 - ascend：AI加速型  > 说明：  - 早期注册的规格该字段为hws:performancetype。
@@ -90,6 +90,9 @@ type FlavorExtraSpec struct {
 	// 存储约束  - 支持磁盘特性，不配置时以UI配置为准。 - scsi，支持scsi - localdisk，支持本地盘 - ib，支持ib
 	Condstorage *string `json:"cond:storage,omitempty"`
 
+	// 存储约束  - 支持磁盘特性，不配置时以UI配置为准。
+	Condstoragetype *string `json:"cond:storage:type,omitempty"`
+
 	// 计算约束  - true，支持在线扩容。 - false或不存在该字段，不支持在线扩容。
 	CondcomputeliveResizable *string `json:"cond:compute:live_resizable,omitempty"`
 
@@ -105,8 +108,26 @@ type FlavorExtraSpec struct {
 	//
 	Quotagpu *string `json:"quota:gpu,omitempty"`
 
+	// 最多支持的弹性网卡个数
+	QuotavifMaxNum *string `json:"quota:vif_max_num,omitempty"`
+
+	// 最多支持的辅助弹性网卡个数
+	QuotasubNetworkInterfaceMaxNum *string `json:"quota:sub_network_interface_max_num,omitempty"`
+
 	// 该规格对应的CPU架构，且仅鲲鹏实例架构规格返回该字段  - 取值为arm64表示CPU架构为鲲鹏计算。
 	EcsinstanceArchitecture *string `json:"ecs:instance_architecture,omitempty"`
+
+	// 该规格是否支持流量镜像。
+	NetworkInterfacetrafficMirroringSupported *string `json:"network_interface:traffic_mirroring_supported,omitempty"`
+
+	// 该规格是否支持QingTian Enclave。
+	SecurityenclaveSupported *string `json:"security:enclave_supported,omitempty"`
+
+	// 该规格的GPU卡信息。  name：GPU名称 memory_mb：GPU显存大小 count：GPU显卡数量 alias_prefix：GPU显卡内部别名
+	Infogpus *string `json:"info:gpus,omitempty"`
+
+	// 该规格的加速器信息。  name：加速器名称 memory_mb：加速器显存大小 count：加速器显卡数量 alias_prefix：加速器显卡内部别名
+	InfoasicAccelerators *string `json:"info:asic_accelerators,omitempty"`
 }
 
 func (o FlavorExtraSpec) String() string {

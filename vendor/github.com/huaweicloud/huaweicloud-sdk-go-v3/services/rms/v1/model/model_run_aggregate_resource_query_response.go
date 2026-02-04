@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// RunAggregateResourceQueryResponse Response Object
 type RunAggregateResourceQueryResponse struct {
 	QueryInfo *QueryInfo `json:"query_info,omitempty"`
 

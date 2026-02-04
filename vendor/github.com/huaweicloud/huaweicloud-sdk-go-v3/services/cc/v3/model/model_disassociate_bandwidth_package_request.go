@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Request Object
+// DisassociateBandwidthPackageRequest Request Object
 type DisassociateBandwidthPackageRequest struct {
 
-	// 带宽包实例ID。
+	// 资源的Id。
 	Id string `json:"id"`
 
 	Body *DisassociateBandwidthPackageRequestBody `json:"body,omitempty"`

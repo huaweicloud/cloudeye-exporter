@@ -5,6 +5,18 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/elb/v3/model"
 )
 
+type BatchAddAvailableZonesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchAddAvailableZonesInvoker) Invoke() (*model.BatchAddAvailableZonesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchAddAvailableZonesResponse), nil
+	}
+}
+
 type BatchCreateMembersInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -26,6 +38,30 @@ func (i *BatchDeleteMembersInvoker) Invoke() (*model.BatchDeleteMembersResponse,
 		return nil, err
 	} else {
 		return result.(*model.BatchDeleteMembersResponse), nil
+	}
+}
+
+type BatchRemoveAvailableZonesInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchRemoveAvailableZonesInvoker) Invoke() (*model.BatchRemoveAvailableZonesResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchRemoveAvailableZonesResponse), nil
+	}
+}
+
+type BatchUpdateMembersInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *BatchUpdateMembersInvoker) Invoke() (*model.BatchUpdateMembersResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.BatchUpdateMembersResponse), nil
 	}
 }
 
@@ -62,6 +98,18 @@ func (i *CreateCertificateInvoker) Invoke() (*model.CreateCertificateResponse, e
 		return nil, err
 	} else {
 		return result.(*model.CreateCertificateResponse), nil
+	}
+}
+
+type CreateCertificatePrivateKeyEchoInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateCertificatePrivateKeyEchoInvoker) Invoke() (*model.CreateCertificatePrivateKeyEchoResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateCertificatePrivateKeyEchoResponse), nil
 	}
 }
 
@@ -134,6 +182,18 @@ func (i *CreateLogtankInvoker) Invoke() (*model.CreateLogtankResponse, error) {
 		return nil, err
 	} else {
 		return result.(*model.CreateLogtankResponse), nil
+	}
+}
+
+type CreateMasterSlavePoolInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateMasterSlavePoolInvoker) Invoke() (*model.CreateMasterSlavePoolResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateMasterSlavePoolResponse), nil
 	}
 }
 
@@ -233,6 +293,18 @@ func (i *DeleteListenerInvoker) Invoke() (*model.DeleteListenerResponse, error) 
 	}
 }
 
+type DeleteListenerForceInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteListenerForceInvoker) Invoke() (*model.DeleteListenerForceResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteListenerForceResponse), nil
+	}
+}
+
 type DeleteLoadBalancerInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -245,6 +317,18 @@ func (i *DeleteLoadBalancerInvoker) Invoke() (*model.DeleteLoadBalancerResponse,
 	}
 }
 
+type DeleteLoadBalancerForceInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteLoadBalancerForceInvoker) Invoke() (*model.DeleteLoadBalancerForceResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteLoadBalancerForceResponse), nil
+	}
+}
+
 type DeleteLogtankInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -254,6 +338,18 @@ func (i *DeleteLogtankInvoker) Invoke() (*model.DeleteLogtankResponse, error) {
 		return nil, err
 	} else {
 		return result.(*model.DeleteLogtankResponse), nil
+	}
+}
+
+type DeleteMasterSlavePoolInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteMasterSlavePoolInvoker) Invoke() (*model.DeleteMasterSlavePoolResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteMasterSlavePoolResponse), nil
 	}
 }
 
@@ -413,6 +509,18 @@ func (i *ListLogtanksInvoker) Invoke() (*model.ListLogtanksResponse, error) {
 	}
 }
 
+type ListMasterSlavePoolsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListMasterSlavePoolsInvoker) Invoke() (*model.ListMasterSlavePoolsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListMasterSlavePoolsResponse), nil
+	}
+}
+
 type ListMembersInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -482,6 +590,18 @@ func (i *ShowCertificateInvoker) Invoke() (*model.ShowCertificateResponse, error
 		return nil, err
 	} else {
 		return result.(*model.ShowCertificateResponse), nil
+	}
+}
+
+type ShowCertificatePrivateKeyEchoInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowCertificatePrivateKeyEchoInvoker) Invoke() (*model.ShowCertificatePrivateKeyEchoResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowCertificatePrivateKeyEchoResponse), nil
 	}
 }
 
@@ -578,6 +698,18 @@ func (i *ShowLogtankInvoker) Invoke() (*model.ShowLogtankResponse, error) {
 		return nil, err
 	} else {
 		return result.(*model.ShowLogtankResponse), nil
+	}
+}
+
+type ShowMasterSlavePoolInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowMasterSlavePoolInvoker) Invoke() (*model.ShowMasterSlavePoolResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowMasterSlavePoolResponse), nil
 	}
 }
 

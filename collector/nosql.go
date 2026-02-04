@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
 	nosql "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/gaussdbfornosql/v3"
@@ -175,6 +174,14 @@ func genReqDefForListDynamoTables() *def.HttpRequestDef {
 }
 
 func getDynamoDbInstances() ([]DynamoTableInfo, error) {
+	// oidc场景下实际使用的是iam token鉴权，iam5接口无法使用token鉴权；
+	// dynamotable查询接口仅支持iam5，不支持iam3；
+	// 因此在oidc场景下，调用dynamotable接口查询资源会报错，影响其他类型nosql资源指标的导出，需去除对dynamotable指标导出的支持；
+	// 后续等dynamotable接口支持iam3后，再开放dynamotable指标的导出
+	if conf.AuthMode == AuthModeOidcToken {
+		return []DynamoTableInfo{}, nil
+	}
+
 	client := getNoSQLClient()
 	var tables []DynamoTableInfo
 	request := &ListDynamoTablesRep{Limit: 100}
@@ -205,7 +212,7 @@ func getDynamoTables(client *nosql.GaussDBforNoSQLClient, request *ListDynamoTab
 
 func getNoSQLClient() *nosql.GaussDBforNoSQLClient {
 	return nosql.NewGaussDBforNoSQLClient(nosql.GaussDBforNoSQLClientBuilder().WithCredential(
-		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("gaussdb-nosql", "v3")).Build())
 }

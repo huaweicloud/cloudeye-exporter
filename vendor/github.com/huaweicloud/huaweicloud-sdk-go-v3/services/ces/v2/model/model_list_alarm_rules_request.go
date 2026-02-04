@@ -6,11 +6,8 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListAlarmRulesRequest Request Object
 type ListAlarmRulesRequest struct {
-
-	// 发送的实体的MIME类型。默认使用application/json; charset=UTF-8。
-	ContentType string `json:"Content-Type"`
 
 	// 告警规则ID
 	AlarmId *string `json:"alarm_id,omitempty"`

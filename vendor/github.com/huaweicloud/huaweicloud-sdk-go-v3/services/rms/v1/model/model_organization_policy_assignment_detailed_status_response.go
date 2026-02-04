@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 组织合规规则部署详细状态。
+// OrganizationPolicyAssignmentDetailedStatusResponse 组织合规规则部署详细状态。
 type OrganizationPolicyAssignmentDetailedStatusResponse struct {
 
 	// 帐号ID。

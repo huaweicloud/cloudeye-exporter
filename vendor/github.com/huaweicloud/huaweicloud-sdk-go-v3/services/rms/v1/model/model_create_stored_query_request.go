@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// CreateStoredQueryRequest Request Object
 type CreateStoredQueryRequest struct {
 	Body *StoredQueryRequestBody `json:"body,omitempty"`
 }

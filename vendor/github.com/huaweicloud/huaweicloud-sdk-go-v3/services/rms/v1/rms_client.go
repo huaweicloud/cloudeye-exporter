@@ -1,21 +1,21 @@
 package v1
 
 import (
-	http_client "github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
+	httpclient "github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/invoker"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/rms/v1/model"
 )
 
 type RmsClient struct {
-	HcClient *http_client.HcHttpClient
+	HcClient *httpclient.HcHttpClient
 }
 
-func NewRmsClient(hcClient *http_client.HcHttpClient) *RmsClient {
+func NewRmsClient(hcClient *httpclient.HcHttpClient) *RmsClient {
 	return &RmsClient{HcClient: hcClient}
 }
 
-func RmsClientBuilder() *http_client.HcHttpClientBuilder {
-	builder := http_client.NewHcHttpClientBuilder().WithCredentialsType("global.Credentials")
+func RmsClientBuilder() *httpclient.HcHttpClientBuilder {
+	builder := httpclient.NewHcHttpClientBuilder().WithCredentialsType("global.Credentials")
 	return builder
 }
 
@@ -124,6 +124,27 @@ func (c *RmsClient) DeletePendingAggregationRequestInvoker(request *model.Delete
 	return &DeletePendingAggregationRequestInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// ListAggregateComplianceByPolicyAssignment 查询聚合合规规则列表
+//
+// 查询合规和不合规规则的列表，其中包含合规和不合规规则的资源数量。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *RmsClient) ListAggregateComplianceByPolicyAssignment(request *model.ListAggregateComplianceByPolicyAssignmentRequest) (*model.ListAggregateComplianceByPolicyAssignmentResponse, error) {
+	requestDef := GenReqDefForListAggregateComplianceByPolicyAssignment()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ListAggregateComplianceByPolicyAssignmentResponse), nil
+	}
+}
+
+// ListAggregateComplianceByPolicyAssignmentInvoker 查询聚合合规规则列表
+func (c *RmsClient) ListAggregateComplianceByPolicyAssignmentInvoker(request *model.ListAggregateComplianceByPolicyAssignmentRequest) *ListAggregateComplianceByPolicyAssignmentInvoker {
+	requestDef := GenReqDefForListAggregateComplianceByPolicyAssignment()
+	return &ListAggregateComplianceByPolicyAssignmentInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
 // ListAggregateDiscoveredResources 查询聚合器中资源的列表
 //
 // 查询资源聚合器中特定资源的列表。
@@ -229,6 +250,27 @@ func (c *RmsClient) RunAggregateResourceQueryInvoker(request *model.RunAggregate
 	return &RunAggregateResourceQueryInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// ShowAggregateComplianceDetailsByPolicyAssignment 查询指定聚合合规规则的评估结果详情
+//
+// 返回指定聚合合规规则的评估结果详情。包含评估了哪些资源，以及每个资源是否符合规则。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *RmsClient) ShowAggregateComplianceDetailsByPolicyAssignment(request *model.ShowAggregateComplianceDetailsByPolicyAssignmentRequest) (*model.ShowAggregateComplianceDetailsByPolicyAssignmentResponse, error) {
+	requestDef := GenReqDefForShowAggregateComplianceDetailsByPolicyAssignment()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ShowAggregateComplianceDetailsByPolicyAssignmentResponse), nil
+	}
+}
+
+// ShowAggregateComplianceDetailsByPolicyAssignmentInvoker 查询指定聚合合规规则的评估结果详情
+func (c *RmsClient) ShowAggregateComplianceDetailsByPolicyAssignmentInvoker(request *model.ShowAggregateComplianceDetailsByPolicyAssignmentRequest) *ShowAggregateComplianceDetailsByPolicyAssignmentInvoker {
+	requestDef := GenReqDefForShowAggregateComplianceDetailsByPolicyAssignment()
+	return &ShowAggregateComplianceDetailsByPolicyAssignmentInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
 // ShowAggregateDiscoveredResourceCounts 查询聚合器中帐号资源的计数
 //
 // 查询聚合器中帐号资源的计数，支持通过过滤器和GroupByKey来统计资源数量。
@@ -248,6 +290,48 @@ func (c *RmsClient) ShowAggregateDiscoveredResourceCounts(request *model.ShowAgg
 func (c *RmsClient) ShowAggregateDiscoveredResourceCountsInvoker(request *model.ShowAggregateDiscoveredResourceCountsRequest) *ShowAggregateDiscoveredResourceCountsInvoker {
 	requestDef := GenReqDefForShowAggregateDiscoveredResourceCounts()
 	return &ShowAggregateDiscoveredResourceCountsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ShowAggregatePolicyAssignmentDetail 查询指定聚合合规规则详情
+//
+// 返回指定聚合合规规则详情。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *RmsClient) ShowAggregatePolicyAssignmentDetail(request *model.ShowAggregatePolicyAssignmentDetailRequest) (*model.ShowAggregatePolicyAssignmentDetailResponse, error) {
+	requestDef := GenReqDefForShowAggregatePolicyAssignmentDetail()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ShowAggregatePolicyAssignmentDetailResponse), nil
+	}
+}
+
+// ShowAggregatePolicyAssignmentDetailInvoker 查询指定聚合合规规则详情
+func (c *RmsClient) ShowAggregatePolicyAssignmentDetailInvoker(request *model.ShowAggregatePolicyAssignmentDetailRequest) *ShowAggregatePolicyAssignmentDetailInvoker {
+	requestDef := GenReqDefForShowAggregatePolicyAssignmentDetail()
+	return &ShowAggregatePolicyAssignmentDetailInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ShowAggregatePolicyStateComplianceSummary 查询聚合器中一个或多个帐户的合规概况
+//
+// 查询聚合器中一个或多个帐户的合规和不合规规则数。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *RmsClient) ShowAggregatePolicyStateComplianceSummary(request *model.ShowAggregatePolicyStateComplianceSummaryRequest) (*model.ShowAggregatePolicyStateComplianceSummaryResponse, error) {
+	requestDef := GenReqDefForShowAggregatePolicyStateComplianceSummary()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ShowAggregatePolicyStateComplianceSummaryResponse), nil
+	}
+}
+
+// ShowAggregatePolicyStateComplianceSummaryInvoker 查询聚合器中一个或多个帐户的合规概况
+func (c *RmsClient) ShowAggregatePolicyStateComplianceSummaryInvoker(request *model.ShowAggregatePolicyStateComplianceSummaryRequest) *ShowAggregatePolicyStateComplianceSummaryInvoker {
+	requestDef := GenReqDefForShowAggregatePolicyStateComplianceSummary()
+	return &ShowAggregatePolicyStateComplianceSummaryInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
 // ShowAggregateResourceConfig 查询源帐号中资源的详情
@@ -840,7 +924,7 @@ func (c *RmsClient) DeleteStoredQueryInvoker(request *model.DeleteStoredQueryReq
 
 // ListSchemas 列举高级查询Schema
 //
-// List Schemas
+// # List Schemas
 //
 // Please refer to HUAWEI cloud API Explorer for details.
 func (c *RmsClient) ListSchemas(request *model.ListSchemasRequest) (*model.ListSchemasResponse, error) {
@@ -903,7 +987,7 @@ func (c *RmsClient) RunQueryInvoker(request *model.RunQueryRequest) *RunQueryInv
 
 // ShowStoredQuery 查询单个高级查询
 //
-// Show Resource Query Language
+// # Show Resource Query Language
 //
 // Please refer to HUAWEI cloud API Explorer for details.
 func (c *RmsClient) ShowStoredQuery(request *model.ShowStoredQueryRequest) (*model.ShowStoredQueryResponse, error) {

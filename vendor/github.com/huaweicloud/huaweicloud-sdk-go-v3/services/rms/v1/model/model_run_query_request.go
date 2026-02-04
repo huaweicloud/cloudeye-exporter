@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// RunQueryRequest Request Object
 type RunQueryRequest struct {
 	Body *QueryRunRequestBody `json:"body,omitempty"`
 }

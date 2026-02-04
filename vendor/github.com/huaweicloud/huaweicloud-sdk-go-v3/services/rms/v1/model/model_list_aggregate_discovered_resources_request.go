@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListAggregateDiscoveredResourcesRequest Request Object
 type ListAggregateDiscoveredResourcesRequest struct {
 
 	// 最大的返回数量

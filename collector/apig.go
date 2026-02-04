@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/auth/basic"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/def"
 	apig "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/apig/v2"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
@@ -120,7 +119,7 @@ func getAllAPIGAppsInstances() ([]APIGAppsInfo, error) {
 
 func getAPIGSClient() *apig.ApigClient {
 	return apig.NewApigClient(apig.ApigClientBuilder().WithCredential(
-		basic.NewCredentialsBuilder().WithAk(conf.AccessKey).WithSk(conf.SecretKey).WithProjectId(conf.ProjectID).Build()).
+		authCredentialMap[conf.AuthMode](RegionServiceType)).
 		WithHttpConfig(GetHttpConfig().WithIgnoreSSLVerification(CloudConf.Global.IgnoreSSLVerify)).
 		WithEndpoint(getEndpoint("apig", "v1.0")).Build())
 }

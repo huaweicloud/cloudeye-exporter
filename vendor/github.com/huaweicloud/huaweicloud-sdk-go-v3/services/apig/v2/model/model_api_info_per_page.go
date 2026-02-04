@@ -10,7 +10,7 @@ import (
 
 type ApiInfoPerPage struct {
 
-	// API名称。  长度为3 ~ 64位的字符串，字符串由中文、英文字母、数字、下划线组成，且只能以英文或中文开头。 > 中文字符必须为UTF-8或者unicode编码。
+	// API名称。  支持汉字、英文、数字、中划线、下划线、点、斜杠、中英文格式下的小括号和冒号、中文格式下的顿号，且只能以英文、汉字和数字开头，3-255个字符。 > 中文字符必须为UTF-8或者unicode编码。
 	Name string `json:"name"`
 
 	// API类型 - 1：公有API - 2：私有API
@@ -19,16 +19,16 @@ type ApiInfoPerPage struct {
 	// API的版本
 	Version *string `json:"version,omitempty"`
 
-	// API的请求协议 - HTTP - HTTPS - BOTH：同时支持HTTP和HTTPS
+	// API的请求协议 - HTTP - HTTPS - BOTH：同时支持HTTP和HTTPS - GRPCS
 	ReqProtocol ApiInfoPerPageReqProtocol `json:"req_protocol"`
 
-	// API的请求方式
+	// API的请求方式，当API的请求协议为GRPC类型协议时请求方式固定为POST。
 	ReqMethod ApiInfoPerPageReqMethod `json:"req_method"`
 
-	// 请求地址。可以包含请求参数，用{}标识，比如/getUserInfo/{userId}，支持 * % - _ . 等特殊字符，总长度不超过512，且满足URI规范。 > 需要服从URI规范。
+	// 请求地址。可以包含请求参数，用{}标识，比如/getUserInfo/{userId}，支持 * % - _ . 等特殊字符，总长度不超过512，且满足URI规范。  > 需要服从URI规范。
 	ReqUri string `json:"req_uri"`
 
-	// API的认证方式 - NONE：无认证 - APP：APP认证 - IAM：IAM认证 - AUTHORIZER：自定义认证
+	// API的认证方式 - NONE：无认证 - APP：APP认证 - IAM：IAM认证 - AUTHORIZER：自定义认证，当auth_type取值为AUTHORIZER时，authorizer_id字段必须传入
 	AuthType ApiInfoPerPageAuthType `json:"auth_type"`
 
 	AuthOpt *AuthOpt `json:"auth_opt,omitempty"`
@@ -39,7 +39,7 @@ type ApiInfoPerPage struct {
 	// API的匹配方式 - SWA：前缀匹配 - NORMAL：正常匹配（绝对匹配） 默认：NORMAL
 	MatchMode *ApiInfoPerPageMatchMode `json:"match_mode,omitempty"`
 
-	// 后端类型 - HTTP：web后端 - FUNCTION：函数工作流 - MOCK：模拟的后端
+	// 后端类型 - HTTP：web后端 - FUNCTION：函数工作流，当backend_type取值为FUNCTION时，func_info字段必须传入 - MOCK：模拟的后端，当backend_type取值为MOCK时，mock_info字段必须传入 - GRPC：grpc后端
 	BackendType ApiInfoPerPageBackendType `json:"backend_type"`
 
 	// API描述。字符长度不超过255 > 中文字符必须为UTF-8或者unicode编码。
@@ -51,16 +51,16 @@ type ApiInfoPerPage struct {
 	// API请求体描述，可以是请求体示例、媒体类型、参数等信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。
 	BodyRemark *string `json:"body_remark,omitempty"`
 
-	// 正常响应示例，描述API的正常返回信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。
+	// 正常响应示例，描述API的正常返回信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。  当API的请求协议为GRPC类型时不支持配置。
 	ResultNormalSample *string `json:"result_normal_sample,omitempty"`
 
-	// 失败返回示例，描述API的异常返回信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。
+	// 失败返回示例，描述API的异常返回信息。字符长度不超过20480 > 中文字符必须为UTF-8或者unicode编码。  当API的请求协议为GRPC类型时不支持配置。
 	ResultFailureSample *string `json:"result_failure_sample,omitempty"`
 
 	// 前端自定义认证对象的ID
 	AuthorizerId *string `json:"authorizer_id,omitempty"`
 
-	// 标签。  支持英文，数字，下划线，且只能以英文开头。支持输入多个标签，不同标签以英文逗号分割。
+	// 标签。  支持英文，数字，中文，特殊符号（-*#%.:_），且只能以中文或英文开头。  默认支持10个标签，如需扩大配额请联系技术工程师修改API_TAG_NUM_LIMIT配置。
 	Tags *[]string `json:"tags,omitempty"`
 
 	// 分组自定义响应ID
@@ -75,8 +75,11 @@ type ApiInfoPerPage struct {
 	// 标签  待废弃，优先使用tags字段
 	Tag *string `json:"tag,omitempty"`
 
-	// 请求内容格式类型：  application/json application/xml multipart/form-date text/plain  暂不支持
+	// 请求内容格式类型：  application/json application/xml multipart/form-data text/plain
 	ContentType *ApiInfoPerPageContentType `json:"content_type,omitempty"`
+
+	// 是否对与FunctionGraph交互场景的body进行Base64编码。仅当content_type为application/json时，可以不对body进行Base64编码。 应用场景： - 自定义认证 - 绑定断路器插件，且断路器后端降级策略为函数后端 - API后端类型为函数工作流
+	IsSendFgBodyBase64 *bool `json:"is_send_fg_body_base64,omitempty"`
 
 	// API编号
 	Id *string `json:"id,omitempty"`
@@ -163,13 +166,18 @@ func (c ApiInfoPerPageType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiInfoPerPageType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("int32")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(int32)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: int32")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(int32); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to int32 error")
 	}
@@ -183,6 +191,7 @@ type ApiInfoPerPageReqProtocolEnum struct {
 	HTTP  ApiInfoPerPageReqProtocol
 	HTTPS ApiInfoPerPageReqProtocol
 	BOTH  ApiInfoPerPageReqProtocol
+	GRPCS ApiInfoPerPageReqProtocol
 }
 
 func GetApiInfoPerPageReqProtocolEnum() ApiInfoPerPageReqProtocolEnum {
@@ -195,6 +204,9 @@ func GetApiInfoPerPageReqProtocolEnum() ApiInfoPerPageReqProtocolEnum {
 		},
 		BOTH: ApiInfoPerPageReqProtocol{
 			value: "BOTH",
+		},
+		GRPCS: ApiInfoPerPageReqProtocol{
+			value: "GRPCS",
 		},
 	}
 }
@@ -209,13 +221,18 @@ func (c ApiInfoPerPageReqProtocol) MarshalJSON() ([]byte, error) {
 
 func (c *ApiInfoPerPageReqProtocol) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -275,13 +292,18 @@ func (c ApiInfoPerPageReqMethod) MarshalJSON() ([]byte, error) {
 
 func (c *ApiInfoPerPageReqMethod) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -325,13 +347,18 @@ func (c ApiInfoPerPageAuthType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiInfoPerPageAuthType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -367,13 +394,18 @@ func (c ApiInfoPerPageMatchMode) MarshalJSON() ([]byte, error) {
 
 func (c *ApiInfoPerPageMatchMode) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -387,6 +419,7 @@ type ApiInfoPerPageBackendTypeEnum struct {
 	HTTP     ApiInfoPerPageBackendType
 	FUNCTION ApiInfoPerPageBackendType
 	MOCK     ApiInfoPerPageBackendType
+	GRPC     ApiInfoPerPageBackendType
 }
 
 func GetApiInfoPerPageBackendTypeEnum() ApiInfoPerPageBackendTypeEnum {
@@ -399,6 +432,9 @@ func GetApiInfoPerPageBackendTypeEnum() ApiInfoPerPageBackendTypeEnum {
 		},
 		MOCK: ApiInfoPerPageBackendType{
 			value: "MOCK",
+		},
+		GRPC: ApiInfoPerPageBackendType{
+			value: "GRPC",
 		},
 	}
 }
@@ -413,13 +449,18 @@ func (c ApiInfoPerPageBackendType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiInfoPerPageBackendType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}
@@ -432,7 +473,7 @@ type ApiInfoPerPageContentType struct {
 type ApiInfoPerPageContentTypeEnum struct {
 	APPLICATION_JSON    ApiInfoPerPageContentType
 	APPLICATION_XML     ApiInfoPerPageContentType
-	MULTIPART_FORM_DATE ApiInfoPerPageContentType
+	MULTIPART_FORM_DATA ApiInfoPerPageContentType
 	TEXT_PLAIN          ApiInfoPerPageContentType
 }
 
@@ -444,8 +485,8 @@ func GetApiInfoPerPageContentTypeEnum() ApiInfoPerPageContentTypeEnum {
 		APPLICATION_XML: ApiInfoPerPageContentType{
 			value: "application/xml",
 		},
-		MULTIPART_FORM_DATE: ApiInfoPerPageContentType{
-			value: "multipart/form-date",
+		MULTIPART_FORM_DATA: ApiInfoPerPageContentType{
+			value: "multipart/form-data",
 		},
 		TEXT_PLAIN: ApiInfoPerPageContentType{
 			value: "text/plain",
@@ -463,13 +504,18 @@ func (c ApiInfoPerPageContentType) MarshalJSON() ([]byte, error) {
 
 func (c *ApiInfoPerPageContentType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

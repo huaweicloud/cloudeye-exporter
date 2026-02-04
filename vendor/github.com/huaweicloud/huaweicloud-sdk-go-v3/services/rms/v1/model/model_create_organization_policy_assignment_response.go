@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// CreateOrganizationPolicyAssignmentResponse Response Object
 type CreateOrganizationPolicyAssignmentResponse struct {
 
 	// 组织合规规则创建者。

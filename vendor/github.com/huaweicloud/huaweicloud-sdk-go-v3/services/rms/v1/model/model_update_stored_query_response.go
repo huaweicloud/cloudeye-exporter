@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// UpdateStoredQueryResponse Response Object
 type UpdateStoredQueryResponse struct {
 
 	// ResourceQL ID

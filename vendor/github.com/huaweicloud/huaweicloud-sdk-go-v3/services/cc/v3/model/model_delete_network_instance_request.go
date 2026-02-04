@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// Request Object
+// DeleteNetworkInstanceRequest Request Object
 type DeleteNetworkInstanceRequest struct {
 
-	// 网络实例ID。
+	// 资源的Id。
 	Id string `json:"id"`
 }
 

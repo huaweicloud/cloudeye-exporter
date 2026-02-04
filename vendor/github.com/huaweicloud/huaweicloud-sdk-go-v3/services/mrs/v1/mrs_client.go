@@ -1,21 +1,21 @@
 package v1
 
 import (
-	http_client "github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
+	httpclient "github.com/huaweicloud/huaweicloud-sdk-go-v3/core"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/invoker"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/mrs/v1/model"
 )
 
 type MrsClient struct {
-	HcClient *http_client.HcHttpClient
+	HcClient *httpclient.HcHttpClient
 }
 
-func NewMrsClient(hcClient *http_client.HcHttpClient) *MrsClient {
+func NewMrsClient(hcClient *httpclient.HcHttpClient) *MrsClient {
 	return &MrsClient{HcClient: hcClient}
 }
 
-func MrsClientBuilder() *http_client.HcHttpClientBuilder {
-	builder := http_client.NewHcHttpClientBuilder()
+func MrsClientBuilder() *httpclient.HcHttpClientBuilder {
+	builder := httpclient.NewHcHttpClientBuilder()
 	return builder
 }
 
@@ -74,6 +74,7 @@ func (c *MrsClient) BatchDeleteClusterTagsInvoker(request *model.BatchDeleteClus
 	return &BatchDeleteClusterTagsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// Deprecated: This function is deprecated and will be removed in the future versions.
 // CreateAndExecuteJob 新增作业并执行（废弃）
 //
 // 如需使用作业管理接口请参考apiv2接口使用，本接口后续不再进行维护。
@@ -91,6 +92,7 @@ func (c *MrsClient) CreateAndExecuteJob(request *model.CreateAndExecuteJobReques
 	}
 }
 
+// Deprecated: This function is deprecated and will be removed in the future versions.
 // CreateAndExecuteJobInvoker 新增作业并执行（废弃）
 func (c *MrsClient) CreateAndExecuteJobInvoker(request *model.CreateAndExecuteJobRequest) *CreateAndExecuteJobInvoker {
 	requestDef := GenReqDefForCreateAndExecuteJob()
@@ -219,6 +221,7 @@ func (c *MrsClient) DeleteClusterTagInvoker(request *model.DeleteClusterTagReque
 	return &DeleteClusterTagInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// Deprecated: This function is deprecated and will be removed in the future versions.
 // DeleteJobExecution 删除作业执行对象（废弃）
 //
 // 如需使用作业管理接口请参考apiv2接口使用，本接口后续不再进行维护。
@@ -235,6 +238,7 @@ func (c *MrsClient) DeleteJobExecution(request *model.DeleteJobExecutionRequest)
 	}
 }
 
+// Deprecated: This function is deprecated and will be removed in the future versions.
 // DeleteJobExecutionInvoker 删除作业执行对象（废弃）
 func (c *MrsClient) DeleteJobExecutionInvoker(request *model.DeleteJobExecutionRequest) *DeleteJobExecutionInvoker {
 	requestDef := GenReqDefForDeleteJobExecution()
@@ -327,6 +331,7 @@ func (c *MrsClient) ListClustersByTagsInvoker(request *model.ListClustersByTagsR
 	return &ListClustersByTagsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// Deprecated: This function is deprecated and will be removed in the future versions.
 // ListExecuteJob 查询作业exe对象列表（废弃）
 //
 // 如需使用作业管理接口请参考apiv2接口使用，本接口后续不再进行维护。
@@ -343,6 +348,7 @@ func (c *MrsClient) ListExecuteJob(request *model.ListExecuteJobRequest) (*model
 	}
 }
 
+// Deprecated: This function is deprecated and will be removed in the future versions.
 // ListExecuteJobInvoker 查询作业exe对象列表（废弃）
 func (c *MrsClient) ListExecuteJobInvoker(request *model.ListExecuteJobRequest) *ListExecuteJobInvoker {
 	requestDef := GenReqDefForListExecuteJob()
@@ -391,6 +397,7 @@ func (c *MrsClient) ShowClusterDetailsInvoker(request *model.ShowClusterDetailsR
 	return &ShowClusterDetailsInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }
 
+// Deprecated: This function is deprecated and will be removed in the future versions.
 // ShowJobExes 查询作业exe对象详情（废弃）
 //
 // 如需使用作业管理接口请参考apiv2接口使用，本接口后续不再进行维护。
@@ -407,6 +414,7 @@ func (c *MrsClient) ShowJobExes(request *model.ShowJobExesRequest) (*model.ShowJ
 	}
 }
 
+// Deprecated: This function is deprecated and will be removed in the future versions.
 // ShowJobExesInvoker 查询作业exe对象详情（废弃）
 func (c *MrsClient) ShowJobExesInvoker(request *model.ShowJobExesRequest) *ShowJobExesInvoker {
 	requestDef := GenReqDefForShowJobExes()
@@ -433,4 +441,46 @@ func (c *MrsClient) UpdateClusterScaling(request *model.UpdateClusterScalingRequ
 func (c *MrsClient) UpdateClusterScalingInvoker(request *model.UpdateClusterScalingRequest) *UpdateClusterScalingInvoker {
 	requestDef := GenReqDefForUpdateClusterScaling()
 	return &UpdateClusterScalingInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ListAvailableZones 查询可用区信息
+//
+// 在创建集群时，需要配置实例所在的可用区ID，可通过该接口查询可用区的ID。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *MrsClient) ListAvailableZones(request *model.ListAvailableZonesRequest) (*model.ListAvailableZonesResponse, error) {
+	requestDef := GenReqDefForListAvailableZones()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ListAvailableZonesResponse), nil
+	}
+}
+
+// ListAvailableZonesInvoker 查询可用区信息
+func (c *MrsClient) ListAvailableZonesInvoker(request *model.ListAvailableZonesRequest) *ListAvailableZonesInvoker {
+	requestDef := GenReqDefForListAvailableZones()
+	return &ListAvailableZonesInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
+}
+
+// ShowMrsVersionMetadata 查询对应版本元数据
+//
+// 查询对应版本元数据。如果参数里指定集群id，则可查询集群更新过补丁之后的最新元数据。
+//
+// Please refer to HUAWEI cloud API Explorer for details.
+func (c *MrsClient) ShowMrsVersionMetadata(request *model.ShowMrsVersionMetadataRequest) (*model.ShowMrsVersionMetadataResponse, error) {
+	requestDef := GenReqDefForShowMrsVersionMetadata()
+
+	if resp, err := c.HcClient.Sync(request, requestDef); err != nil {
+		return nil, err
+	} else {
+		return resp.(*model.ShowMrsVersionMetadataResponse), nil
+	}
+}
+
+// ShowMrsVersionMetadataInvoker 查询对应版本元数据
+func (c *MrsClient) ShowMrsVersionMetadataInvoker(request *model.ShowMrsVersionMetadataRequest) *ShowMrsVersionMetadataInvoker {
+	requestDef := GenReqDefForShowMrsVersionMetadata()
+	return &ShowMrsVersionMetadataInvoker{invoker.NewBaseInvoker(c.HcClient, request, requestDef)}
 }

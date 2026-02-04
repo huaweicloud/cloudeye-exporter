@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowStoredQueryRequest Request Object
 type ShowStoredQueryRequest struct {
 
 	// 查询ID

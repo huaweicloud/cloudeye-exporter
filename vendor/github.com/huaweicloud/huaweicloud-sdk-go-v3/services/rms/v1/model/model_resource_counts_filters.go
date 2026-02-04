@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源计数过滤器。
+// ResourceCountsFilters 资源计数过滤器。
 type ResourceCountsFilters struct {
 
 	// 帐号ID。

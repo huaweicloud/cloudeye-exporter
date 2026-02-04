@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// RunAggregateResourceQueryRequest Request Object
 type RunAggregateResourceQueryRequest struct {
 
 	// 资源聚合器ID。

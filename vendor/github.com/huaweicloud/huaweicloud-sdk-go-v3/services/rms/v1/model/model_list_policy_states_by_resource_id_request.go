@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ListPolicyStatesByResourceIdRequest Request Object
 type ListPolicyStatesByResourceIdRequest struct {
 
 	// 资源ID

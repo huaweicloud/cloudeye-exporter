@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// 表描述信息
+// TableMeta 表描述信息
 type TableMeta struct {
 
 	// 表名
@@ -26,6 +26,12 @@ type TableMeta struct {
 
 	// 表描述信息
 	Comments string `json:"comments"`
+
+	// 分区列以外的所有字段。
+	Columns *[]Column `json:"columns,omitempty"`
+
+	// 分区列的信息。
+	PartitionKeys *[]Column `json:"partition_keys,omitempty"`
 }
 
 func (o TableMeta) String() string {
@@ -75,13 +81,18 @@ func (c TableMetaTableType) MarshalJSON() ([]byte, error) {
 
 func (c *TableMetaTableType) UnmarshalJSON(b []byte) error {
 	myConverter := converter.StringConverterFactory("string")
-	if myConverter != nil {
-		val, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
-		if err == nil {
-			c.value = val.(string)
-			return nil
-		}
+	if myConverter == nil {
+		return errors.New("unsupported StringConverter type: string")
+	}
+
+	interf, err := myConverter.CovertStringToInterface(strings.Trim(string(b[:]), "\""))
+	if err != nil {
 		return err
+	}
+
+	if val, ok := interf.(string); ok {
+		c.value = val
+		return nil
 	} else {
 		return errors.New("convert enum data to string error")
 	}

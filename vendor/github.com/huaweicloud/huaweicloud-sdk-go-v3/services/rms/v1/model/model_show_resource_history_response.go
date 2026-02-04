@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// ShowResourceHistoryResponse Response Object
 type ShowResourceHistoryResponse struct {
 
 	// 资源历史列表

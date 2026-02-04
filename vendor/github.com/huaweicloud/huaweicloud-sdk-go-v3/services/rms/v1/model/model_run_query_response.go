@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Response Object
+// RunQueryResponse Response Object
 type RunQueryResponse struct {
 	QueryInfo *QueryInfo `json:"query_info,omitempty"`
 

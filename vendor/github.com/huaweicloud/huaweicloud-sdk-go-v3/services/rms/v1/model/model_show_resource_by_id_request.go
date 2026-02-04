@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Request Object
+// ShowResourceByIdRequest Request Object
 type ShowResourceByIdRequest struct {
 
 	// 云服务名称

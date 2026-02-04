@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// TrackerConfig对象
+// TrackerConfigBody TrackerConfig对象
 type TrackerConfigBody struct {
 	Channel *ChannelConfigBody `json:"channel"`
 

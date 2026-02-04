@@ -26,6 +26,7 @@ import (
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/config"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/impl"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/region"
+	"github.com/huaweicloud/huaweicloud-sdk-go-v3/core/sdkerr"
 	"reflect"
 	"strings"
 )
@@ -37,11 +38,13 @@ type HcHttpClientBuilder struct {
 	endpoints              []string
 	httpConfig             *config.HttpConfig
 	region                 *region.Region
+	errorHandler           sdkerr.ErrorHandler
 }
 
 func NewHcHttpClientBuilder() *HcHttpClientBuilder {
 	hcHttpClientBuilder := &HcHttpClientBuilder{
 		CredentialsType: []string{"basic.Credentials"},
+		errorHandler:    sdkerr.DefaultErrorHandler{},
 	}
 	return hcHttpClientBuilder
 }
@@ -81,6 +84,12 @@ func (builder *HcHttpClientBuilder) WithCredential(iCredential auth.ICredential)
 	return builder
 }
 
+func (builder *HcHttpClientBuilder) WithErrorHandler(errorHandler sdkerr.ErrorHandler) *HcHttpClientBuilder {
+	builder.errorHandler = errorHandler
+	return builder
+}
+
+// Deprecated: This function may panic under certain circumstances. Use SafeBuild instead.
 func (builder *HcHttpClientBuilder) Build() *HcHttpClient {
 	if builder.httpConfig == nil {
 		builder.httpConfig = config.DefaultHttpConfig()
@@ -110,7 +119,7 @@ func (builder *HcHttpClientBuilder) Build() *HcHttpClient {
 		}
 	}
 	if !match {
-		panic(fmt.Sprintf("Need credential type is %s, actually is %s", builder.CredentialsType, givenCredentialsType))
+		panic(fmt.Errorf("need credential type is %s, actually is %s", builder.CredentialsType, givenCredentialsType))
 	}
 
 	if builder.region != nil {
@@ -128,6 +137,19 @@ func (builder *HcHttpClientBuilder) Build() *HcHttpClient {
 		}
 	}
 
-	hcHttpClient := NewHcHttpClient(defaultHttpClient).WithEndpoints(builder.endpoints).WithCredential(builder.credentials)
+	hcHttpClient := NewHcHttpClient(defaultHttpClient).
+		WithEndpoints(builder.endpoints).
+		WithCredential(builder.credentials).
+		WithErrorHandler(builder.errorHandler)
 	return hcHttpClient
+}
+
+func (builder *HcHttpClientBuilder) SafeBuild() (client *HcHttpClient, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("%v", r)
+		}
+	}()
+	client = builder.Build()
+	return
 }

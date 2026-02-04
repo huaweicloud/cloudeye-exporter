@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源对象
+// ResourceEntity 资源对象
 type ResourceEntity struct {
 
 	// 资源id

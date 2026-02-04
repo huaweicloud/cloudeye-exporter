@@ -6,13 +6,14 @@ import (
 	"strings"
 )
 
-// Response Object
+// CreateAuthorisationResponse Response Object
 type CreateAuthorisationResponse struct {
-	Authorisation *Authorisation `json:"authorisation,omitempty"`
 
-	// 请求ID。
-	RequestId      *string `json:"request_id,omitempty"`
-	HttpStatusCode int     `json:"-"`
+	// 资源ID标识符。
+	RequestId string `json:"request_id"`
+
+	Authorisation  *Authorisation `json:"authorisation"`
+	HttpStatusCode int            `json:"-"`
 }
 
 func (o CreateAuthorisationResponse) String() string {

@@ -197,6 +197,18 @@ func (i *CreateIpInvoker) Invoke() (*model.CreateIpResponse, error) {
 	}
 }
 
+type CreateKillOpRuleInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *CreateKillOpRuleInvoker) Invoke() (*model.CreateKillOpRuleResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.CreateKillOpRuleResponse), nil
+	}
+}
+
 type CreateManualBackupInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -269,6 +281,30 @@ func (i *DeleteInstanceInvoker) Invoke() (*model.DeleteInstanceResponse, error) 
 	}
 }
 
+type DeleteKillOpRuleListInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteKillOpRuleListInvoker) Invoke() (*model.DeleteKillOpRuleListResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteKillOpRuleListResponse), nil
+	}
+}
+
+type DeleteLtsConfigInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteLtsConfigInvoker) Invoke() (*model.DeleteLtsConfigResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteLtsConfigResponse), nil
+	}
+}
+
 type DeleteManualBackupInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -278,6 +314,18 @@ func (i *DeleteManualBackupInvoker) Invoke() (*model.DeleteManualBackupResponse,
 		return nil, err
 	} else {
 		return result.(*model.DeleteManualBackupResponse), nil
+	}
+}
+
+type DeleteReadonlyNodeInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *DeleteReadonlyNodeInvoker) Invoke() (*model.DeleteReadonlyNodeResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.DeleteReadonlyNodeResponse), nil
 	}
 }
 
@@ -506,6 +554,30 @@ func (i *ListInstancesByTagsInvoker) Invoke() (*model.ListInstancesByTagsRespons
 		return nil, err
 	} else {
 		return result.(*model.ListInstancesByTagsResponse), nil
+	}
+}
+
+type ListLtsConfigsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListLtsConfigsInvoker) Invoke() (*model.ListLtsConfigsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListLtsConfigsResponse), nil
+	}
+}
+
+type ListLtsErrorLogsInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ListLtsErrorLogsInvoker) Invoke() (*model.ListLtsErrorLogsResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ListLtsErrorLogsResponse), nil
 	}
 }
 
@@ -845,6 +917,18 @@ func (i *ShowBackupPolicyInvoker) Invoke() (*model.ShowBackupPolicyResponse, err
 	}
 }
 
+type ShowClientNetworkInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowClientNetworkInvoker) Invoke() (*model.ShowClientNetworkResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowClientNetworkResponse), nil
+	}
+}
+
 type ShowConfigurationAppliedHistoryInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -926,6 +1010,18 @@ func (i *ShowJobDetailInvoker) Invoke() (*model.ShowJobDetailResponse, error) {
 		return nil, err
 	} else {
 		return result.(*model.ShowJobDetailResponse), nil
+	}
+}
+
+type ShowKillOpRuleRuleListInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *ShowKillOpRuleRuleListInvoker) Invoke() (*model.ShowKillOpRuleRuleListResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.ShowKillOpRuleRuleListResponse), nil
 	}
 }
 
@@ -1025,6 +1121,18 @@ func (i *ShrinkInstanceNodesInvoker) Invoke() (*model.ShrinkInstanceNodesRespons
 	}
 }
 
+type StopBackupInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *StopBackupInvoker) Invoke() (*model.StopBackupResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.StopBackupResponse), nil
+	}
+}
+
 type SwitchConfigurationInvoker struct {
 	*invoker.BaseInvoker
 }
@@ -1034,6 +1142,18 @@ func (i *SwitchConfigurationInvoker) Invoke() (*model.SwitchConfigurationRespons
 		return nil, err
 	} else {
 		return result.(*model.SwitchConfigurationResponse), nil
+	}
+}
+
+type SwitchInstancePrimaryInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *SwitchInstancePrimaryInvoker) Invoke() (*model.SwitchInstancePrimaryResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.SwitchInstancePrimaryResponse), nil
 	}
 }
 
@@ -1154,6 +1274,30 @@ func (i *UpdateInstanceRemarkInvoker) Invoke() (*model.UpdateInstanceRemarkRespo
 		return nil, err
 	} else {
 		return result.(*model.UpdateInstanceRemarkResponse), nil
+	}
+}
+
+type UpdateKillOpRuleInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateKillOpRuleInvoker) Invoke() (*model.UpdateKillOpRuleResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateKillOpRuleResponse), nil
+	}
+}
+
+type UpdateLtsConfigInvoker struct {
+	*invoker.BaseInvoker
+}
+
+func (i *UpdateLtsConfigInvoker) Invoke() (*model.UpdateLtsConfigResponse, error) {
+	if result, err := i.BaseInvoker.Invoke(); err != nil {
+		return nil, err
+	} else {
+		return result.(*model.UpdateLtsConfigResponse), nil
 	}
 }
 

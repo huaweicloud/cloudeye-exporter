@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// 资源类型
+// ResourceSummaryResponseItemTypes 资源类型
 type ResourceSummaryResponseItemTypes struct {
 
 	// 资源类型名称
