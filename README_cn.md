@@ -269,7 +269,7 @@ EOF
 |云数据库TaurusDB|SYS.GAUSSDB|gaussdb_mysql_instance_id,gaussdb_mysql_node_id|TaurusDB实例ID,TaurusDB节点ID|
 |云数据库TaurusDB|SYS.GAUSSDB|gaussdb_mysql_ha_id,gaussdb_mysql_ha_node_id|TaurusDB经典架构实例ID,TaurusDB经典架构节点ID|
 
-注：OIDC认证方式的详细使用请参考[OIDC认证鉴权最佳实践](best-practices/CCE-OIDC-Best-Practices)
+注：OIDC认证方式的详细使用请参考[OIDC认证鉴权最佳实践](./best-practices/CCE-OIDC-Best-Practices)
 
 5. 指标配置
 cloudeye-exporter支持的指标可在 [支持监控的服务列表](https://support.huaweicloud.com/usermanual-ces/zh-cn_topic_0202622212.html)中查看。若发现您需要的指标没有获取到，可查阅该文档将对应的指标填入metric.yml中。
