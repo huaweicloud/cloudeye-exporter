@@ -21,6 +21,7 @@ type ECSInfo struct{}
 func (getter ECSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]model.MetricInfoList, 0)
+	extendInfo := make(map[string]map[string]string)
 	ecsInfo.Lock()
 	defer ecsInfo.Unlock()
 	if ecsInfo.LabelInfo == nil || time.Now().Unix() > ecsInfo.TTL {
@@ -48,11 +49,17 @@ func (getter ECSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInf
 				keys, values := getTags(server.Tags)
 				info.Name = append(info.Name, keys...)
 				info.Value = append(info.Value, values...)
+				extendInfo[server.ID] = server.DiskMap
 				resourceInfos[GetResourceKeyFromMetricInfo(metrics[0])] = info
 			}
 		}
 		ecsInfo.LabelInfo = resourceInfos
 		ecsInfo.FilterMetrics = filterMetrics
+		tmpMap := make(map[string]interface{})
+		for key, value := range extendInfo {
+			tmpMap[key] = value
+		}
+		ecsInfo.ExtendInfo = tmpMap
 		ecsInfo.TTL = time.Now().Add(GetResourceInfoExpirationTime()).Unix()
 	}
 	return ecsInfo.LabelInfo, ecsInfo.FilterMetrics
@@ -63,6 +70,7 @@ type EcsInstancesInfo struct {
 	IP         string
 	FloatingIP string
 	FixedIP    string
+	DiskMap    map[string]string // key: 磁盘名称(/dev/vda), value: evs_id
 }
 
 func getECSClient() *ecs.EcsClient {
@@ -118,11 +126,21 @@ func getAllServerByEpId(epId string) ([]EcsInstancesInfo, error) {
 					ID: server.Id, Name: server.Name,
 					Tags: tags, EpId: *server.EnterpriseProjectId},
 				IP: ips, FixedIP: fixedIps, FloatingIP: floatingIps,
+				DiskMap: getDiskInfoFromEcsInfo(server.OsExtendedVolumesvolumesAttached),
 			})
 		}
 		*options.Offset += 1
 	}
 	return servers, nil
+}
+
+func getDiskInfoFromEcsInfo(attachedVolumes []ecsmodel.ServerExtendVolumeAttachment) map[string]string {
+	evsMap := make(map[string]string, len(attachedVolumes))
+	for i := range attachedVolumes {
+		devicePath := strings.Split(attachedVolumes[i].Device, "/")
+		evsMap[devicePath[len(devicePath)-1]] = attachedVolumes[i].Id
+	}
+	return evsMap
 }
 
 func getIPFromEcsInfo(addresses map[string][]ecsmodel.ServerAddress) (string, string, string) {
@@ -160,6 +178,7 @@ func getAllServerFromRMS(provider, resourceType string) ([]EcsInstancesInfo, err
 		services[index].Name = *resource.Name
 		services[index].EpId = *resource.EpId
 		services[index].Tags = resource.Tags
+		services[index].DiskMap = getEvsIDFromProperties(&properties)
 		services[index].IP, services[index].FixedIP, services[index].FloatingIP = getIPInfoFromProperties(&properties)
 	}
 	return services, nil
@@ -170,6 +189,10 @@ type EcsProperties struct {
 		Addr         string
 		OsExtIpsType string
 	} `json:"addresses"`
+	ExtVolumesAttached []struct {
+		Id     string `json:"id"`
+		Device string `json:"device"`
+	} `json:"ExtVolumesAttached"`
 }
 
 func getIPInfoFromProperties(properties *EcsProperties) (string, string, string) {
@@ -186,6 +209,15 @@ func getIPInfoFromProperties(properties *EcsProperties) (string, string, string)
 		}
 	}
 	return strings.Join(ips, ","), strings.Join(fixedIps, ","), strings.Join(floatingIps, ",")
+}
+
+func getEvsIDFromProperties(properties *EcsProperties) map[string]string {
+	evsMap := make(map[string]string, len(properties.ExtVolumesAttached))
+	for i := range properties.ExtVolumesAttached {
+		devicePath := strings.Split(properties.ExtVolumesAttached[i].Device, "/")
+		evsMap[devicePath[len(devicePath)-1]] = properties.ExtVolumesAttached[i].Id
+	}
+	return evsMap
 }
 
 type AGTECSInfo struct{}

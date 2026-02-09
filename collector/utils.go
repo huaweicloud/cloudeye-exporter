@@ -50,6 +50,7 @@ type serversInfo struct {
 	TTL           int64
 	LabelInfo     map[string]labelInfo
 	FilterMetrics []model.MetricInfoList
+	ExtendInfo    map[string]interface{}
 	sync.Mutex
 }
 

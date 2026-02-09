@@ -195,6 +195,10 @@ func getDimLabel(metric model.BatchMetricData) labelInfo {
 		label.Name = append(label.Name, strings.ReplaceAll(dim.Name, "-", "_"))
 		label.Value = append(label.Value, getDimValue(metric, dim.Name, dim.Value))
 	}
+	// deepseek用户要求针对agent指标的磁盘维度拼接evsId字段
+	if *metric.Namespace == "AGT.ECS" {
+		getEvsInfoForECS(metric, &label)
+	}
 	return label
 }
 
@@ -365,4 +369,44 @@ func isMetricLabelConflict(fqName string, label labelInfo, metricMap *Prometheus
 		metricMap.Unlock()
 	}
 	return false
+}
+
+func getEvsInfoForECS(metric model.BatchMetricData, label *labelInfo) {
+	instanceID := ""
+	diskName := ""
+
+	for _, dim := range *metric.Dimensions {
+
+		if dim.Name == "instance_id" {
+			instanceID = dim.Value
+		}
+		if dim.Name == "disk" {
+			diskName = getDimValue(metric, dim.Name, dim.Value)
+		}
+	}
+
+	if diskName == "" {
+		return
+	}
+
+	extendInfoMap, ok := ecsInfo.ExtendInfo[instanceID]
+	if !ok {
+		logs.Logger.Warnf("Evs info not found, instanceID is %s", instanceID)
+		return
+	}
+
+	extendMap, mapOk := extendInfoMap.(map[string]string)
+	if !mapOk {
+		logs.Logger.Errorf("Convert map failed, instanceID is %s", instanceID)
+		return
+	}
+
+	evsID, idOk := extendMap[diskName]
+	if !idOk {
+		label.Name = append(label.Name, "evsId")
+		label.Value = append(label.Value, "")
+		return
+	}
+	label.Name = append(label.Name, "evsId")
+	label.Value = append(label.Value, evsID)
 }
