@@ -26,6 +26,7 @@ const (
 	MaxEpsCount                     = 10000
 
 	AuthModePermanentAkSk = "aksk"
+	AuthModeEcsAgency     = "ecsagency"
 	AuthModeOidcToken     = "oidc"
 	GlobalServiceType     = "GlobalService"
 	RegionServiceType     = "RegionService"
