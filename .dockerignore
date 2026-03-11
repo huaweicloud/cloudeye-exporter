@@ -1,0 +1,29 @@
+.git
+.github
+.idea
+.vscode
+**/*.md
+cloudservice_metrics/
+vendor/
+**/*_test.go
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.webp
+.DS_Store
+
+# Terragrunt/Terraform caches
+.terragrunt-cache/
+.terraform/
+**/*.tfstate*
+
+# Local artifacts
+dist/
+bin/
+out/
+cloudeye-exporter
+server.log
+clouds.yml
+grafana_dashboard/
+best-practices/
