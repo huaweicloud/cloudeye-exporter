@@ -1,0 +1,113 @@
+replicaCount: 1
+
+image:
+  repository: cloudeye-exporter
+  tag: ""
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8087
+  name: http
+
+serviceMonitor:
+  enabled: false
+  namespace: ""
+  labels: {}
+  interval: 60s
+  scrapeTimeout: 30s
+  # Comma-separated CES services to scrape. Must match metrics: keys below.
+  services: "SYS.ECS,SYS.RDS,SYS.DCS"
+  relabelings: []
+  metricRelabelings: []
+
+# clouds.yml is mounted from a Secret (must contain the full clouds.yml content).
+# Create the Secret beforehand and reference its name here.
+cloudsSecret:
+  name: ""
+
+# metric.yml — which services and metrics to collect.
+# See cloudservice_metrics/ in the repository for the full list of available metrics per service.
+# Example:
+# metrics:
+#   SYS.ECS:
+#     resource: "rms"
+#     dim_metric_name:
+#       instance_id:
+#         - cpu_util
+#         - mem_util
+#   SYS.RDS:
+#     resource: "rms"
+#     dim_metric_name:
+#       postgresql_cluster_id:
+#         - rds001_cpu_util
+#         - rds002_mem_util
+metrics: {}
+
+logsConfig:
+  business:
+    - level: "info"
+      type: "STDOUT"
+      time_format: "2006-01-02 15:04:05 Z07:00"
+      enabled: true
+
+podSecurityContext:
+  runAsGroup: 1001
+  runAsUser: 1001
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  privileged: false
+  readOnlyRootFilesystem: false
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+
+priorityClassName: ""
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  maxUnavailable: ""
+
+podLabels: {}
+annotations: {}
+
+deployment:
+  labels: {}
+  annotations: {}
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+
+livenessProbe: {}
+
+# readinessProbe: {}
+# Example:
+# readinessProbe:
+#   httpGet:
+#     path: /metrics?services=SYS.ECS,SYS.RDS,SYS.DCS
+#     port: http
+#   initialDelaySeconds: 60
+#   periodSeconds: 60
+#   timeoutSeconds: 60
+#   failureThreshold: 3
+readinessProbe: {}

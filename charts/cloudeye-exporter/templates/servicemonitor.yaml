@@ -1,0 +1,40 @@
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "cloudeye-exporter.fullname" . }}
+  namespace: {{ .Values.serviceMonitor.namespace | default (include "cloudeye-exporter.namespace" .) | quote }}
+  labels:
+    {{- include "cloudeye-exporter.labels" . | nindent 4 }}
+    {{- with .Values.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+    - port: {{ .Values.service.name }}
+      path: /metrics
+      params:
+        services:
+          - {{ .Values.serviceMonitor.services | default "SYS.ECS,SYS.RDS,SYS.DCS" | quote }}
+      {{- if .Values.serviceMonitor.interval }}
+      interval: {{ .Values.serviceMonitor.interval }}
+      {{- end }}
+      {{- if .Values.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      {{- with .Values.serviceMonitor.relabelings }}
+      relabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.serviceMonitor.metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  jobLabel: {{ include "cloudeye-exporter.fullname" . }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace | quote }}
+  selector:
+    matchLabels:
+      {{- include "cloudeye-exporter.selectorLabels" . | nindent 6 }}
+{{- end }}

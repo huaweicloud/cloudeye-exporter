@@ -1,0 +1,14 @@
+apiVersion: v2
+appVersion: v2.0.31
+description: A Helm chart for HuaweiCloud cloudeye-exporter
+home: https://github.com/huaweicloud/cloudeye-exporter
+keywords:
+  - huaweicloud
+  - prometheus
+  - exporter
+  - cloud-eye
+name: cloudeye-exporter
+sources:
+  - https://github.com/huaweicloud/cloudeye-exporter
+type: application
+version: 0.1.0

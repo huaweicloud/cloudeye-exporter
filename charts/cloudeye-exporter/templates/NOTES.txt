@@ -1,0 +1,23 @@
+cloudeye-exporter has been deployed.
+
+Before installing, create a Secret with your clouds.yml:
+
+  kubectl create secret generic {{ .Values.cloudsSecret.name | default "cloudeye-exporter-secret" }} \
+    --from-file=clouds.yml=/path/to/your/clouds.yml \
+    -n {{ .Release.Namespace }}
+
+The clouds.yml format:
+
+  global:
+    prefix: "huaweicloud"
+    scrape_batch_size: 300
+  auth:
+    auth_url: "https://iam.<region>.myhuaweicloud.com/v3"
+    project_name: "<project>"
+    access_key: "<ak>"
+    secret_key: "<sk>"
+    region: "<region>"
+
+Metrics endpoint:
+  kubectl port-forward svc/{{ include "cloudeye-exporter.fullname" . }} 8087:80 -n {{ .Release.Namespace }}
+  curl http://localhost:8087/metrics?services=SYS.ECS,SYS.RDS,SYS.DCS

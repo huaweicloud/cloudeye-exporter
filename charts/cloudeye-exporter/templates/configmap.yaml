@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cloudeye-exporter.fullname" . }}
+  namespace: {{ include "cloudeye-exporter.namespace" . }}
+  labels:
+    {{- include "cloudeye-exporter.labels" . | nindent 4 }}
+data:
+  metric.yml: |
+    {{- if .Values.metrics }}
+    {{- .Values.metrics | toYaml | nindent 4 }}
+    {{- else }}
+    {{- fail "metrics must be set — see cloudservice_metrics/ for available metrics per service" }}
+    {{- end }}
+  logs.yml: |
+    {{- .Values.logsConfig | toYaml | nindent 4 }}

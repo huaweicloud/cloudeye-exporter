@@ -34,4 +34,4 @@ USER nonroot:nonroot
 EXPOSE 8087
 
 ENTRYPOINT ["/usr/local/bin/cloudeye-exporter"]
-CMD ["-config", "/app/clouds.yml"]
+CMD ["--config", "/app/clouds.yml"]
