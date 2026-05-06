@@ -15,6 +15,7 @@ type BMSInfo struct{}
 func (getter BMSInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.MetricInfoList) {
 	resourceInfos := map[string]labelInfo{}
 	filterMetrics := make([]cesmodel.MetricInfoList, 0)
+	extendInfo := make(map[string]map[string]string)
 	bmsInfo.Lock()
 	defer bmsInfo.Unlock()
 	if bmsInfo.LabelInfo == nil || time.Now().Unix() > bmsInfo.TTL {
@@ -36,10 +37,16 @@ func (getter BMSInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.Metric
 				info.Name = append(info.Name, keys...)
 				info.Value = append(info.Value, values...)
 				resourceInfos[GetResourceKeyFromMetricInfo(metrics[0])] = info
+				extendInfo[instance.ID] = instance.DiskMap
 			}
 		}
 		bmsInfo.LabelInfo = resourceInfos
 		bmsInfo.FilterMetrics = filterMetrics
+		tmpMap := make(map[string]interface{})
+		for key, value := range extendInfo {
+			tmpMap[key] = value
+		}
+		bmsInfo.ExtendInfo = tmpMap
 		bmsInfo.TTL = time.Now().Add(GetResourceInfoExpirationTime()).Unix()
 	}
 	return bmsInfo.LabelInfo, bmsInfo.FilterMetrics

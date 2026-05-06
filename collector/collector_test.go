@@ -63,7 +63,9 @@ func TestGetDimValue(t *testing.T) {
 	assert.Equal(t, "0001-0001-0000001", getDimValue(sysECSMetricData, "instance_id", "0001-0001-0000001"))
 	assert.Equal(t, "0001-0001-0000001", getDimValue(agtECSMetricData, "instance_id", "0001-0001-0000001"))
 	assert.Equal(t, "000000000000000", getDimValue(agtECSMetricData, "disk", "000000000000000"))
-	agentDimensions.Store("000000000000000", "vda")
+	agentDimensions.Store("000000000000000", AgentDimensionsValue{
+		originValue: "vda",
+	})
 	assert.Equal(t, "vda", getDimValue(agtECSMetricData, "disk", "000000000000000"))
 }
 
@@ -170,4 +172,169 @@ func TestSetProData1(t *testing.T) {
 	exporter.Collect(nil)
 	exporter.setProData(nil, nil, metricDataArray, resourceInfo, &proMap)
 	assert.Equal(t, 3, len(label.Name))
+}
+
+func TestGetEvsInfoForBMS(t *testing.T) {
+	testInstanceID := "test-instance-id"
+	testDiskName := "vda"
+	testEvsID := "evs-12345"
+
+	// 初始化日志和 patches
+	patches := getPatches()
+	logs.InitLog("")
+	// mock loadAgentDimensions 避免调用 CES client
+	patches.ApplyFunc(loadAgentDimensions, func(instanceID string) error { return nil })
+	defer patches.Reset()
+
+	// 清理 agentDimensions 中测试添加的 key
+	defer func() {
+		agentDimensions.Delete(testDiskName)
+	}()
+
+	// 测试用例1: 正常获取 evsId
+	t.Run("normal case: get evsId successfully", func(t *testing.T) {
+		// 重置 bmsInfo
+		bmsInfo = serversInfo{}
+		bmsInfo.ExtendInfo = map[string]interface{}{
+			testInstanceID: map[string]string{
+				testDiskName: testEvsID,
+			},
+		}
+
+		// 预先存储 agentDimensions，避免调用 loadAgentDimensions
+		agentDimensions.Store(testDiskName, testDiskName)
+
+		namespace := "SERVICE.BMS"
+		metric := model.BatchMetricData{
+			Namespace: &namespace,
+			Dimensions: &[]model.MetricsDimension{
+				{Name: "instance_id", Value: testInstanceID},
+				{Name: "disk", Value: testDiskName},
+			},
+		}
+
+		label := labelInfo{}
+		getEvsInfoForBMS(metric, &label)
+
+		assert.Contains(t, label.Name, "evsId")
+		evsIdx := -1
+		for i, name := range label.Name {
+			if name == "evsId" {
+				evsIdx = i
+				break
+			}
+		}
+		assert.Equal(t, testEvsID, label.Value[evsIdx])
+	})
+
+	// 测试用例2: diskName 为空
+	t.Run("diskName is empty", func(t *testing.T) {
+		bmsInfo = serversInfo{}
+		bmsInfo.ExtendInfo = map[string]interface{}{
+			testInstanceID: map[string]string{
+				testDiskName: testEvsID,
+			},
+		}
+
+		namespace := "SERVICE.BMS"
+		metric := model.BatchMetricData{
+			Namespace: &namespace,
+			Dimensions: &[]model.MetricsDimension{
+				{Name: "instance_id", Value: testInstanceID},
+				{Name: "disk", Value: ""},
+			},
+		}
+
+		label := labelInfo{}
+		getEvsInfoForBMS(metric, &label)
+
+		assert.NotContains(t, label.Name, "evsId")
+	})
+
+	// 测试用例3: instanceID 不在 ExtendInfo 中
+	t.Run("instanceID not found in ExtendInfo", func(t *testing.T) {
+		bmsInfo = serversInfo{}
+		bmsInfo.ExtendInfo = map[string]interface{}{
+			"other-instance": map[string]string{
+				testDiskName: testEvsID,
+			},
+		}
+
+		agentDimensions.Store(testDiskName, testDiskName)
+
+		namespace := "SERVICE.BMS"
+		metric := model.BatchMetricData{
+			Namespace: &namespace,
+			Dimensions: &[]model.MetricsDimension{
+				{Name: "instance_id", Value: testInstanceID},
+				{Name: "disk", Value: testDiskName},
+			},
+		}
+
+		label := labelInfo{}
+		getEvsInfoForBMS(metric, &label)
+
+		// instanceID 不存在时，直接返回，不添加 evsId
+		assert.NotContains(t, label.Name, "evsId")
+	})
+
+	// 测试用例4: extendInfoMap 转换为 map[string]string 失败
+	t.Run("extendInfoMap convert failed", func(t *testing.T) {
+		bmsInfo = serversInfo{}
+		bmsInfo.ExtendInfo = map[string]interface{}{
+			testInstanceID: "not a map", // 错误的类型
+		}
+
+		agentDimensions.Store(testDiskName, testDiskName)
+
+		namespace := "SERVICE.BMS"
+		metric := model.BatchMetricData{
+			Namespace: &namespace,
+			Dimensions: &[]model.MetricsDimension{
+				{Name: "instance_id", Value: testInstanceID},
+				{Name: "disk", Value: testDiskName},
+			},
+		}
+
+		label := labelInfo{}
+		getEvsInfoForBMS(metric, &label)
+
+		// 类型转换失败，不添加 evsId
+		assert.NotContains(t, label.Name, "evsId")
+	})
+
+	// 测试用例5: diskName 不在 map 中
+	t.Run("diskName not found in map", func(t *testing.T) {
+		bmsInfo = serversInfo{}
+		bmsInfo.ExtendInfo = map[string]interface{}{
+			testInstanceID: map[string]string{
+				"other-disk": testEvsID,
+			},
+		}
+
+		agentDimensions.Store(testDiskName, testDiskName)
+
+		namespace := "SERVICE.BMS"
+		metric := model.BatchMetricData{
+			Namespace: &namespace,
+			Dimensions: &[]model.MetricsDimension{
+				{Name: "instance_id", Value: testInstanceID},
+				{Name: "disk", Value: testDiskName},
+			},
+		}
+
+		label := labelInfo{}
+		getEvsInfoForBMS(metric, &label)
+
+		// diskName 不存在时，添加 evsId 但值为空
+		assert.Contains(t, label.Name, "evsId")
+		evsIdx := -1
+		for i, name := range label.Name {
+			if name == "evsId" {
+				evsIdx = i
+				break
+			}
+		}
+		assert.Equal(t, "", label.Value[evsIdx])
+	})
 }

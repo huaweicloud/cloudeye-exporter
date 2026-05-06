@@ -199,6 +199,9 @@ func getDimLabel(metric model.BatchMetricData) labelInfo {
 	if *metric.Namespace == "AGT.ECS" {
 		getEvsInfoForECS(metric, &label)
 	}
+	if *metric.Namespace == "SERVICE.BMS" {
+		getEvsInfoForBMS(metric, &label)
+	}
 	return label
 }
 
@@ -267,6 +270,7 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Co
 				logs.Logger.Debugf("[%s] Start to getBatchMetricData, metric count: %d", exporter.txnKey, len(tmpMetrics))
 				dataList, err := batchQueryMetricData(&tmpMetrics, exporter.From, exporter.To)
 				if err != nil {
+					logs.Logger.Errorf("[%s] Get batch metric data param: %+v", exporter.txnKey, tmpMetrics)
 					return
 				}
 				exporter.setProData(ctx, ch, *dataList, allResourcesInfo, proMap)
@@ -372,6 +376,14 @@ func isMetricLabelConflict(fqName string, label labelInfo, metricMap *Prometheus
 }
 
 func getEvsInfoForECS(metric model.BatchMetricData, label *labelInfo) {
+	getEvsInfo(metric, label, &ecsInfo)
+}
+
+func getEvsInfoForBMS(metric model.BatchMetricData, label *labelInfo) {
+	getEvsInfo(metric, label, &bmsInfo)
+}
+
+func getEvsInfo(metric model.BatchMetricData, label *labelInfo, serverInfo *serversInfo) {
 	instanceID := ""
 	diskName := ""
 
@@ -389,7 +401,7 @@ func getEvsInfoForECS(metric model.BatchMetricData, label *labelInfo) {
 		return
 	}
 
-	extendInfoMap, ok := ecsInfo.ExtendInfo[instanceID]
+	extendInfoMap, ok := serverInfo.ExtendInfo[instanceID]
 	if !ok {
 		logs.Logger.Warnf("Evs info not found, instanceID is %s", instanceID)
 		return

@@ -79,16 +79,9 @@ func (getter OBSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInf
 }
 
 func getTenantId(metric cesmodel.MetricInfoList) string {
-	dimensions := metric.Dimensions
-	if len(dimensions) == 1 && dimensions[0].Name == "tenant_id" {
-		return dimensions[0].Value
-	}
-	dimName := getDimsNameKey(dimensions)
-	if DimNameEquals("tenant_id,http_code", dimName) {
-		for _, dimension := range dimensions {
-			if dimension.Name == "tenant_id" {
-				return dimension.Value
-			}
+	for _, dim := range metric.Dimensions {
+		if dim.Name == "tenant_id" {
+			return dim.Value
 		}
 	}
 	return ""

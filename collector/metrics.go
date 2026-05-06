@@ -2,6 +2,7 @@ package collector
 
 import (
 	"sync"
+	"time"
 
 	ces "github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1"
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
@@ -15,6 +16,11 @@ var (
 	host            string
 	agentDimensions = sync.Map{}
 )
+
+type AgentDimensionsValue struct {
+	originValue string
+	ttl         int64
+}
 
 func getCESClient() *ces.CesClient {
 	return ces.NewCesClient(ces.CesClientBuilder().
@@ -86,31 +92,70 @@ func getAgentOriginValue(instanceID, value string) string {
 		}
 	}
 
-	originV, ok := originValue.(string)
+	originV, ok := originValue.(AgentDimensionsValue)
 	if !ok {
 		return value
 	}
 
-	return originV
+	return originV.originValue
 }
 
 func loadAgentDimensions(instanceID string) error {
 	dimName := cesv2model.GetListAgentDimensionInfoRequestDimNameEnum()
 	dimNames := []cesv2model.ListAgentDimensionInfoRequestDimName{dimName.DISK,
 		dimName.MOUNT_POINT, dimName.GPU, dimName.PROC, dimName.RAID}
+	limit := int32(1000)
+	offset := int32(0)
 	for _, name := range dimNames {
 		request := &cesv2model.ListAgentDimensionInfoRequest{
 			InstanceId: instanceID,
 			DimName:    name,
+			Limit:      &limit,
+			Offset:     &offset,
 		}
-		response, err := getCESClientV2().ListAgentDimensionInfo(request)
-		if err != nil {
-			logs.Logger.Errorf("Failed to list agent dimensions: %s", err.Error())
-			return err
-		}
-		for _, dimension := range *response.Dimensions {
-			agentDimensions.Store(*dimension.Value, *dimension.OriginValue)
+		for {
+			response, err := getCESClientV2().ListAgentDimensionInfo(request)
+			if err != nil {
+				logs.Logger.Errorf("Failed to list agent dimensions: %s", err.Error())
+				return err
+			}
+			if response == nil || response.Dimensions == nil || len(*response.Dimensions) == 0 {
+				break
+			}
+			for _, dimension := range *response.Dimensions {
+				agentDimensions.Store(*dimension.Value, AgentDimensionsValue{
+					originValue: *dimension.OriginValue,
+					ttl:         time.Now().Add(time.Hour).Unix(),
+				})
+			}
+			newOffset := *request.Offset + limit
+			request.Offset = &newOffset
 		}
 	}
 	return nil
+}
+
+func ClearAgentDimensionsCache() {
+	go func() {
+		ticker := time.NewTicker(time.Hour)
+		for range ticker.C {
+			agentDimensions.Range(func(key, value interface{}) bool {
+				dimensionKey, keyOk := key.(string)
+				if !keyOk {
+					agentDimensions.Delete(dimensionKey)
+					return false
+				}
+				dimensionValue, valueOk := value.(AgentDimensionsValue)
+				if !valueOk {
+					agentDimensions.Delete(dimensionKey)
+					return false
+				}
+				unix := time.Now().Unix()
+				if dimensionValue.ttl < unix {
+					agentDimensions.Delete(dimensionKey)
+				}
+				return true
+			})
+		}
+	}()
 }

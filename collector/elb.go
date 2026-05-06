@@ -227,15 +227,17 @@ func buildIpAddressInfo(sysConfigMap map[string][]string, loadBalancer *model.Lo
 	}
 	var ipAddresses []string
 	if loadBalancer.VipAddress != "" {
-		ipAddresses = append(ipAddresses, loadBalancer.VipAddress)
+		ipAddresses = append(ipAddresses, formatIpAddress(loadBalancer.VipAddress))
 	}
 	if loadBalancer.Ipv6VipAddress != "" {
-		// 指标上报时Ipv6地址被进行了符号转换
-		ipv6VipAddress := strings.ReplaceAll(loadBalancer.Ipv6VipAddress, ":", "#")
-		ipAddresses = append(ipAddresses, ipv6VipAddress)
+		ipAddresses = append(ipAddresses, formatIpAddress(loadBalancer.Ipv6VipAddress))
 	}
-	for _, publicIp := range loadBalancer.Publicips {
-		ipAddresses = append(ipAddresses, publicIp.PublicipAddress)
+	if loadBalancer.Publicips != nil && len(loadBalancer.Publicips) > 0 {
+		for _, publicIp := range loadBalancer.Publicips {
+			if publicIp.PublicipAddress != "" {
+				ipAddresses = append(ipAddresses, formatIpAddress(publicIp.PublicipAddress))
+			}
+		}
 	}
 	for _, ipAddress := range ipAddresses {
 		metrics := buildDimensionMetrics(metricNames, "SYS.ELB",
@@ -249,6 +251,10 @@ func buildIpAddressInfo(sysConfigMap map[string][]string, loadBalancer *model.Lo
 		ipAddressInfo.Value = append(ipAddressInfo.Value, info.Value...)
 		resourceInfos[GetResourceKeyFromMetricInfo(metrics[0])] = ipAddressInfo
 	}
+}
+
+func formatIpAddress(ipAddress string) string {
+	return strings.ReplaceAll(ipAddress, ":", "#")
 }
 
 func getResourceMap() {

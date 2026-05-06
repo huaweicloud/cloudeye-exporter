@@ -441,3 +441,4 @@ func TestCleanMergedMetrics(t *testing.T) {
 	// 不应该包含已过期的指标
 	assert.False(t, resultMap["instance-2.mem_util"])
 }
+

@@ -2503,6 +2503,37 @@ SYS.OBS:
       - qos_account_operation_write_tps_max
     tenant_id,http_code:
       - request_code_count
+    tenant_id,cluster:
+      - tenant_total_ConcurrentRequestLimit_usage
+      - tenant_total_ConcurrentRequestLimit_percentage
+      - tenant_total_ConcurrentRequestLimit_threshold
+      - tenant_total_QpsLimit_Get_usage
+      - tenant_total_QpsLimit_Get_percentage
+      - tenant_total_QpsLimit_Get_threshold
+      - tenant_total_QpsLimit_PutPostDelete_usage
+      - tenant_total_QpsLimit_PutPostDelete_percentage
+      - tenant_total_QpsLimit_PutPostDelete_threshold
+      - tenant_total_QpsLimit_List_usage
+      - tenant_total_QpsLimit_List_percentage
+      - tenant_total_QpsLimit_List_threshold
+      - tenant_total_QpsLimit_Total_usage
+      - tenant_total_QpsLimit_Total_percentage
+      - tenant_total_QpsLimit_Total_threshold
+      - tenant_total_BpsLimit_Get_usage
+      - tenant_total_BpsLimit_Get_percentage
+      - tenant_total_BpsLimit_Get_threshold
+      - tenant_total_BpsLimit_PutPost_usage
+      - tenant_total_BpsLimit_PutPost_percentage
+      - tenant_total_BpsLimit_PutPost_threshold
+      - tenant_total_BpsLimit_Total_usage
+      - tenant_total_BpsLimit_Total_percentage
+      - tenant_total_BpsLimit_Total_threshold
+      - tenant_extranet_BpsLimit_Get_usage
+      - tenant_extranet_BpsLimit_Get_percentage
+      - tenant_extranet_BpsLimit_Get_threshold
+      - tenant_extranet_BpsLimit_Put_usage
+      - tenant_extranet_BpsLimit_Put_percentage
+      - tenant_extranet_BpsLimit_Put_threshold
 SYS.DNS:
   dim_metric_name:
     dns_recordset_id:

@@ -119,6 +119,7 @@ func main() {
 
 	http.HandleFunc(collector.CloudConf.Global.MetricPath, handler)
 	http.HandleFunc(collector.CloudConf.Global.EpsInfoPath, epHandler)
+	collector.ClearAgentDimensionsCache()
 	collector.StartServer()
 }
 

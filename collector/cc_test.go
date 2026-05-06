@@ -83,6 +83,7 @@ func TestGetCCClient(t *testing.T) {
 	endpointConfig = map[string]string{
 		"cc": "https://cc.myhuaweicloud.com",
 	}
+	conf.AuthMode = "aksk"
 	ccClient := getCCClient()
 	assert.NotNil(t, ccClient)
 }
