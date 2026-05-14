@@ -476,6 +476,20 @@ var authCredentialMap = map[string]func(serviceType string) auth.ICredential{
 		}
 		return credential
 	},
+	AuthModeEcsAgency: func(serviceType string) auth.ICredential {
+		var credential auth.ICredential
+		// When AK and SK are not set, the Huawei Cloud Go SDK will automatically
+		// invoke the Metadata service to obtain a temporary AK/SK
+		switch serviceType {
+		case GlobalServiceType:
+			credential = global.NewCredentialsBuilder().WithDomainId(conf.DomainID).Build()
+		case RegionServiceType:
+			credential = basic.NewCredentialsBuilder().WithProjectId(conf.ProjectID).Build()
+		default:
+			logs.Logger.Errorf("Invalid service type: %s", serviceType)
+		}
+		return credential
+	},
 	AuthModeOidcToken: func(serviceType string) auth.ICredential {
 		var credential auth.ICredential
 		switch serviceType {
@@ -511,6 +525,9 @@ func InitConfig() error {
 			conf.AccessKey = CloudConf.Auth.AccessKey
 			conf.SecretKey = CloudConf.Auth.SecretKey
 		}
+	} else if AuthMode == AuthModeEcsAgency {
+		conf.AuthMode = AuthModeEcsAgency
+		// AK/SK are obtained from ECS Metadata service
 	} else {
 		fmt.Printf("Auth mode is invalid: %s", AuthMode)
 		return errors.New("Auth mode is invalid")
