@@ -50,16 +50,16 @@ type ListProbeResponse struct {
 }
 
 type Probe struct {
-	ProbeID   string `json:"probe_id"`
-	Operator  string `json:"operator"`
-	Continent string `json:"continent"`
-	Country   string `json:"country"`
-	Province  string `json:"province"`
-	City      string `json:"city"`
-	Label     Label  `json:"label"`
+	ProbeID   string     `json:"probe_id"`
+	Operator  string     `json:"operator"`
+	Continent string     `json:"continent"`
+	Country   string     `json:"country"`
+	Province  string     `json:"province"`
+	City      string     `json:"city"`
+	Label     ProbeLabel `json:"label"`
 }
 
-type Label struct {
+type ProbeLabel struct {
 	EnUs LabelInfo `json:"en-us"`
 	ZhCN LabelInfo `json:"zh-cn"`
 }

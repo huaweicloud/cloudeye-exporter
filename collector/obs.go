@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"strings"
 	"time"
 
 	"github.com/huaweicloud/huaweicloud-sdk-go-v3/services/ces/v1/model"
@@ -33,7 +34,7 @@ func (getter OBSInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricInf
 		metricDimMap := map[string]cesmodel.MetricsDimension{}
 		for _, metric := range filteredMetrics {
 			for _, dimension := range metric.Dimensions {
-				metricDimMap[dimension.Value] = dimension
+				metricDimMap[getMetricDimKey(dimension)] = dimension
 			}
 		}
 
@@ -103,4 +104,14 @@ func getUserInfoFromIAM() map[string]string {
 		userInfoMap[domain.Id] = domain.Name
 	}
 	return userInfoMap
+}
+
+// getMetricDimKey 生成用于与RMS资源name匹配的维度key。
+// OBS桶名允许包含点(.)，但CES的bucket_name维度值将点转义为下划线(_)，
+// 需还原为原始桶名才能与RMS返回的资源name正确匹配。
+func getMetricDimKey(dimension cesmodel.MetricsDimension) string {
+	if dimension.Name == "bucket_name" {
+		return strings.ReplaceAll(dimension.Value, "_", ".")
+	}
+	return dimension.Value
 }

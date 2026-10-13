@@ -12,6 +12,9 @@ import (
 
 func TestNoSQLInfo_GetResourceInfo(t *testing.T) {
 	InitCloudConf("../clouds.yml")
+	conf.AuthMode = "aksk"
+	conf.AccessKey = "test_ak"
+	conf.SecretKey = "test_secret_key"
 	instance := []nosqlmodel.ListInstancesResult{
 		{
 			Id:   "1111",
@@ -60,6 +63,7 @@ func TestNoSQLInfo_GetResourceInfo(t *testing.T) {
 }
 
 func TestNoSQLInfo_GetDynamoDbInstances_ResponseInvalid(t *testing.T) {
+	conf.AuthMode = "aksk"
 	InitCloudConf("../clouds.yml")
 	var dbInstance []DynamoTableInfo
 
@@ -77,6 +81,7 @@ func TestNoSQLInfo_GetDynamoDbInstances_ResponseInvalid(t *testing.T) {
 }
 
 func TestNoSQLInfo_GetDynamoDbInstances_RequestError(t *testing.T) {
+	conf.AuthMode = "aksk"
 	InitCloudConf("../clouds.yml")
 	var dbInstance []DynamoTableInfo
 

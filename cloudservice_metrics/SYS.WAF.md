@@ -17,14 +17,6 @@
 |instance_id<br>（独享实例）|concurrent_connections|并发连接数|count|
 |instance_id<br>（独享实例）|active_connections|活跃连接数|count|
 |instance_id<br>（独享实例）|latest_policy_sync_time|最近一次策略同步的耗时|ms|
-|instance_id<br>（独享实例）|query_per_second|7层查询速率|count/s|
-|instance_id<br>（独享实例）|http_2xx|7层协议返回码（2XX）|count/s|
-|instance_id<br>（独享实例）|http_3xx|7层协议返回码（3XX）|count/s|
-|instance_id<br>（独享实例）|http_4xx|7层协议返回码（4XX）|count/s|
-|instance_id<br>（独享实例）|http_5xx|7层协议返回码（5XX）|count/s|
-|instance_id<br>（独享实例）|http_response_time|7层协议响应时间|ms|
-|instance_id<br>（独享实例）|waf_attack_counts|Web攻击拦截量|count/s|
-|instance_id<br>（独享实例）|waf_attack_percentage|Web攻击拦截占比|%|
 |waf_instance_id<br>（防护域名）|attacks|攻击请求量|次|
 |waf_instance_id<br>（防护域名）|requests|请求量|次|
 |waf_instance_id<br>（防护域名）|waf_http_2xx|WAF返回码（2XX）|次|

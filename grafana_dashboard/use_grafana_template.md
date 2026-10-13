@@ -42,6 +42,7 @@
    **如遇grafana模板不兼容问题请升级grafana版本至10.x以上**
    
    **模板文件获取地址如下:**
+   + [裸金属服务器 BMS](templates/bms_dashboard_template.json)
    + [云搜索服务 CSS](templates/css(es)_dashboard_template.json)
    + [云搜索服务 Koosearch](templates/es_koosearch_template.json)
    + [云专线 DCAAS](templates/dcaas_dashboard_template.json)
@@ -88,6 +89,7 @@
    + [SFS Turbo (EFS)](templates/efs_dashboard_template.json)
    + [全域弹性公网IP和带宽](templates/geip_dashboard_template.json)
    + [分布式数据库中间件 DDM](templates/ddms_dashboard_template.json)
+   + [云化数据中心 CloudDC](templates/clouddc_dashboard_template.json)
 4. 效果展示：
    >ECS:
    > ![img.png](pic/ecs.jpg)

@@ -127,9 +127,10 @@ func (getter ELBInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.Metric
 			if loadBalancerMetricNames, ok := sysConfigMap["lbaas_instance_id"]; ok {
 				metrics := buildSingleDimensionMetrics(loadBalancerMetricNames, "SYS.ELB", "lbaas_instance_id", loadBalancer.Id)
 				filterMetrics = append(filterMetrics, metrics...)
+				v4Ips, v6Ips := getElbPublicIpInfo(loadBalancer)
 				info := labelInfo{
-					Name:  []string{"name", "epId", "vip_address", "provider"},
-					Value: []string{loadBalancer.Name, loadBalancer.EnterpriseProjectId, loadBalancer.VipAddress, loadBalancer.Provider},
+					Name:  []string{"name", "epId", "vip_address", "provider", "public_ip_version4", "public_ip_version6"},
+					Value: []string{loadBalancer.Name, loadBalancer.EnterpriseProjectId, loadBalancer.VipAddress, loadBalancer.Provider, v4Ips, v6Ips},
 				}
 				keys, values := getElbTags(loadBalancer.Tags)
 				info.Name = append(info.Name, keys...)
@@ -156,6 +157,20 @@ func (getter ELBInfo) GetResourceInfo() (map[string]labelInfo, []cesmodel.Metric
 		elbInfo.TTL = time.Now().Add(GetResourceInfoExpirationTime()).Unix()
 	}
 	return elbInfo.LabelInfo, elbInfo.FilterMetrics
+}
+
+func getElbPublicIpInfo(loadBalancer model.LoadBalancer) (string, string) {
+	var v4Ips []string
+	var v6Ips []string
+	for _, pubIpInfo := range loadBalancer.Publicips {
+		if pubIpInfo.IpVersion == 4 {
+			v4Ips = append(v4Ips, pubIpInfo.PublicipAddress)
+		}
+		if pubIpInfo.IpVersion == 6 {
+			v6Ips = append(v6Ips, pubIpInfo.PublicipAddress)
+		}
+	}
+	return strings.Join(v4Ips, ","), strings.Join(v6Ips, ",")
 }
 
 func buildListenerInfo(sysConfigMap map[string][]string, loadBalancer *model.LoadBalancer, info labelInfo, filterMetrics *[]cesmodel.MetricInfoList, resourceInfos map[string]labelInfo) {

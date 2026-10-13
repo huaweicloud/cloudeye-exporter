@@ -21,7 +21,6 @@
 |rds_cluster_id<br>（MySQL实例）|rds017_innodb_log_write_req_count|InnoDB日志写请求频率|次/秒|
 |rds_cluster_id<br>（MySQL实例）|rds018_innodb_log_write_count|InnoDB日志物理写频率|次/秒|
 |rds_cluster_id<br>（MySQL实例）|rds019_innodb_log_fsync_count|InnoDB日志fsync()写频率|次/秒|
-|rds_cluster_id<br>（MySQL实例）|rds020_temp_tbl_count|临时表数量|个|
 |rds_cluster_id<br>（MySQL实例）|rds021_myisam_buf_usage|Key Buffer利用率|比率|
 |rds_cluster_id<br>（MySQL实例）|rds022_myisam_buf_write_hit|Key Buffer写命中率|比率|
 |rds_cluster_id<br>（MySQL实例）|rds023_myisam_buf_read_hit|Key Buffer读命中率|比率|
@@ -40,15 +39,11 @@
 |rds_cluster_id<br>（MySQL实例）|rds036_innodb_ins_row_count|行插入速率|行/秒|
 |rds_cluster_id<br>（MySQL实例）|rds037_innodb_read_row_count|行读取速率|行/秒|
 |rds_cluster_id<br>（MySQL实例）|rds038_innodb_upd_row_count|行更新速率|行/秒|
-|rds_cluster_id<br>（MySQL实例）|rds039_disk_usage|磁盘利用率(已废弃)|%|
 |rds_cluster_id<br>（MySQL实例）|rds039_disk_util|磁盘利用率|%|
 |rds_cluster_id<br>（MySQL实例）|rds047_disk_total_size|磁盘总大小|GB|
 |rds_cluster_id<br>（MySQL实例）|rds048_disk_used_size|磁盘使用量|GB|
 |rds_cluster_id<br>（MySQL实例）|rds049_disk_read_throughput|硬盘读吞吐量|byte/s|
 |rds_cluster_id<br>（MySQL实例）|rds050_disk_write_throughput|硬盘写吞吐量|byte/s|
-|rds_cluster_id<br>（MySQL实例）|rds051_avg_disk_sec_per_read|硬盘读耗时(待废弃)|秒|
-|rds_cluster_id<br>（MySQL实例）|rds052_avg_disk_sec_per_write|硬盘写耗时(待废弃)|秒|
-|rds_cluster_id<br>（MySQL实例）|rds053_avg_disk_queue_length|磁盘平均队列长度||
 |rds_cluster_id<br>（MySQL实例）|rds072_conn_usage|连接数使用率|%|
 |rds_cluster_id<br>（MySQL实例）|rds073_replication_delay|实时复制时延|秒|
 |rds_cluster_id<br>（MySQL实例）|rds074_slow_queries|慢日志个数统计|个/分钟|
@@ -89,7 +84,6 @@
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds003_iops|IOPS|次/秒|
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds004_bytes_in|网络输入吞吐量|byte/s|
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds005_bytes_out|网络输出吞吐量|byte/s|
-|postgresql_cluster_id<br>（PostgreSQL实例）|rds039_disk_usage|磁盘利用率(已废弃)|%|
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds039_disk_util|磁盘利用率|%|
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds040_transaction_logs_usage|事务日志使用量|MB|
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds041_replication_slot_usage|复制插槽使用量|MB|
@@ -102,9 +96,6 @@
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds048_disk_used_size|磁盘使用量|GB|
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds049_disk_read_throughput|硬盘读吞吐量|byte/s|
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds050_disk_write_throughput|硬盘写吞吐量|byte/s|
-|postgresql_cluster_id<br>（PostgreSQL实例）|rds051_avg_disk_sec_per_read|硬盘读耗时(待废弃)|秒|
-|postgresql_cluster_id<br>（PostgreSQL实例）|rds052_avg_disk_sec_per_write|硬盘写耗时(待废弃)|秒|
-|postgresql_cluster_id<br>（PostgreSQL实例）|rds053_avg_disk_queue_length|磁盘平均队列长度||
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds082_tps|TPS|次/秒|
 |postgresql_cluster_id<br>（PostgreSQL实例）|rds083_conn_usage|连接数使用率|比率|
 |postgresql_cluster_id<br>（PostgreSQL实例）|row_per_second|操作行数|Row/s|
@@ -124,7 +115,6 @@
 |postgresql_cluster_id<br>（PostgreSQL实例）|cpu_wait_usage|硬盘IO等待时间占比|%|
 |postgresql_cluster_id<br>（PostgreSQL实例）|io_read_delay|IO读响应延迟|毫秒|
 |postgresql_cluster_id<br>（PostgreSQL实例）|io_write_delay|IO写响应延迟|毫秒|
-|postgresql_cluster_id<br>（PostgreSQL实例）|rds081_qps|QPS|次/秒|
 |postgresql_cluster_id<br>（PostgreSQL实例）|read_count_per_second|读IOPS|次|
 |postgresql_cluster_id<br>（PostgreSQL实例）|write_count_per_second|写IOPS|次|
 |postgresql_cluster_id<br>（PostgreSQL实例）|slow_sql_one_second|已执行1s的SQL数|个|
@@ -156,14 +146,11 @@
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds003_iops|IOPS|次/秒|
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds004_bytes_in|网络输入吞吐量|byte/s|
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds005_bytes_out|网络输出吞吐量|byte/s|
-|rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds039_disk_usage|磁盘利用率(已废弃)|%|
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds039_disk_util|磁盘利用率|%|
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds047_disk_total_size|磁盘总大小|GB|
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds048_disk_used_size|磁盘使用量|GB|
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds049_disk_read_throughput|硬盘读吞吐量|byte/s|
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds050_disk_write_throughput|硬盘写吞吐量|byte/s|
-|rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds051_avg_disk_sec_per_read|硬盘读耗时(待废弃)|秒|
-|rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds052_avg_disk_sec_per_write|硬盘写耗时(待废弃)|秒|
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds053_avg_disk_queue_length|磁盘平均队列长度||
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds054_db_connections_in_use|使用中的数据库连接数|个|
 |rds_cluster_sqlserver_id<br>（Microsoft SQL Server实例）|rds055_transactions_per_sec|平均每秒事务数|个/秒|

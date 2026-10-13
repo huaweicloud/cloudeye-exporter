@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -116,6 +118,16 @@ func main() {
 	getAuthModeFromCommandLine()
 	initConf()
 	initCache()
+
+	collector.StartWriteMetrics()
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigChan
+		logs.Logger.Info("Received shutdown signal, stopping background tasks...")
+		collector.StopWriteMetrics()
+		logs.FlushLogAndExit(0)
+	}()
 
 	http.HandleFunc(collector.CloudConf.Global.MetricPath, handler)
 	http.HandleFunc(collector.CloudConf.Global.EpsInfoPath, epHandler)

@@ -31,17 +31,3 @@
 |p2c_vpn_gateway_id<br>（企业版终端入云VPN网关）|gateway_send_rate|出云带宽|bps|
 |p2c_vpn_gateway_id<br>（企业版终端入云VPN网关）|gateway_recv_rate_usage|入云带宽使用率|percentage(%)|
 |p2c_vpn_gateway_id<br>（企业版终端入云VPN网关）|gateway_send_rate_usage|出云带宽使用率|percentage(%)|
-|vgw_ipsec_connect_id<br>（新VPN连接实例）|connection_status|VPN连接状态||
-|vgw_ipsec_connect_id<br>（新VPN连接实例）|public_average_latency|链路往返平均时延|ms|
-|vgw_ipsec_connect_id<br>（新VPN连接实例）|public_max_latency|链路往返最大时延|ms|
-|vgw_ipsec_connect_id<br>（新VPN连接实例）|public_packet_loss_rate|链路丢包率|percentage(%)|
-|vgw_ipsec_connect_id<br>（新VPN连接实例）|private_average_latency|隧道往返平均时延|ms|
-|vgw_ipsec_connect_id<br>（新VPN连接实例）|private_max_latency|隧道往返最大时延|ms|
-|vgw_ipsec_connect_id<br>（新VPN连接实例）|private_packet_loss_rate|隧道丢包率|percentage(%)|
-|vpn_connection_id<br>（独享型VPN连接）|private_average_latency|隧道往返平均时延|ms|
-|vpn_connection_id<br>（独享型VPN连接）|private_max_latency|隧道往返最大时延|ms|
-|vpn_connection_id<br>（独享型VPN连接）|private_packet_loss_rate|隧道丢包率|percentage(%)|
-|vpn_connection_id<br>（独享型VPN连接）|public_average_latency|链路往返平均时延|ms|
-|vpn_connection_id<br>（独享型VPN连接）|public_max_latency|链路往返最大时延|ms|
-|vpn_connection_id<br>（独享型VPN连接）|public_packet_loss_rate|链路丢包率|percentage(%)|
-|vpn_connection_id<br>（独享型VPN连接）|connection_status|VPN连接状态||

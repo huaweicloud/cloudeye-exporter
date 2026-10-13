@@ -34,6 +34,7 @@ func TestName(t *testing.T) {
 
 func TestInitConfigSecurityModIsTrue(t *testing.T) {
 	SecurityMod = true
+	conf.AuthMode = "aksk"
 	TmpSK = "tmpSK"
 	TmpAK = "tmpAK"
 	CloudConf.Auth.ProjectID = "testProjectId"
@@ -53,6 +54,7 @@ func TestInitConfigSecurityModIsFalse(t *testing.T) {
 	CloudConf.Auth.SecretKey = "tmpAK"
 	CloudConf.Auth.ProjectID = "testProjectId"
 	CloudConf.Auth.ProjectName = "testProjectName"
+	conf.AuthMode = "aksk"
 	err := InitConfig()
 	if err != nil {
 		return
@@ -104,6 +106,7 @@ func TestInitEndpointConfig(t *testing.T) {
 		},
 	}
 
+	logs.InitLog("../logs.yml")
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			patches := testCase.patches()

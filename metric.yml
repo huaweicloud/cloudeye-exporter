@@ -97,13 +97,6 @@ SYS.DCS:
       - hdel
       - sadd
       - smembers
-      - slave_psyncing_opid_gap_max
-      - slave_state_abnormal_count
-      - sync_full
-      - sync_partial_ok
-      - sync_partial_err
-      - aof_current_size
-      - latest_fork_usec
       - rx_controlled
       - bandwidth_usage
       - disk_device_io_util_max
@@ -180,9 +173,6 @@ SYS.DCS:
       - storage_usage
       - sync_full
       - slow_log_counts
-      - disk_io_rt
-      - disk_io_timeout_cnt
-      - node_reboot
       - setex
     dcs_instance_id,dcs_cluster_proxy2_node:
       - node_status
@@ -198,11 +188,6 @@ SYS.DCS:
       - command_avg_rt
       - connections_usage
       - cpu_avg_usage
-      - network_rt
-      - network_timeout_cnt
-      - node_reboot
-      - setex
-      - scan
     dcs_memcached_instance_id:
       - mc_instantaneous_ops
       - memory_usage
@@ -226,7 +211,6 @@ SYS.DCS:
       - mc_cmd_get
       - mc_used_memory_rss
       - mc_used_memory_peak
-      - mc_aof_current_size
       - mc_rejected_connections
       - net_in_throughput
       - net_out_throughput
@@ -254,9 +238,6 @@ SYS.DCS:
       - disk_device_write_requests_rate_avg
       - sys_available_memory
       - mc_commands_processed
-      - mc_sync_full
-      - mc_sync_partial_err
-      - mc_sync_partial_ok
       - mc_touch_misses
 SYS.DCAAS:
   resource: "rms"
@@ -385,7 +366,6 @@ SYS.ES:
       - avg_thread_pool_index_threads
       - avg_thread_pool_force_merge_threads
       - avg_thread_pool_write_rejected
-      - avg_free_fs_size
       - min_free_fs_size
       - avg_jvm_old_gc_count
       - avg_jvm_old_gc_time
@@ -570,7 +550,6 @@ SYS.RDS:
       - rds017_innodb_log_write_req_count
       - rds018_innodb_log_write_count
       - rds019_innodb_log_fsync_count
-      - rds020_temp_tbl_count
       - rds021_myisam_buf_usage
       - rds022_myisam_buf_write_hit
       - rds023_myisam_buf_read_hit
@@ -589,15 +568,11 @@ SYS.RDS:
       - rds036_innodb_ins_row_count
       - rds037_innodb_read_row_count
       - rds038_innodb_upd_row_count
-      - rds039_disk_usage
       - rds039_disk_util
       - rds047_disk_total_size
       - rds048_disk_used_size
       - rds049_disk_read_throughput
       - rds050_disk_write_throughput
-      - rds051_avg_disk_sec_per_read
-      - rds052_avg_disk_sec_per_write
-      - rds053_avg_disk_queue_length
       - rds072_conn_usage
       - rds073_replication_delay
       - rds074_slow_queries
@@ -639,7 +614,6 @@ SYS.RDS:
       - rds003_iops
       - rds004_bytes_in
       - rds005_bytes_out
-      - rds039_disk_usage
       - rds039_disk_util
       - rds040_transaction_logs_usage
       - rds041_replication_slot_usage
@@ -652,9 +626,6 @@ SYS.RDS:
       - rds048_disk_used_size
       - rds049_disk_read_throughput
       - rds050_disk_write_throughput
-      - rds051_avg_disk_sec_per_read
-      - rds052_avg_disk_sec_per_write
-      - rds053_avg_disk_queue_length
       - rds082_tps
       - rds083_conn_usage
       - row_per_second
@@ -674,7 +645,6 @@ SYS.RDS:
       - cpu_wait_usage
       - io_read_delay
       - io_write_delay
-      - rds081_qps
       - read_count_per_second
       - write_count_per_second
       - slow_sql_one_second
@@ -707,14 +677,11 @@ SYS.RDS:
       - rds003_iops
       - rds004_bytes_in
       - rds005_bytes_out
-      - rds039_disk_usage
       - rds039_disk_util
       - rds047_disk_total_size
       - rds048_disk_used_size
       - rds049_disk_read_throughput
       - rds050_disk_write_throughput
-      - rds051_avg_disk_sec_per_read
-      - rds052_avg_disk_sec_per_write
       - rds053_avg_disk_queue_length
       - rds054_db_connections_in_use
       - rds055_transactions_per_sec
@@ -1418,10 +1385,8 @@ SYS.DDS:
       - mongo038_write_throughput
       - mongo039_avg_disk_sec_per_read
       - mongo040_avg_disk_sec_per_write
-      - mongo041_avg_disk_queue_length
       - mongo042_disk_total_size
       - mongo043_disk_used_size
-      - mongo044_swap_usage
       - mongo050_top_total_time
       - mongo051_top_read_time
       - mongo052_top_write_time
@@ -1507,14 +1472,6 @@ SYS.WAF:
       - concurrent_connections
       - active_connections
       - latest_policy_sync_time
-      - query_per_second
-      - http_2xx
-      - http_3xx
-      - http_4xx
-      - http_5xx
-      - http_response_time
-      - waf_attack_counts
-      - waf_attack_percentage
     waf_instance_id:
       - attacks
       - base_protection_counts
@@ -1598,8 +1555,6 @@ SYS.SFS:
       - write_ops
       - rw_ops
       - used_capicity
-      - total_capicity
-      - capicity_usage
     bucket_name:
       - read_bytes_intranet
       - write_bytes_intranet
@@ -1730,22 +1685,6 @@ SYS.VPN:
       - gateway_send_rate
       - gateway_recv_rate_usage
       - gateway_send_rate_usage
-    vgw_ipsec_connect_id:
-      - connection_status
-      - public_average_latency
-      - public_max_latency
-      - public_packet_loss_rate
-      - private_average_latency
-      - private_max_latency
-      - private_packet_loss_rate
-    vpn_connection_id:
-      - private_average_latency
-      - private_max_latency
-      - private_packet_loss_rate
-      - public_average_latency
-      - public_max_latency
-      - public_packet_loss_rate
-      - connection_status
 SYS.DWS:
   dim_metric_name:
     datastore_id:
@@ -1772,7 +1711,6 @@ SYS.DWS:
       - dws020_avg_disk_sec_per_read
       - dws021_avg_disk_sec_per_write
       - dws022_avg_disk_queue_length
-      - dws_023_avg_diskio_util
 SYS.APIC:
   dim_metric_name:
     instance_id:
@@ -2199,7 +2137,6 @@ SYS.OBS:
       - upload_bytes_intranet
       - extranet_processed_and_sent_time_pmb
       - request_list_object_latency
-      - small_object_first_byte_latency
       - request_size_gt_100MB_latency_p99
       - capacity_infrequent_access_multi_az
       - qos_bucket_conn_max
@@ -2210,7 +2147,6 @@ SYS.OBS:
       - intranet_received_time_pmb
       - request_size_gt_100MB_latency_p90
       - request_size_between_10MB_100MB_latency_p95
-      - object_num_archive_medium_object
       - standard_ia_get_object
       - request_put_small_latency
       - object_num_standard_total
@@ -2226,13 +2162,10 @@ SYS.OBS:
       - download_bytes
       - archive_request_delete_bytes
       - request_count_per_second
-      - object_num_infrequent_access_large_object
       - request_put_size_between_4MB_10MB_latency
-      - request_count_monitor_5XX
       - capacity_intelligent_tiering_total
       - request_head_object_latency
       - request_put_size_le_1MB_latency
-      - object_num_infrequent_access_medium_object
       - standard_request_upload_bandwidths
       - request_count_monitor_6XX
       - download_bytes_extranet
@@ -2267,7 +2200,6 @@ SYS.OBS:
       - object_num_intelligent_tiering_frequent
       - request_get_size_between_10MB_100MB_latency
       - total_request_latency
-      - object_num_standard_large_object
       - qos_bucket_conn_threshold
       - capacity_standard
       - download_traffic_infrequent_access
@@ -2275,9 +2207,7 @@ SYS.OBS:
       - qos_bucket_operation_total_tps_max
       - request_count_monitor_7XX
       - request_get_huge_latency
-      - object_num_infrequent_access_small_object
       - request_size_between_1MB_4MB_latency_p99
-      - medium_object_first_byte_latency
       - qos_bucket_operation_list_tps_threshold
       - request_size_gt_100MB_latency_p95
       - request_size_between_4MB_10MB_latency_p99
@@ -2290,11 +2220,9 @@ SYS.OBS:
       - capacity_standard_single_az
       - archive_request_download_bandwidths
       - request_put_size_between_10MB_100MB_latency
-      - object_num_standard_small_object
       - capacity_standard_multi_az
       - download_total_request_latency
       - request_get_large_latency
-      - object_num_archive_small_object
       - qos_bucket_operation_read_tps_threshold
       - get_request_count
       - put_request_count
@@ -2315,18 +2243,14 @@ SYS.OBS:
       - request_get_size_le_1MB_latency
       - cdn_bytes
       - total_request_callback_latency
-      - object_num_archive_large_object
       - qos_bucket_conn_avg
       - qos_bucket_operation_total_bps_avg
       - cdn_traffic
       - request_rename_object_latency
       - object_num_archive_total
       - object_num_all
-      - large_object_first_byte_latency
-      - request_count_monitor_4XX
       - qos_bucket_operation_list_tps_max
       - upload_server_request_latency
-      - object_num_standard_medium_object
       - qos_bucket_operation_write_tps_avg
       - infrequent_request_delete_bytes
       - capacity_intelligent_tiering_frequent
@@ -2359,14 +2283,11 @@ SYS.OBS:
       - infrequent_upload_request_count
       - request_size_between_4MB_10MB_latency_p90
     bucket_name,api_name:
-      - large_object_first_byte_latency
       - request_success_rate
       - total_request_latency
       - request_break_rate
       - effective_request_rate
       - api_request_count_per_second
-      - medium_object_first_byte_latency
-      - small_object_first_byte_latency
     bucket_name,domain_name:
       - upload_traffic_extranet
       - request_count_get_per_second
@@ -2391,8 +2312,6 @@ SYS.OBS:
       - request_count_monitor_3XX
       - upload_bytes_extranet
       - request_count_monitor_7XX
-      - request_count_monitor_4XX
-      - request_count_monitor_5XX
     bucket_name,api_name,http_code:
       - request_code_count
     bucket_name,http_code:
@@ -2409,7 +2328,6 @@ SYS.OBS:
       - qos_account_operation_total_bps_max
       - qos_account_operation_write_tps_avg
       - qos_account_operation_write_tps_threshold
-      - large_object_first_byte_latency
       - request_count_per_second
       - object_num_infrequent_access_total
       - capacity_infrequent_access
@@ -2421,7 +2339,6 @@ SYS.OBS:
       - capacity_intelligent_tiering_frequent
       - object_num_intelligent_tiering_frequent
       - download_bytes_extranet
-      - small_object_first_byte_latency
       - qos_account_operation_write_bps_avg
       - get_fetch_task_concurrency
       - qos_account_operation_total_tps_avg
@@ -2434,34 +2351,27 @@ SYS.OBS:
       - get_mirror_fetch_bandwidths
       - upload_bytes_extranet
       - object_num_infrequent_access_single_az
-      - request_count_monitor_5XX
       - qos_account_operation_read_bps_max
       - capacity_total
       - capacity_infrequent_access_multi_az
-      - object_num_archive_large_object
       - download_bytes_intranet
-      - object_num_archive_small_object
       - object_num_standard_multi_az
       - upload_traffic
       - cdn_bytes
       - qos_account_operation_list_tps_threshold
       - effective_request_rate
       - upload_bytes
-      - object_num_standard_large_object
       - qos_account_conn_avg
       - request_count_delete_per_second
       - request_count_5xx
       - get_mirror_fetch_task_status
       - get_mirror_range_bandwidths
-      - object_num_infrequent_access_medium_object
       - download_traffic_intranet
       - qos_account_operation_list_tps_max
       - download_traffic_infrequent_access
       - capacity_standard_multi_az
       - object_num_intelligent_tiering_archive
       - qos_account_operation_total_bps_threshold
-      - medium_object_first_byte_latency
-      - object_num_infrequent_access_small_object
       - upload_traffic_intranet
       - object_num_intelligent_tiering_total
       - capacity_intelligent_tiering_archive
@@ -2477,13 +2387,9 @@ SYS.OBS:
       - capacity_intelligent_tiering_infrequent
       - request_count_4xx
       - qos_account_operation_read_tps_avg
-      - object_num_infrequent_access_large_object
-      - object_num_standard_medium_object
-      - object_num_standard_small_object
       - capacity_standard
       - qos_account_operation_total_tps_threshold
       - object_num_archive_total
-      - object_num_archive_medium_object
       - request_success_rate
       - request_latency_account_p90
       - capacity_standard_single_az
@@ -2495,7 +2401,6 @@ SYS.OBS:
       - request_latency_account_p99
       - capacity_intelligent_tiering_total
       - get_fetch_task_bps
-      - request_count_monitor_4XX
       - download_traffic
       - object_num_standard_total
       - capacity_deep_archive

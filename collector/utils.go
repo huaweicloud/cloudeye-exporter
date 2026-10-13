@@ -114,6 +114,10 @@ func GetResourceKeyFromMetricData(metric model.BatchMetricData) string {
 	if *metric.Namespace == "SYS.MRS" {
 		return getMrsResourceKey(metric)
 	}
+	if *metric.Namespace == "SYS.CloudDC" {
+		return getCloudDCResourceKey(metric)
+	}
+
 	sort.Slice(*metric.Dimensions, func(i, j int) bool {
 		return (*metric.Dimensions)[i].Name < (*metric.Dimensions)[j].Name
 	})
@@ -154,6 +158,18 @@ func getDmsResourceKey(metric model.BatchMetricData) string {
 func getMrsResourceKey(metric model.BatchMetricData) string {
 	for _, dim := range *metric.Dimensions {
 		if dim.Name == "cluster_id" {
+			return dim.Value
+		}
+	}
+	return ""
+}
+
+func getCloudDCResourceKey(metric model.BatchMetricData) string {
+	for _, dim := range *metric.Dimensions {
+		if dim.Name == "host" {
+			return dim.Value
+		}
+		if dim.Name == "rack" {
 			return dim.Value
 		}
 	}
@@ -489,4 +505,23 @@ func ContainDimensionName(dimensions []model.MetricsDimension, dimName string) b
 		}
 	}
 	return false
+}
+
+func getDuplicatedLabelNames(args []string) string {
+	seen := make(map[string]int)
+	for _, v := range args {
+		seen[v]++
+	}
+
+	var duplicates []string
+	for v, count := range seen {
+		if count > 1 {
+			duplicates = append(duplicates, v)
+		}
+	}
+
+	if len(duplicates) == 0 {
+		return ""
+	}
+	return strings.Join(duplicates, ",")
 }

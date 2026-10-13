@@ -36,22 +36,23 @@ func (r *AgentDimensionRefresher) RefreshAgentDimensionWithInterval() {
 }
 
 func (r *AgentDimensionRefresher) GetAgentDimension() {
-	syncInstanceAgentDimensions(&ecsInfo)
+	syncInstanceAgentDimensions(&agtEcsInfo)
 	syncInstanceAgentDimensions(&bmsInfo)
 }
 
 func syncInstanceAgentDimensions(srvsInfo *serversInfo) {
-	var instanceIDs []string
+	instanceIDs := map[string]string{}
 	srvsInfo.Lock()
-	if srvsInfo.LabelInfo != nil {
-		for instanceID := range srvsInfo.LabelInfo {
-			instanceIDs = append(instanceIDs, instanceID)
+	if srvsInfo.FilterMetrics != nil {
+		for _, metric := range srvsInfo.FilterMetrics {
+			instanceID := getServerResourceKeyFromMetricInfo(metric)
+			instanceIDs[instanceID] = instanceID
 		}
 	}
 	srvsInfo.Unlock()
 	// 发生限流时可重试，重试前等待时间递增，最多60s
 	waitSecondArrayForRetry := []int{1, 5, 10, 30, 60, 0}
-	for _, instanceID := range instanceIDs {
+	for instanceID := range instanceIDs {
 		for _, waitSecond := range waitSecondArrayForRetry {
 			err := loadAgentDimensions(instanceID)
 			if err != nil && isErrorTypeForTooManyRequests(err) {
