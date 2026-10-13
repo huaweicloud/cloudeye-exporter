@@ -69,6 +69,27 @@ func TestGetDimValue(t *testing.T) {
 	assert.Equal(t, "vda", getDimValue(agtECSMetricData, "disk", "000000000000000"))
 }
 
+func TestGetDimValue_OBSBucketName(t *testing.T) {
+	// SYS.OBS的bucket_name维度值中下划线还原为点,与RMS返回的原始桶名一致
+	obsNamespace := "SYS.OBS"
+	obsMetricData := model.BatchMetricData{
+		Namespace: &obsNamespace,
+		Dimensions: &[]model.MetricsDimension{
+			{Name: "bucket_name", Value: "test_help"},
+		},
+	}
+	assert.Equal(t, "test.help", getDimValue(obsMetricData, "bucket_name", "test_help"))
+	// SFS等其他服务的bucket_name维度不做还原
+	sfsNamespace := "SYS.SFS"
+	sfsMetricData := model.BatchMetricData{
+		Namespace: &sfsNamespace,
+		Dimensions: &[]model.MetricsDimension{
+			{Name: "bucket_name", Value: "test_help"},
+		},
+	}
+	assert.Equal(t, "test_help", getDimValue(sfsMetricData, "bucket_name", "test_help"))
+}
+
 func TestTransMetric(t *testing.T) {
 	metricInfoList := model.MetricInfoList{
 		Namespace: "SYS.ECS",

@@ -64,7 +64,6 @@
 |cluster_id<br>（CSS集群）|avg_thread_pool_index_threads|Index线程池平均大小||
 |cluster_id<br>（CSS集群）|avg_thread_pool_force_merge_threads|ForceMerge线程池平均大小||
 |cluster_id<br>（CSS集群）|avg_thread_pool_write_rejected|Write队列中平均已拒绝任务数||
-|cluster_id<br>（CSS集群）|avg_free_fs_size|平均可用存储空间|byte|
 |cluster_id<br>（CSS集群）|min_free_fs_size|最小可用存储空间|byte|
 |cluster_id<br>（CSS集群）|avg_jvm_old_gc_count|JVM老年代平均GC次数||
 |cluster_id<br>（CSS集群）|avg_jvm_old_gc_time|JVM老年代平均GC时间|ms|

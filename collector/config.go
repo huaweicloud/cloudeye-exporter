@@ -40,6 +40,17 @@ type CloudAuth struct {
 	OidcInfo  *Oidc  `yaml:"oidc"`
 }
 
+type PromWriteProductConfig struct {
+	Namespace   string `yaml:"namespace"`
+	MaxRoutines int    `yaml:"max_routines"`
+}
+
+type PromWriteConfig struct {
+	Enabled  bool                     `yaml:"enabled"`
+	Url      string                   `yaml:"url"`
+	Products []PromWriteProductConfig `yaml:"products"`
+}
+
 type Global struct {
 	Port                        string `yaml:"port"`
 	Prefix                      string `yaml:"prefix"`
@@ -75,8 +86,9 @@ type Global struct {
 }
 
 type CloudConfig struct {
-	Auth   CloudAuth `yaml:"auth"`
-	Global Global    `yaml:"global"`
+	Auth          CloudAuth       `yaml:"auth"`
+	Global        Global          `yaml:"global"`
+	PromWriteConf PromWriteConfig `yaml:"prometheus_remote_write_conf"`
 }
 
 var CloudConf CloudConfig
@@ -111,6 +123,7 @@ func InitCloudConf(file string) error {
 	if err != nil {
 		return err
 	}
+
 	return err
 }
 
@@ -146,6 +159,10 @@ func SetDefaultConfigValues(config *CloudConfig) {
 
 	if config.Global.MaxRoutines == 0 {
 		config.Global.MaxRoutines = 5
+	}
+
+	if config.Global.MaxRoutines >= 50 {
+		config.Global.MaxRoutines = 50
 	}
 
 	if config.Global.ScrapeBatchSize == 0 {

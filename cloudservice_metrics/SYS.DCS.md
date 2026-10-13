@@ -52,13 +52,6 @@
 |dcs_instance_id<br>（DCS Redis实例）|hdel|HDEL|Count/s|
 |dcs_instance_id<br>（DCS Redis实例）|sadd|SADD|Count/s|
 |dcs_instance_id<br>（DCS Redis实例）|smembers|SMEMBERS|Count/s|
-|dcs_instance_id<br>（DCS Redis实例）|slave_psyncing_opid_gap_max|灾备实例数据同步最大差||
-|dcs_instance_id<br>（DCS Redis实例）|slave_state_abnormal_count|灾备实例状态异常备实例数|Count|
-|dcs_instance_id<br>（DCS Redis实例）|sync_full|全量同步次数||
-|dcs_instance_id<br>（DCS Redis实例）|sync_partial_ok|增量同步成功次数||
-|dcs_instance_id<br>（DCS Redis实例）|sync_partial_err|增量同步出错次数||
-|dcs_instance_id<br>（DCS Redis实例）|aof_current_size|AOF文件当前大小|byte|
-|dcs_instance_id<br>（DCS Redis实例）|latest_fork_usec|最近Fork耗时|ms|
 |dcs_instance_id<br>（DCS Redis实例）|rx_controlled|流控次数|Count|
 |dcs_instance_id<br>（DCS Redis实例）|bandwidth_usage|带宽使用率|%|
 |dcs_instance_id<br>（DCS Redis实例）|disk_device_io_util_max|磁盘读写使用率最大值|%|
@@ -134,9 +127,6 @@
 |dcs_instance_id,dcs_cluster_redis_node<br>（DCS Redis实例,数据节点）|storage_usage|存储空间使用率|%|
 |dcs_instance_id,dcs_cluster_redis_node<br>（DCS Redis实例,数据节点）|sync_full|全量同步次数||
 |dcs_instance_id,dcs_cluster_redis_node<br>（DCS Redis实例,数据节点）|slow_log_counts|慢日志出现次数|count|
-|dcs_instance_id,dcs_cluster_redis_node<br>（DCS Redis实例,数据节点）|disk_io_rt|数据落盘时延|ms|
-|dcs_instance_id,dcs_cluster_redis_node<br>（DCS Redis实例,数据节点）|disk_io_timeout_cnt|数据落盘超时次数|cnt|
-|dcs_instance_id,dcs_cluster_redis_node<br>（DCS Redis实例,数据节点）|node_reboot|节点重启|cnt|
 |dcs_instance_id,dcs_cluster_redis_node<br>（DCS Redis实例,数据节点）|setex|SETEX|Count/s|
 |dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|node_status|实例节点状态||
 |dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|cpu_usage|CPU利用率|%|
@@ -151,11 +141,6 @@
 |dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|command_avg_rt|平均时延|μs|
 |dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|connections_usage|连接数使用率|%|
 |dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|cpu_avg_usage|CPU平均使用率|%|
-|dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|network_rt|网络时延|ms|
-|dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|network_timeout_cnt|网络超时次数|cnt|
-|dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|node_reboot|节点重启|cnt|
-|dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|setex|SETEX|Count/s|
-|dcs_instance_id,dcs_cluster_proxy2_node<br>（DCS Redis实例,Proxy节点 (4.0以上)）|scan|SCAN|Count/s|
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_instantaneous_ops|每秒并发操作数|Count/s|
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|memory_usage|内存利用率|%|
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_connected_clients|活跃的客户端数量||
@@ -178,7 +163,6 @@
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_cmd_get|数据查询请求次数||
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_used_memory_rss|已用内存RSS|byte|
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_used_memory_peak|已用内存峰值|byte|
-|dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_aof_current_size|AOF文件当前大小|byte|
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_rejected_connections|已拒绝的连接数||
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|net_in_throughput|网络输入吞吐量|byte/s|
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|net_out_throughput|网络输出吞吐量|byte/s|
@@ -206,7 +190,4 @@
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|disk_device_write_requests_rate_avg|磁盘写IOPS平均值|Requests/s|
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|sys_available_memory|系统可用内存|byte|
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_commands_processed|处理的命令数||
-|dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_sync_full|全量同步次数||
-|dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_sync_partial_err|增量同步出错次数||
-|dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_sync_partial_ok|增量同步成功次数||
 |dcs_memcached_instance_id<br>（DCS Memcached实例）|mc_touch_misses|数据有效期修改未命中次数||

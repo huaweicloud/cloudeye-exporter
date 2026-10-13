@@ -95,9 +95,18 @@ func (exporter *BaseHuaweiCloudExporter) setProData(ctx context.Context, ch chan
 		label = transformUnit(&metric, label)
 		fqName := prometheus.BuildFQName(exporter.Prefix, replaceName(*metric.Namespace), metric.MetricName)
 
+		if duplicateLabelNames := getDuplicatedLabelNames(label.Name); duplicateLabelNames != "" {
+			logs.Logger.Errorf("[%s] Duplicate label names were found between custom tags and system tags and the metrics export is skipped for this resource(namespace: %s, dimensions info: %v,  labels: %+v).",
+				exporter.txnKey, *metric.Namespace, metric.Dimensions, duplicateLabelNames)
+			continue
+		}
+		metricType := prometheus.GaugeValue
+		if fqName == "huaweicloud_agt_ecs_npu_roce_out_of_order_num" || fqName == "huaweicloud_agt_ecs_npu_roce_new_pkt_rty_num" {
+			metricType = prometheus.CounterValue
+		}
 		tmpMetric, err := prometheus.NewConstMetric(
 			prometheus.NewDesc(fqName, fqName, label.Name, nil),
-			prometheus.GaugeValue, *datapoint.Average, label.Value...)
+			metricType, *datapoint.Average, label.Value...)
 		if err != nil {
 			logs.Logger.Errorf("[%s] New const metric error: %s, fqName: %s, label: %+v",
 				exporter.txnKey, err.Error(), fqName, label)
@@ -206,6 +215,11 @@ func getDimLabel(metric model.BatchMetricData) labelInfo {
 }
 
 func getDimValue(metricData model.BatchMetricData, dimName, dimValue string) string {
+	if *metricData.Namespace == "SYS.OBS" && dimName == "bucket_name" {
+		// OBS桶名允许包含点,但CES的bucket_name维度值将点转义为下划线,
+		// 导出时还原为原始桶名,与RMS返回的资源name保持一致
+		return strings.ReplaceAll(dimValue, "_", ".")
+	}
 	if !isContainsInStringArr(*metricData.Namespace, []string{"AGT.ECS", "SERVICE.BMS"}) {
 		return dimValue
 	}
@@ -278,7 +292,6 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Co
 			tmpMetrics = make([]model.MetricInfo, 0, exporter.ScrapeBatchSize)
 		}
 	}
-
 	wg.Wait()
 	logs.Logger.Debugf("[%s] End to scrape all metric data", exporter.txnKey)
 }

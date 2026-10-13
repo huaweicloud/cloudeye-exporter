@@ -13,6 +13,7 @@ import (
 func TestELBInfo_GetResourceInfo(t *testing.T) {
 	conf.AccessKey = "test_ak"
 	conf.SecretKey = "test_sk"
+	conf.AuthMode = "aksk"
 	metricConf = map[string]MetricConf{
 		"SYS.ELB": {
 			DimMetricName: map[string][]string{"lbaas_instance_id": {"mc_l7_http_2xx"}, "lbaas_instance_id,lbaas_listener_id": {"mc_l7_http_2xx"},
@@ -101,28 +102,28 @@ func TestELBInfo_GetResourceInfo(t *testing.T) {
 	assert.NotEmpty(t, metricInfos)
 	expectLabelInfos := map[string]labelInfo{}
 	expectLabelInfos[""] = labelInfo{
-		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag"},
-		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value"},
+		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag", "public_ip_version4", "public_ip_version6"},
+		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value", "", ""},
 	}
 	expectLabelInfos[".test_listener"] = labelInfo{
-		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag", "listener_name", "port", "protocol"},
-		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value", "test_listener", "8087", "http"},
+		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag", "listener_name", "port", "protocol", "public_ip_version4", "public_ip_version6"},
+		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value", "test_listener", "8087", "http", "", ""},
 	}
 	expectLabelInfos[".test_pool"] = labelInfo{
-		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag", "pool_name", "pool_protocol"},
-		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value", "test_pool", "http"},
+		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag", "pool_name", "pool_protocol", "public_ip_version4", "public_ip_version6"},
+		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value", "test_pool", "http", "", ""},
 	}
 	expectLabelInfos["127.0.0.1."] = labelInfo{
-		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag"},
-		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value"},
+		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag", "public_ip_version4", "public_ip_version6"},
+		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value", "", ""},
 	}
 	expectLabelInfos["cn-north-7."] = labelInfo{
-		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag", "state", "public_border_group", "category", "protocol"},
-		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value", "ACTIVE", "center", "0", "l4,l7"},
+		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag", "state", "public_border_group", "category", "protocol", "public_ip_version4", "public_ip_version6"},
+		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value", "ACTIVE", "center", "0", "l4,l7", "", ""},
 	}
 	expectLabelInfos["test_ipv6_addr."] = labelInfo{
-		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag"},
-		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value"},
+		Name:  []string{"name", "epId", "vip_address", "provider", "test_tag", "public_ip_version4", "public_ip_version6"},
+		Value: []string{"test_lb", "test_epId", "127.0.0.1", "test_provider", "test_tag_value", "", ""},
 	}
 	for key, labelInfo := range labelInfos {
 		assert.NotEmpty(t, expectLabelInfos[key])
@@ -135,16 +136,22 @@ func labelInfoEqual(a, b labelInfo) bool {
 	if len(a.Name) != len(b.Name) {
 		return false
 	}
-	for i := range a.Name {
-		if a.Name[i] != b.Name[i] {
-			return false
-		}
-	}
 	if len(a.Value) != len(b.Value) {
 		return false
 	}
-	for i := range a.Value {
-		if a.Value[i] != b.Value[i] {
+	aMap := map[string]string{}
+	for index, name := range a.Name {
+		aMap[name] = a.Name[index]
+	}
+	bMap := map[string]string{}
+	for index, name := range b.Name {
+		bMap[name] = b.Name[index]
+	}
+	for name, value := range aMap {
+		if _, ok := bMap[name]; !ok {
+			return false
+		}
+		if value != bMap[name] {
 			return false
 		}
 	}

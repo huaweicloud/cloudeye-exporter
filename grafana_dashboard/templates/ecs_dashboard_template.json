@@ -925,7 +925,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "avg(huaweicloud_agt_ecs_disk_usedPercent + on (instance_id) group_left (epId,hostIP,hostname) huaweicloud_sys_ecs_cpu_util*0)",
+          "expr": "avg(huaweicloud_agt_ecs_disk_usedPercent{epId=~\"$EPS\"})",
           "instant": false,
           "legendFormat": "系统磁盘总使用率",
           "range": true,

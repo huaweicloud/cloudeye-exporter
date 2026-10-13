@@ -9,8 +9,6 @@
 |share_id<br>（SFS容量型）|write_ops|写OPS|次/秒|
 |share_id<br>（SFS容量型）|rw_ops|读写OPS|次/秒|
 |share_id<br>（SFS容量型）|used_capicity|已用容量|byte|
-|share_id<br>（SFS容量型）|total_capicity|总容量|GB|
-|share_id<br>（SFS容量型）|capicity_usage|容量已使用率|%|
 |bucket_name<br>（通用文件系统）|read_bytes_intranet|文件系统读带宽|byte/s|
 |bucket_name<br>（通用文件系统）|write_bytes_intranet|文件系统写带宽|byte/s|
 |bucket_name<br>（通用文件系统）|read_tps|文件系统读TPS|个|

@@ -66,6 +66,7 @@ var (
 		"SYS.GEIP":          GeipInfo{},
 		"SYS.ECP":           ECPInfo{},
 		"SYS.SMN":           SMNInfo{},
+		"SYS.CloudDC":       CloudDcInfo{},
 	}
 )
 

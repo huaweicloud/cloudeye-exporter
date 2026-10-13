@@ -24,4 +24,3 @@
 |dws_instance_id<br>（数据仓库节点）|dws020_avg_disk_sec_per_read|硬盘读耗时|秒|
 |dws_instance_id<br>（数据仓库节点）|dws021_avg_disk_sec_per_write|硬盘写耗时|秒|
 |dws_instance_id<br>（数据仓库节点）|dws022_avg_disk_queue_length|磁盘平均队列长度||
-|dws_instance_id<br>（数据仓库节点）|dws_023_avg_diskio_util|节点平均磁盘I/O使用率|%|

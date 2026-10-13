@@ -54,7 +54,7 @@ func TestWanQMonitorGetResourceInfo(t *testing.T) {
 				Country:   "China",
 				Province:  "zhejiang",
 				City:      "hangzhou",
-				Label: Label{
+				Label: ProbeLabel{
 					EnUs: LabelInfo{
 						Name:     "china-zhejiang-hangzhou-CMCC",
 						Country:  "china",

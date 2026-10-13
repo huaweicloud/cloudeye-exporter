@@ -43,8 +43,17 @@ func (getter NoSQLInfo) GetResourceInfo() (map[string]labelInfo, []model.MetricI
 
 		dynamoTables, err := getDynamoDbInstances()
 		if err != nil {
-			logs.Logger.Errorf("Get All NoSQL Dynamo Tables error: %s", err.Error())
-			return nosqlInfo.LabelInfo, nosqlInfo.FilterMetrics
+			// DynamoDB 是 NoSQL 的子类型，补充的label信息使用独立的接口查询。
+			// 如果账号未开通 DynamoDB，接口会返回 "Serverless is not activated" 错误，
+			// 这是正常情况，应跳过 DynamoDB 继续处理其他引擎（Redis/MongoDB 等）。
+			// 但如果是其他错误（网络超时、权限不足等），说明接口调用异常，
+			// 需要 return 退出，避免后续逻辑基于不完整的数据构建缓存。
+			if strings.Contains(err.Error(), "Serverless is not activated") {
+				logs.Logger.Warnf("DynamoDB Serverless is not activated, skip")
+			} else {
+				logs.Logger.Errorf("Get All NoSQL Dynamo Tables error: %s", err.Error())
+				return nosqlInfo.LabelInfo, nosqlInfo.FilterMetrics
+			}
 		}
 
 		for _, table := range dynamoTables {

@@ -65,10 +65,8 @@
 |mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo038_write_throughput|硬盘写吞吐量|byte/s|
 |mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo039_avg_disk_sec_per_read|硬盘读耗时|秒|
 |mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo040_avg_disk_sec_per_write|硬盘写耗时|秒|
-|mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo041_avg_disk_queue_length|磁盘平均队列长度||
 |mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo042_disk_total_size|磁盘总大小|GB|
 |mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo043_disk_used_size|磁盘使用量|GB|
-|mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo044_swap_usage|SWAP利用率|%|
 |mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo050_top_total_time|集合花费的总时间|ms|
 |mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo051_top_read_time|集合读花费的总时间|ms|
 |mongodb_instance_id,mongodb_node_id<br>（文档数据库实例,文档数据库节点）|mongo052_top_write_time|集合写花费的总时间|ms|

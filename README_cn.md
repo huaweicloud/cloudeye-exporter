@@ -67,12 +67,16 @@ Prometheus是用于展示大型测量数据的开源可视化工具，在工业�
 |[全域弹性公网IP和带宽](cloudservice_metrics/SYS.GEIP.md)|SYS.GEIP|√|RMS|支持|
 |[企业路由服务](cloudservice_metrics/SYS.ER.md)|SYS.ER|√|RMS|支持|
 |[云手机服务器](cloudservice_metrics/SYS.ECP.md)|SYS.ECP|√|RMS|支持|
+|[云化数据中心](cloudservice_metrics/SYS.CloudDC.md)|SYS.CloudDC|√|RMS|支持|
 
 注：
 1. 自定义标签时，key只能包含大写字母、小写字母、数字以及下划线，且不能以数字开头。
-2. CES导出的指标数据依赖从RMS云服务获取标签数据，若导出的指标数据中缺少资源属性标签，请确认该资源是否已对接RMS（部分资源需要开启资源记录器才能被RMS收集）。
-3. 在cloudeye-exporter 2.0.31及以上版本中，针对Agent采集的磁盘维度指标添加了evsId字段（该字段仅适用于云硬盘磁盘）。Windows操作系统不支持该字段。
-4. cloudeye-exporter拉取的数据来源于云服务指标上报。若云服务出现上报延迟，exporter获取不到最新的指标数据，可能导致Grafana看板指标与CES控制台指标之间存在短暂差异。
+2. 若某个资源的客户自定义标签与系统内置标签重名，将导致对应资源的指标无法导出，解决方案请参考[自定义标签与系统内置标签重名问题排查指南](./docs/Custom-Tag-Duplicate-Resolution.md)。
+3. CES导出的指标数据依赖从RMS云服务获取标签数据，若导出的指标数据中缺少资源属性标签，请确认该资源是否已对接RMS（部分资源需要开启资源记录器才能被RMS收集）。
+4. 在cloudeye-exporter 2.0.31及以上版本中，针对Agent采集的磁盘维度指标添加了evsId字段（该字段仅适用于云硬盘磁盘）。Windows操作系统不支持该字段。
+5. cloudeye-exporter拉取的数据来源于云服务指标上报。若云服务出现上报延迟，exporter获取不到最新的指标数据，可能导致Grafana看板指标与CES控制台指标之间存在短暂差异。
+6. cloudeye-exporter对资源信息存在缓存机制，默认缓存时长为180分钟（可通过clouds.yml中的resource_sync_interval_minutes配置调整）。此外，若云服务或RMS接口（RMS会在24小时内矫正资源数据）中的资源自定义标签尚未更新，导出的指标数据同样可能不包含最新的标签。如需确保新设置的自定义标签及时生效，可在设置标签后重启exporter。
+7. cloudeye-exporter获取的指标列表为当前有数据上报的指标。若未获取到某个指标的数据，请首先在华为云CES服务上确认该指标是否有数据上报。
 
 ## 环境准备
 以Ubuntu 18.04系统和Prometheus 2.14.0版本为例
@@ -103,6 +107,7 @@ tar -xzvf cloudeye-exporter-${version}.tar.gz
 global:
   port: "{private IP}:8087" # 监听端口 :出于安全考虑，建议不将expoter服务端口暴露到公网，建议配置为127.0.0.1:{port}，或{内网ip}:{port}，例如：192.168.1.100:8087；如业务需要将该端口暴露到公网，请确保合理配置安全组，防火墙，iptables等访问控制策略，确保最小访问权限；监听端口默认为8087
   scrape_batch_size: 300
+  max_routines: 5 # 查询指标数据支持的最大并发线程数，默认为5，最大不超过50
   resource_sync_interval_minutes: 20 # 资源信息更新频率：默认180分钟更新一次；该配置值小于10分钟，将以10分钟1次为资源信息更新频率
   ep_ids: "xxx1,xxx2" # 可选配置，根据企业项目ID过滤资源(支持企业项目id过滤的云服务参考'拓展标签支持情况'章节图表)，不配置默认查询所有资源的指标，多个ID使用英文逗号进行分割。
   logs_conf_path: "/root/logs.yml" # 可选配置，指定日志打印配置文件路径，建议使用绝对路径。若未指定，程序将默认使用执行启动命令所在目录下的日志配置文件。
@@ -135,7 +140,16 @@ auth:
     id_token_file_path: "" # 存放id_token的文件路径，id_token由企业IdP构建，携带联邦用户身份信息
     idp_id: ""  # 身份提供商ID
     domain_id: ""  # 华为云账号ID
+prometheus_remote_write_conf: #
+  可选配置，表示exporter通过remote-write机制主动向prometheus写入指标数据（若不配置此项，prometheus需要使用拉取模式从exporter获取指标数据）
+  enabled: true # remote-write机制开关，true表示开启，false表示关闭，默认false
+  url: "http://{prometheus_endpoint}/api/v1/write" # prometheus开放的remote-write指标数据写入接口地址
+  products: # 通过remote-write机制写入指标的云服务列表
+    - namespace: SYS.XXX # 云服务命名空间
+      max_routines: 5 # 该云服务执行指标查询时支持的最大并发线程数，默认为5，最大不超过50
 ```
+注：exporter开启remote-write机制，需要[prometheus开放remote-write接口](#start-prometheus)
+
 
 3. 欧洲站注意事项
 
@@ -271,12 +285,17 @@ EOF
 |云数据库TaurusDB|SYS.GAUSSDB|gaussdb_mysql_instance_id,gaussdb_mysql_node_id|TaurusDB实例ID,TaurusDB节点ID|
 |云数据库TaurusDB|SYS.GAUSSDB|gaussdb_mysql_ha_id,gaussdb_mysql_ha_node_id|TaurusDB经典架构实例ID,TaurusDB经典架构节点ID|
 
-注：OIDC认证方式的详细使用请参考[OIDC认证鉴权最佳实践](./best-practices/CCE-OIDC-Best-Practices.md)
+注：OIDC认证方式的详细使用请参考[OIDC认证鉴权最佳实践](./docs/CCE-OIDC-Best-Practices.md)
 
 5. 指标配置
-cloudeye-exporter支持的指标可在 [支持监控的服务列表](https://support.huaweicloud.com/usermanual-ces/zh-cn_topic_0202622212.html)中查看。若发现您需要的指标没有获取到，可查阅该文档将对应的指标填入metric.yml中。
-   
 
+   cloudeye-exporter支持的指标可在 [支持监控的服务列表](https://support.huaweicloud.com/usermanual-ces/zh-cn_topic_0202622212.html)中查看。若发现您需要的指标没有获取到，可查阅该文档将对应的指标填入metric.yml中。
+   
+6. 指标数据查询接口限制说明
+
+   CES-Exporter 单次调用指标数据查询接口，默认最多返回300条时间线（时间线数量=资源数量 × 单资源指标数量）。该接口调用次数限制为500次/分钟，即每分钟最多可查询150000条时间线。
+
+   请根据您实际的资源规模，评估指标数据查询量是否会超过上述限制。若预估查询量可能触发流控，请提前联系运维人员申请配置新的限流策略。
 
 ## 安装配置prometheus接入cloudeye
 1. 下载Prometheus (https://prometheus.io/download/)
@@ -293,10 +312,13 @@ $ cd prometheus-2.14.0.linux-amd64
    global:
      scrape_interval: 1m # 设置prometheus从exporter查询数据的间隔时间，prometheus配置文件中默认为15s，建议设置为1m
      scrape_timeout: 1m # 设置从exporter查询数据的超时时间，prometheus配置文件中默认为15s，建议设置为1m
+   storage:
+     tsdb:
+       out_of_order_time_window: 30m # 本配置用于设置乱序数据的写入时间窗。当使用remote-write机制主动推送指标数据时，该时间窗可确保因网络抖动等原因延迟上报的指标数据不被丢弃；配置示例：10m（10分钟）、30m（30分钟）、1h（1小时）、1d（1天）
    scrape_configs:
      - job_name: 'huaweicloud'
        scheme: https # 默认该值为http，代表prometheus以http方式调用cloudeye-exporter；如需以https方式调用，请将配置值改为https
-       tls_config:   # prometheus以https调用cloudeye-exporter服务时，该参数必配
+       tls_config:   # 可选配置，prometheus以https调用cloudeye-exporter服务时，该参数必配
          ca_file: root.crt     # 客户端CA证书的路径
          cert_file: client.crt # 客户端https证书的路径
          key_file: client.key  # 客户端私钥的路径
@@ -304,11 +326,22 @@ $ cd prometheus-2.14.0.linux-amd64
        - targets: ['192.168.0.xx:8087'] # exporter节点地址:监听端口
        params:
          services: ['SYS.VPC,SYS.RDS'] # 当前任务需要查询的服务命名空间，建议每个服务配置单独job
+     # 如果开启了企业项目，则配置该任务获取企业项目信息，用于模板
+     - job_name: 'huaweicloud-eps'
+       scheme: https # 默认该值为http，代表prometheus以http方式调用cloudeye-exporter，如需以https方式调用，请配置值改为https
+       tls_config:   # 可选配置，prometheus以https调用cloudeye-exporter服务时，该参数必配
+         ca_file: root.crt     # 客户端CA证书的路径
+         cert_file: client.crt # 客户端https证书的路径
+         key_file: client.key  # 客户端私钥的路径
+       metrics_path: "/eps-info" # exporter开放的企业项目列表获取接口地址
+       static_configs:
+       - targets: ['192.168.0.xx:8087'] # exporter节点地址:监听端口
    ```
-3. 启动prometheus监控华为云服务
-```
-./prometheus
-```
+3. <span id="start-prometheus">启动prometheus监控华为云服务</span>
+   ```
+   ./prometheus --web.enable-remote-write-receiver
+   ```
+   注：--web.enable-remote-write-receiver表示开放remote-write接口，允许ces-exporter向prometheus主动写入指标数据
 * 登录http://127.0.0.1:9090/graph
 * 查看指定指标的监控结果
 
